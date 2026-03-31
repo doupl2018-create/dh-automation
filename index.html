@@ -3,310 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DH Automation App</title>
+    <title>DH Automation Store</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-main: #1c1e21;
-            --accent: #0084ff;
-            --danger: #fa3e3e;
-            --nav-bg: #ffffff;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #18191a;
-                --card-bg: #242526;
-                --text-main: #e4e6eb;
-                --accent: #2e89ff;
-                --nav-bg: #242526;
-            }
+            --primary-blue: #0056b3;
+            --secondary-blue: #007bff;
+            --success-green: #28a745;
+            --danger-red: #dc3545;
+            --info-cyan: #17a2b8;
+            --bg-light: #f4f7f6;
+            --card-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            padding-bottom: 70px;
+            margin: 0; background-color: var(--bg-light);
+            font-family: 'Segoe UI', sans-serif; padding-bottom: 80px;
         }
 
-        /* الهيدر العلوي */
-        .header {
-            background: var(--nav-bg);
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* شريط السلة العلوي - نفس الصورة */
+        .cart-header {
+            background-color: var(--primary-blue);
+            color: white; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-radius: 10px; margin: 10px;
+            box-shadow: var(--card-shadow);
         }
 
-        .cart-status {
-            position: relative;
-            cursor: pointer;
+        .cart-header .btns { display: flex; gap: 8px; }
+        .btn-action {
+            border: none; border-radius: 5px; padding: 8px 15px;
+            color: white; font-weight: bold; cursor: pointer;
+        }
+        .btn-send { background-color: var(--success-green); }
+        .btn-clear { background-color: var(--danger-red); }
+
+        /* شريط الأقسام */
+        .category-bar {
+            background-color: var(--secondary-blue);
+            color: white; text-align: center;
+            padding: 12px; margin: 0 10px 15px;
+            border-radius: 8px; font-weight: bold;
         }
 
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--danger);
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 12px;
-        }
-
-        /* شبكة الأقسام الرئيسية */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 15px;
-        }
-
-        .nav-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: 0.3s;
-        }
-
-        .nav-card i {
-            font-size: 28px;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        /* شكل المنتجات في المتجر */
-        .product-list { padding: 15px; }
+        /* كارت المنتج - تصميم أفقي مثل الصورة */
         .product-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: white; border-radius: 12px;
+            margin: 10px; padding: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .product-img { width: 100%; height: 200px; object-fit: cover; }
-        .product-info { padding: 15px; }
-
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 10px 0;
+        .product-right { display: flex; align-items: center; gap: 15px; flex: 1; justify-content: flex-end; }
+        .product-details { text-align: left; margin-right: 10px; }
+        .product-name { font-weight: bold; font-size: 14px; margin: 0; }
+        .product-price { color: var(--success-green); font-weight: bold; margin: 5px 0; font-size: 13px; }
+        .product-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; }
+        
+        .btn-details {
+            background-color: var(--info-cyan); color: white;
+            border: none; border-radius: 5px; padding: 4px 10px; font-size: 12px;
         }
 
-        .qty-btn {
-            background: var(--bg-color);
-            border: none;
-            color: var(--text-main);
-            width: 30px; height: 30px;
-            border-radius: 5px;
-            font-weight: bold;
+        /* التحكم في الكمية والزر - يسار الكارت */
+        .product-left { display: flex; align-items: center; gap: 10px; }
+        .qty-box { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
+        .qty-btn { background: #eee; border: none; width: 25px; height: 25px; font-weight: bold; }
+        .qty-val { width: 30px; text-align: center; border: none; font-size: 14px; }
+        
+        .btn-add {
+            background-color: var(--success-green); color: white;
+            border: none; border-radius: 5px; padding: 8px 20px; font-weight: bold;
         }
+        .btn-add.added { background-color: var(--danger-red); }
 
-        .add-btn {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            background: var(--accent);
-            color: white;
-            font-weight: bold;
-        }
-
-        .add-btn.added { background: var(--danger); }
-
-        /* شكل المنشورات (مثل فيسبوك) */
+        /* تصميم المنشورات المطور */
+        .post-container { padding: 10px; }
         .post-card {
-            background: var(--card-bg);
-            margin-bottom: 12px;
-            padding: 15px;
+            background: white; border-radius: 15px; margin-bottom: 20px;
+            overflow: hidden; box-shadow: var(--card-shadow);
+        }
+        .post-header { padding: 15px; display: flex; align-items: center; gap: 10px; }
+        .post-user-img { width: 45px; height: 45px; background: #ddd; border-radius: 50%; }
+        .post-content { padding: 0 15px 15px; line-height: 1.6; }
+        .post-img-main { width: 100%; max-height: 300px; object-fit: cover; }
+        .post-footer {
+            border-top: 1px solid #eee; padding: 10px 15px;
+            display: flex; justify-content: space-between; font-size: 14px; color: #666;
         }
 
-        .post-header { display: flex; align-items: center; margin-bottom: 10px; }
-        .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ccc; margin-left: 10px; }
-        
-        /* التذييل السفلي */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; width: 100%;
-            background: var(--nav-bg);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid rgba(0,0,0,0.1);
+        /* التنقل السفلي */
+        .nav-bottom {
+            position: fixed; bottom: 0; width: 100%;
+            background: white; display: flex; justify-content: space-around;
+            padding: 12px 0; border-top: 1px solid #ddd;
         }
-        
+        .nav-item { color: #888; text-align: center; font-size: 12px; flex: 1; }
+        .nav-item.active { color: var(--primary-blue); }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h3 style="margin:0;">DH Automation</h3>
-        <div class="cart-status" onclick="showPage('shop')">
-            <i class="fas fa-shopping-basket fa-lg"></i>
-            <span class="cart-count" id="cartCount">0</span>
-            <button onclick="clearCart(event)" style="font-size: 10px; margin-right: 10px;">إفراغ</button>
+    <div class="cart-header">
+        <div class="btns">
+            <button class="btn-action btn-send">إرسال</button>
+            <button class="btn-action btn-clear" onclick="clearCart()">إفراغ</button>
+        </div>
+        <div style="font-size: 16px;">
+             السلة: <span id="cartCount">0</span> (<span id="cartTotal">0</span> ج.م) <i class="fas fa-shopping-cart"></i>
         </div>
     </div>
 
-    <div id="homePage">
-        <div class="main-grid">
-            <div class="nav-card" onclick="showPage('shop')">
-                <i class="fas fa-store"></i>
-                <div>سوق مساعد المهندس</div>
-            </div>
-            <div class="nav-card" onclick="showPage('posts')">
-                <i class="fas fa-microchip"></i>
-                <div>الحلول الصناعية</div>
-            </div>
-            <div class="nav-card" onclick="showPage('posts')">
-                <i class="fas fa-cogs"></i>
-                <div>التحكم الآلي</div>
-            </div>
-            <div class="nav-card" onclick="showPage('posts')">
-                <i class="fas fa-project-diagram"></i>
-                <div>مشاريعنا</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="shopPage" class="hidden">
-        <div class="product-list">
-            <div class="product-card">
-                <img src="images/01 (1).jpg" class="product-img" alt="Product">
-                <div class="product-info">
-                    <h4>محرك سيرفو صناعي</h4>
-                    <div class="qty-controls">
-                        <button class="qty-btn" onclick="updateQty('p1', -1)">-</button>
-                        <span id="qty-p1">1</span>
-                        <button class="qty-btn" onclick="updateQty('p1', 1)">+</button>
-                    </div>
-                    <button id="btn-p1" class="add-btn" onclick="toggleCart('p1', 'محرك سيرفو')">أضف للسلة</button>
+    <div id="shopPage">
+        <div class="category-bar">كارتات الكترونية</div>
+        
+        <div class="product-card">
+            <div class="product-left">
+                <button id="btn-p1" class="btn-add" onclick="toggleCart('p1', 'كارت مساطر سنترتو', 290)">أضف</button>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('p1', 1)">+</button>
+                    <input type="text" class="qty-val" id="qty-p1" value="1" readonly>
+                    <button class="qty-btn" onclick="updateQty('p1', -1)">-</button>
                 </div>
             </div>
+            <div class="product-right">
+                <div class="product-details">
+                    <button class="btn-details">تفاصيل</button>
+                    <p class="product-name">كارت مساطر سنترتو</p>
+                    <p class="product-price">290 ج.م</p>
+                </div>
+                <img src="images/01 (1).jpg" class="product-img">
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-left">
+                <button id="btn-p2" class="btn-add" onclick="toggleCart('p2', 'كارت خرج عشرة قناة', 1800)">أضف</button>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('p2', 1)">+</button>
+                    <input type="text" class="qty-val" id="qty-p2" value="1" readonly>
+                    <button class="qty-btn" onclick="updateQty('p2', -1)">-</button>
+                </div>
+            </div>
+            <div class="product-right">
+                <div class="product-details">
+                    <button class="btn-details">تفاصيل</button>
+                    <p class="product-name">كارت خرج عشرة قناة</p>
+                    <p class="product-price">1800 ج.م</p>
+                </div>
+                <img src="images/01 (2).jpg" class="product-img">
+            </div>
         </div>
     </div>
 
-    <div id="postsPage" class="hidden">
+    <div id="postsPage" class="hidden post-container">
         <div class="post-card">
             <div class="post-header">
-                <div class="post-avatar"></div>
-                <div><b>المهندس ناصر</b><br><small>منذ ساعتين</small></div>
+                <div class="post-user-img"></div>
+                <div><b>DH Automation</b><br><small>منذ ساعة • <i class="fas fa-globe-americas"></i></small></div>
             </div>
             <div class="post-content">
-                تم اليوم الانتهاء من لوحة التحكم الخاصة بمصنع "الهدى" باستخدام انفرتر SAVCH.
-                <img src="images/01 (2).jpg" style="width:100%; margin-top:10px; border-radius:8px;">
+                تم تحديث قائمة المشاريع البرمجية لوحدات PLC.. تابعونا للمزيد.
+                <img src="images/01 (3).jpg" class="post-img-main" style="margin-top:10px; border-radius:8px;">
             </div>
-            <hr style="opacity: 0.1;">
-            <div onclick="addComment()" style="cursor:pointer; color:var(--accent); font-size:14px;">
-                <i class="far fa-comment"></i> إضافة تعليق سريع...
+            <div class="post-footer" onclick="doComment()">
+                <span><i class="far fa-thumbs-up"></i> إعجاب</span>
+                <span><i class="far fa-comment"></i> تعليق سريع</span>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <div onclick="showPage('home')"><i class="fas fa-home"></i></div>
-        <div onclick="showPage('shop')"><i class="fas fa-shopping-cart"></i></div>
-        <div onclick="showPage('posts')"><i class="fas fa-rss"></i></div>
-    </nav>
+    <div class="nav-bottom">
+        <div class="nav-item" onclick="showTab('posts')"><i class="fas fa-rss fa-lg"></i><div>المنشورات</div></div>
+        <div class="nav-item active" onclick="showTab('shop')"><i class="fas fa-store fa-lg"></i><div>المتجر</div></div>
+        <div class="nav-item" onclick="showTab('home')"><i class="fas fa-th-large fa-lg"></i><div>الرئيسية</div></div>
+    </div>
 
     <script>
-        let cart = JSON.parse(localStorage.getItem('dh_cart')) || {};
+        let cart = JSON.parse(localStorage.getItem('dh_cart_v2')) || {};
 
-        // تحديث الواجهة عند التحميل
-        window.onload = () => {
-            updateUI();
-        };
+        window.onload = updateUI;
 
-        function showPage(pageId) {
-            document.getElementById('homePage').classList.add('hidden');
+        function showTab(id) {
             document.getElementById('shopPage').classList.add('hidden');
             document.getElementById('postsPage').classList.add('hidden');
-            document.getElementById(pageId + 'Page').classList.remove('hidden');
+            if(id === 'shop') document.getElementById('shopPage').classList.remove('hidden');
+            if(id === 'posts') document.getElementById('postsPage').classList.remove('hidden');
         }
 
         function updateQty(id, change) {
-            let qtyEl = document.getElementById('qty-' + id);
-            let current = parseInt(qtyEl.innerText);
-            if (current + change >= 1) {
-                qtyEl.innerText = current + change;
+            let el = document.getElementById('qty-' + id);
+            let val = parseInt(el.value) + change;
+            if (val >= 1) {
+                el.value = val;
                 if (cart[id]) {
-                    cart[id].qty = current + change;
+                    cart[id].qty = val;
                     saveCart();
                 }
             }
         }
 
-        function toggleCart(id, name) {
+        function toggleCart(id, name, price) {
             let btn = document.getElementById('btn-' + id);
-            let qty = parseInt(document.getElementById('qty-' + id).innerText);
+            let qty = parseInt(document.getElementById('qty-' + id).value);
 
             if (cart[id]) {
                 delete cart[id];
                 btn.classList.remove('added');
-                btn.innerText = "أضف للسلة";
+                btn.innerText = "أضف";
             } else {
-                cart[id] = { name: name, qty: qty };
+                cart[id] = { name: name, price: price, qty: qty };
                 btn.classList.add('added');
-                btn.innerText = "إلغاء (مضاف)";
+                btn.innerText = "إلغاء";
             }
             saveCart();
         }
 
         function saveCart() {
-            localStorage.setItem('dh_cart', JSON.stringify(cart));
+            localStorage.setItem('dh_cart_v2', JSON.stringify(cart));
             updateUI();
         }
 
         function updateUI() {
-            let count = Object.keys(cart).length;
-            document.getElementById('cartCount').innerText = count;
-            
-            // تحديث حالة الأزرار لو المنتج موجود في السلة المحفوظة
+            let count = 0; let total = 0;
             for (let id in cart) {
+                count++;
+                total += (cart[id].price * cart[id].qty);
                 let btn = document.getElementById('btn-' + id);
                 if (btn) {
                     btn.classList.add('added');
-                    btn.innerText = "إلغاء (مضاف)";
-                    document.getElementById('qty-' + id).innerText = cart[id].qty;
+                    btn.innerText = "إلغاء";
+                    document.getElementById('qty-' + id).value = cart[id].qty;
                 }
             }
+            document.getElementById('cartCount').innerText = count;
+            document.getElementById('cartTotal').innerText = total;
         }
 
-        function clearCart(e) {
-            e.stopPropagation();
-            if(confirm("هل تريد إفراغ السلة؟")) {
+        function clearCart() {
+            if(confirm("تأكيد إفراغ السلة؟")) {
                 cart = {};
-                localStorage.removeItem('dh_cart');
-                location.reload(); // لإعادة ضبط الأزرار
+                localStorage.removeItem('dh_cart_v2');
+                location.reload();
             }
         }
 
-        function addComment() {
-            let user = localStorage.getItem('user_name');
-            if (!user) {
-                user = prompt("أهلاً بك! اكتب اسمك ليظهر عند التعليق:");
-                if (user) localStorage.setItem('user_name', user);
+        function doComment() {
+            let user = localStorage.getItem('app_user');
+            if(!user) {
+                user = prompt("أدخل اسمك للتعليق مرة واحدة:");
+                if(user) localStorage.setItem('app_user', user);
             }
-            if (user) {
-                alert("تم تسجيل تعليقك باسم: " + user);
-            }
+            if(user) alert("شكراً " + user + ".. تم استلام تعليقك.");
         }
     </script>
 </body>
