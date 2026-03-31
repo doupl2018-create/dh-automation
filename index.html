@@ -2,265 +2,36 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DH Automation</title>
     
-    <link rel="icon" type="image/jpeg" href="images/Icon-page.jpg">
+    <link rel="stylesheet" href="style.css">
     
+    <link rel="icon" href="images/Icon-page.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-color: #1a73e8;
-            --bg-color: #f0f2f5;
-            --text-color: #333;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0; padding: 0;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        header {
-            background: var(--primary-color);
-            color: white; padding: 15px;
-            text-align: center; font-size: 1.2rem;
-            font-weight: bold; position: fixed;
-            top: 0; width: 100%; z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .container { padding: 70px 15px 100px 15px; }
-
-        .page { display: none; animation: fadeIn 0.3s; }
-        .active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* تنسيق كارت المنتج في السوق */
-        .product-row {
-            display: flex; align-items: center;
-            background: white; padding: 12px;
-            margin-bottom: 10px; border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .product-img {
-            width: 70px; height: 70px;
-            object-fit: cover; border-radius: 8px;
-            margin-left: 12px; border: 1px solid #eee;
-        }
-
-        .product-info { flex: 1; }
-        .product-info h4 { margin: 0; font-size: 0.95rem; color: #444; }
-        .product-info p { margin: 4px 0; color: var(--primary-color); font-weight: bold; }
-
-        .qty-control {
-            display: flex; align-items: center;
-            gap: 8px; margin-left: 10px;
-        }
-
-        .qty-btn {
-            width: 28px; height: 28px;
-            border: 1px solid #ddd; background: #fff;
-            border-radius: 50%; font-weight: bold; cursor: pointer;
-        }
-
-        .add-btn {
-            background: var(--success-color);
-            color: white; border: none;
-            padding: 8px 15px; border-radius: 6px;
-            font-size: 0.85rem; font-weight: bold;
-            cursor: pointer; transition: 0.2s;
-        }
-
-        .remove-btn { background: var(--danger-color) !important; }
-
-        /* السلة */
-        .cart-summary {
-            background: white; padding: 20px;
-            border-radius: 12px; margin-top: 20px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            border: 1px solid #e0e0e0;
-        }
-
-        .checkout-btn {
-            width: 100%; background: #25d366;
-            color: white; border: none;
-            padding: 14px; border-radius: 8px;
-            font-weight: bold; margin-top: 15px;
-            font-size: 1rem; cursor: pointer;
-        }
-
-        /* شريط التنقل السفلي */
-        nav {
-            position: fixed; bottom: 0; width: 100%;
-            background: white; display: flex;
-            padding: 8px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .nav-item {
-            text-align: center; font-size: 0.75rem;
-            color: #777; flex: 1; cursor: pointer;
-        }
-
-        .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
-        .nav-item .icon { display: block; font-size: 1.4rem; margin-bottom: 2px; }
-
-    </style>
 </head>
 <body>
 
-<header id="header-title">سوق مساعد المهندس</header>
+    <header id="header-title">سوق مساعد المهندس</header>
 
-<div class="container">
-    <div id="market" class="page active">
-        <div class="product-row" data-id="1" data-name="حساس حرارة NTC" data-price="150">
-            <img src="images/01 (1).jpg" class="product-img">
-            <div class="product-info">
-                <h4>حساس حرارة NTC</h4>
-                <p>150 ج.م</p>
+    <div class="container">
+        <div id="market" class="page active">
+            <div class="product-row" data-id="1" data-name="حساس NTC" data-price="150">
+                <img src="images/01 (1).jpg" class="product-img">
+                <div class="product-info">
+                    <h4>حساس حرارة NTC</h4>
+                    <p>150 ج.م</p>
+                </div>
+                <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
             </div>
-            <div class="qty-control">
-                <button class="qty-btn" onclick="changeQty(this, -1)">-</button>
-                <span class="qty-val">1</span>
-                <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
             </div>
-            <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
-        </div>
-
-        <div class="product-row" data-id="2" data-name="كارت تحكم LVDT" data-price="1200">
-            <img src="images/01 (2).jpg" class="product-img">
-            <div class="product-info">
-                <h4>كارت تحكم LVDT</h4>
-                <p>1200 ج.م</p>
-            </div>
-            <div class="qty-control">
-                <button class="qty-btn" onclick="changeQty(this, -1)">-</button>
-                <span class="qty-val">1</span>
-                <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
-            </div>
-            <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
-        </div>
-
-        <div class="cart-summary">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span>الإجمالي: <b id="total-price" style="font-size: 1.2rem; color: var(--primary-color);">0</b> ج.م</span>
-                <button onclick="clearCart()" style="color: var(--danger-color); border: none; background: none; font-family: 'Cairo'; cursor: pointer;">إفراغ السلة 🗑️</button>
-            </div>
-            <button class="checkout-btn" onclick="checkoutWhatsApp()">إتمام الشراء عبر واتساب ✅</button>
-        </div>
     </div>
 
-    <div id="projects" class="page"><h2>تطوير تقنيات الحقن</h2></div>
-    <div id="info" class="page"><h2>معلومات الدعم</h2></div>
-    <div id="support" class="page"><h2>الدعم الفني</h2></div>
-</div>
+    <nav>
+        <div class="nav-item active-nav" onclick="showPage('market', 'السوق', this)">🛒 السوق</div>
+        <div class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️ المشاريع</div>
+    </nav>
 
-<nav>
-    <div class="nav-item active-nav" onclick="showPage('market', 'سوق مساعد المهندس', this)">
-        <span class="icon">🛒</span>السوق
-    </div>
-    <div class="nav-item" onclick="showPage('projects', 'تطوير التقنيات', this)">
-        <span class="icon">⚙️</span>المشاريع
-    </div>
-    <div class="nav-item" onclick="showPage('info', 'المعلومات', this)">
-        <span class="icon">📚</span>المعلومات
-    </div>
-    <div class="nav-item" onclick="showPage('support', 'الدعم', this)">
-        <span class="icon">🛠️</span>الدعم
-    </div>
-    <div class="nav-item" onclick="openWhatsAppDirect()">
-        <span class="icon">💬</span>دردشة
-    </div>
-</nav>
-
-<script>
-    let cart = [];
-
-    function showPage(pageId, title, element) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        document.getElementById('header-title').innerText = title;
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
-        element.classList.add('active-nav');
-    }
-
-    // الدالة المعدلة لتحديث السعر فوراً
-    function changeQty(btn, delta) {
-        let row = btn.closest('.product-row');
-        let id = row.getAttribute('data-id');
-        let qtySpan = row.querySelector('.qty-val');
-        let currentQty = parseInt(qtySpan.innerText);
-        let newQty = currentQty + delta;
-
-        if (newQty >= 1) {
-            qtySpan.innerText = newQty;
-            
-            // لو المنتج موجود فعلاً في السلة، حدث الكمية بتاعته فوراً
-            let itemInCart = cart.find(item => item.id === id);
-            if (itemInCart) {
-                itemInCart.qty = newQty;
-                updateTotal(); // حدث الإجمالي فوراً
-            }
-        }
-    }
-
-    function toggleCart(btn) {
-        let row = btn.closest('.product-row');
-        let id = row.getAttribute('data-id');
-        let name = row.getAttribute('data-name');
-        let price = parseInt(row.getAttribute('data-price'));
-        let qty = parseInt(row.querySelector('.qty-val').innerText);
-
-        if (btn.innerText === "إضافة") {
-            cart.push({ id, name, price, qty });
-            btn.innerText = "إلغاء";
-            btn.classList.add('remove-btn');
-        } else {
-            cart = cart.filter(item => item.id !== id);
-            btn.innerText = "إضافة";
-            btn.classList.remove('remove-btn');
-        }
-        updateTotal();
-    }
-
-    function updateTotal() {
-        let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-        document.getElementById('total-price').innerText = total;
-    }
-
-    function clearCart() {
-        cart = [];
-        updateTotal();
-        document.querySelectorAll('.add-btn').forEach(btn => {
-            btn.innerText = "إضافة";
-            btn.classList.remove('remove-btn');
-        });
-        // تصفير أرقام العدادات في الواجهة أيضاً
-        document.querySelectorAll('.qty-val').forEach(span => span.innerText = "1");
-    }
-
-    function checkoutWhatsApp() {
-        if (cart.length === 0) { alert("السلة فاضية يا هندسة!"); return; }
-        let message = "طلب شراء جديد من تطبيق DH Automation:%0A";
-        cart.forEach(item => {
-            message += `- ${item.name} (عدد: ${item.qty}) = ${item.price * item.qty} ج.م%0A`;
-        });
-        message += `%0A*الإجمالي: ${document.getElementById('total-price').innerText} ج.م*`;
-        window.open(`https://wa.me/201227091465?text=${message}`, '_blank');
-    }
-
-    function openWhatsAppDirect() {
-        window.open(`https://wa.me/201227091465`, '_blank');
-    }
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
