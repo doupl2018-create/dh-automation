@@ -4,113 +4,313 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DH Automation - مساعد المهندس</title>
-    <link rel="stylesheet" href="style.css">
+    
     <style>
-        /* إضافة سريعة لتحسين مظهر المنشورات الاختبارية */
-        .post-card { margin-bottom: 20px; border-bottom: 5px solid #ddd; }
+        /* --- قسم التنسيق CSS (كل حاجة هنا يا هندسة) --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5; /* خلفية هادية زي الفيس */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            padding-bottom: 80px; /* عشان الأزرار اللي تحت متغطيش المحتوى */
+        }
+
+        .main-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-header h1 { margin: 0; font-size: 20px; }
+        .main-header p { margin: 5px 0 0; font-size: 14px; opacity: 0.8; }
+
+        /* تنسيق الكارت (المنشور) */
+        .post-card {
+            background: white;
+            margin: 15px auto;
+            max-width: 550px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .post-header {
+            display: flex;
+            padding: 12px;
+            align-items: center;
+        }
+
+        .user-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin-left: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .post-info .username {
+            display: block;
+            font-weight: bold;
+            font-size: 15px;
+            color: #1c1e21;
+        }
+
+        .post-info .post-time {
+            font-size: 12px;
+            color: #65676b;
+        }
+
+        .post-text {
+            padding: 5px 15px 15px;
+        }
+
+        .post-text h3 {
+            margin: 5px 0 10px 0;
+            color: #050505;
+            font-size: 17px;
+        }
+
+        .summary-text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #1c1e21;
+        }
+
+        .more-content {
+            display: none; /* مخفي في البداية */
+        }
+
+        .read-more-btn {
+            background: none;
+            border: none;
+            color: #1877f2;
+            padding: 5px 0;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* تنسيق منطقة الصور */
+        .post-images-container {
+            position: relative;
+            cursor: pointer;
+            background: #eee;
+            width: 100%;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-images-container img {
+            width: 100%;
+            display: block;
+            max-height: 450px;
+            object-fit: cover;
+        }
+
+        .image-overlay-count {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+
+        /* نافذة عرض الصور (Lightbox) */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #lightbox-img {
+            max-width: 95%;
+            max-height: 75%;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .lightbox-controls {
+            margin-top: 25px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .lightbox-controls button {
+            background: #444;
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* الأزرار السفلية (البرنس) */
+        .bottom-toolbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid #ddd;
+            z-index: 1000;
+        }
+
+        .bottom-toolbar button {
+            background: #e4e6eb;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #050505;
+            flex: 0.3;
+            margin: 0 5px;
+        }
+
+        .download-link {
+            display: inline-block;
+            margin-top: 10px;
+            background: #fdf0e0;
+            color: #d35400;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px dashed #d35400;
+        }
     </style>
 </head>
 <body>
 
     <header class="main-header">
         <h1>DH Automation</h1>
-        <p>مساعد المهندس - لوحة الاختبار</p>
+        <p>مساعد المهندس - نسخة الاختبار</p>
     </header>
 
-    <main id="main-content">
-
+    <main>
         <div class="post-card">
             <div class="post-header">
-                <div class="user-logo" style="background: #e74c3c; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">ص</div>
+                <div class="user-logo" style="background: #e67e22;">ص</div>
                 <div class="post-info">
                     <span class="username">قسم صيانة الكروت الإلكترونية</span>
-                    <span class="post-time">منذ 5 دقائق</span>
+                    <span class="post-time">الآن</span>
                 </div>
             </div>
             <div class="post-text">
-                <h3>اختبار صيانة كارت LVDT</h3>
+                <h3>صيانة كارت LVDT</h3>
                 <p class="summary-text">
-                    تم اليوم اختبار كارت LVDT بعد تغيير مكثفات التنعيم وفحص دائرة التغذية. الكارت الآن يعطي قراءات مستقرة تماماً..
-                    <span class="more-content" id="post1">
-                        تمت مراجعة المواصفات الفنية العامة للكارت، وهو جاهز للعمل في بيئة صناعية شاقة. تم تجربة الدخول والخروج (I/O) والتأكد من عدم وجود أي سخونة في العناصر المحيطة بالمعالج.
+                    تم الانتهاء من فحص دائرة التغذية لكارت LVDT وتغيير العناصر التالفة لضمان استقرار الإشارة..
+                    <span class="more-content" id="p1">
+                        تمت معايرة الدخل والخرج والتأكد من توافق القيم مع الحساس الملحق. الكارت جاهز الآن للتركيب والعمل بكفاءة.
                     </span>
                 </p>
-                <button class="read-more-btn" onclick="toggleText('post1', this)">اقرأ المزيد</button>
+                <button class="read-more-btn" onclick="togglePost('p1', this)">اقرأ المزيد</button>
             </div>
-            <div class="post-images" onclick="openLightbox(['maintenance1.jpg', 'maintenance2.jpg'])">
-                <div style="width: 100%; height: 200px; background: #bdc3c7; display: flex; align-items: center; justify-content: center; color: #7f8c8d;">صورة الكارت هنا (اضغط للعرض)</div>
-                <div class="image-count">+2 صور</div>
+            <div class="post-images-container" onclick="openGallery(['img_lvdt_1.jpg', 'img_lvdt_2.jpg'])">
+                <img src="https://via.placeholder.com/600x300/e67e22/ffffff?text=LVDT+Card+Photo" alt="صورة الكارت">
+                <div class="image-overlay-count">+2 صور</div>
             </div>
         </div>
 
         <div class="post-card">
             <div class="post-header">
-                <div class="user-logo" style="background: #2ecc71; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">ب</div>
+                <div class="user-logo" style="background: #27ae60;">ب</div>
                 <div class="post-info">
-                    <span class="username">قسم برمجة الـ Inverters</span>
+                    <span class="username">قسم البرمجة والأتمتة</span>
                     <span class="post-time">منذ ساعة</span>
                 </div>
             </div>
             <div class="post-text">
-                <h3>تطبيق عملي: برمجة انفرتر Sunch</h3>
+                <h3>برمجة انفرتر Sunch (SAVCH)</h3>
                 <p class="summary-text">
-                    شرح سريع لأهم البارامترات P0.01 و P0.03 للتحكم في سرعة الموتور عن طريق المقاومة الخارجية..
-                    <span class="more-content" id="post2">
-                        يجب ضبط P0.01 على القيمة المناسبة (مثلاً 1 للتحكم الخارجي) وضبط مدى التردد في P0.03 ليتناسب مع قدرة الموتور (50Hz أو 60Hz). تأكد من توصيل أسلاك المقاومة في أطراف +10V و AVI و GND.
+                    أهم إعدادات التشغيل الخارجي وضبط التردد الأقصى لحماية الموتور من السخونة الزائدة..
+                    <span class="more-content" id="p2">
+                        برجاء مراجعة البارامتر P0.01 ليكون (1) للتشغيل من الأزرار الخارجية، والبارامتر P0.03 لضبط التردد على 50 هرتز.
                     </span>
                 </p>
-                <button class="read-more-btn" onclick="toggleText('post2', this)">اقرأ المزيد</button>
+                <button class="read-more-btn" onclick="togglePost('p2', this)">اقرأ المزيد</button>
             </div>
-            <div class="post-images" onclick="openLightbox(['inverter1.jpg', 'inverter2.jpg', 'inverter3.jpg'])">
-                <div style="width: 100%; height: 200px; background: #95a5a6; display: flex; align-items: center; justify-content: center; color: #ecf0f1;">صورة الانفرتر هنا (اضغط للعرض)</div>
-                <div class="image-count">+3 صور</div>
+            <div class="post-images-container" onclick="openGallery(['sunch_1.jpg', 'sunch_2.jpg', 'sunch_3.jpg'])">
+                <img src="https://via.placeholder.com/600x300/27ae60/ffffff?text=Sunch+Inverter+Programming" alt="برمجة الانفرتر">
+                <div class="image-overlay-count">+3 صور</div>
             </div>
         </div>
 
         <div class="post-card">
             <div class="post-header">
-                <div class="user-logo" style="background: #3498db; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">ك</div>
+                <div class="user-logo" style="background: #2980b9;">ك</div>
                 <div class="post-info">
-                    <span class="username">مكتبة الكتالوجات الفنية</span>
+                    <span class="username">مركز الكتالوجات الفنية</span>
                     <span class="post-time">أمس</span>
                 </div>
             </div>
             <div class="post-text">
-                <h3>كتالوج INVT GD200A بالعربي</h3>
+                <h3>كتالوج INVT GD200A</h3>
                 <p class="summary-text">
-                    متوفر الآن نسخة PDF من دليل التشغيل السريع لإنفرتر INVT موديل GD200A شاملة أكواد الأعطال..
-                    <span class="more-content" id="post3">
-                        يمكنك تحميل الكتالوج مباشرة بالضغط على زر التحميل بالأسفل. الكتالوج يحتوي على شرح وافي لطريقة التوصيل (Wiring Diagram) وقائمة كاملة بالبارامترات الفنية.
+                    دليل المستخدم الكامل لإنفرتر INVT باللغة العربية، يحتوي على شرح كامل للأعطال والحلول..
+                    <span class="more-content" id="p3">
+                        يمكنك الآن تحميل الملف PDF وحفظه على موبايلك للرجوع إليه في موقع العمل بدون إنترنت.
                     </span>
                 </p>
-                <button class="read-more-btn" onclick="toggleText('post3', this)">اقرأ المزيد</button>
+                <button class="read-more-btn" onclick="togglePost('p3', this)">اقرأ المزيد</button>
                 <br>
-                <a href="manual_invt.pdf" style="display: inline-block; margin-top: 10px; color: #e67e22; text-decoration: none; font-weight: bold;">📥 تحميل الكتالوج (PDF)</a>
-            </div>
-            <div class="post-images" onclick="openLightbox(['catalog_thumb.jpg'])">
-                <div style="width: 100%; height: 150px; background: #34495e; display: flex; align-items: center; justify-content: center; color: white;">غلاف الكتالوج (اضغط للعرض)</div>
+                <a href="invt_manual.pdf" class="download-link">📥 تحميل كتالوج الـ PDF</a>
             </div>
         </div>
-
     </main>
 
-    <div id="lightbox" class="lightbox-modal">
-        <span class="close-btn" onclick="closeLightbox()">&times;</span>
+    <div id="gallery-box" class="lightbox-overlay">
+        <span class="close-lightbox" onclick="closeGallery()">&times;</span>
         <img id="lightbox-img" src="">
-        <div class="lightbox-nav">
-            <button onclick="changeImage(-1)">السابق</button>
-            <button onclick="changeImage(1)">التالي</button>
+        <div class="lightbox-controls">
+            <button onclick="prevImg()">السابق</button>
+            <button onclick="nextImg()">التالي</button>
         </div>
     </div>
 
-    <nav class="bottom-nav">
+    <div class="bottom-toolbar">
         <button onclick="location.reload()">تحديث</button>
-        <button onclick="alert('سيتم فتح صفحة السوق المخصصة')">السوق</button>
-        <button onclick="window.location.href='https://wa.me/201234567890'">دعم فني</button>
-    </nav>
+        <button onclick="alert('صفحة السوق ستظل بتصميمها الأصلي')">السوق</button>
+        <button onclick="window.location.href='https://wa.me/201234567890'">دعم واتس</button>
+    </div>
 
     <script>
-        function toggleText(id, btn) {
+        // وظيفة إظهار وإخفاء النص (اقرأ المزيد)
+        function togglePost(id, btn) {
             var content = document.getElementById(id);
             if (content.style.display === "inline") {
                 content.style.display = "none";
@@ -121,27 +321,35 @@
             }
         }
 
-        let images = [];
+        // وظائف الجاليري وعرض الصور
+        let currentImgs = [];
         let currentIndex = 0;
 
-        function openLightbox(imgArray) {
-            images = imgArray;
+        function openGallery(imgArray) {
+            currentImgs = imgArray;
             currentIndex = 0;
-            // للتجربة فقط: سنعرض اسم الصورة بما أن الملفات الحقيقية قد لا تكون موجودة عندك الآن
-            document.getElementById('lightbox-img').src = images[currentIndex];
-            document.getElementById('lightbox-img').alt = "صورة: " + images[currentIndex];
-            document.getElementById('lightbox').style.display = "flex";
+            showImg();
+            document.getElementById('gallery-box').style.display = "flex";
         }
 
-        function closeLightbox() {
-            document.getElementById('lightbox').style.display = "none";
+        function closeGallery() {
+            document.getElementById('gallery-box').style.display = "none";
         }
 
-        function changeImage(dir) {
-            currentIndex += dir;
-            if (currentIndex < 0) currentIndex = images.length - 1;
-            if (currentIndex >= images.length) currentIndex = 0;
-            document.getElementById('lightbox-img').src = images[currentIndex];
+        function showImg() {
+            // ملاحظة: بما أن الصور قد لا تكون موجودة حالياً، سنستخدم Placeholder للتجربة
+            // استبدل السطر التالي بـ: document.getElementById('lightbox-img').src = currentImgs[currentIndex];
+            document.getElementById('lightbox-img').src = "https://via.placeholder.com/800x600/333/fff?text=Photo+" + (currentIndex + 1);
+        }
+
+        function nextImg() {
+            currentIndex = (currentIndex + 1) % currentImgs.length;
+            showImg();
+        }
+
+        function prevImg() {
+            currentIndex = (currentIndex - 1 + currentImgs.length) % currentImgs.length;
+            showImg();
         }
     </script>
 </body>
