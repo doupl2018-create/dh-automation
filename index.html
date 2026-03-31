@@ -12,37 +12,46 @@
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
-        /* نظام المنشورات (مثل فيسبوك) */
+        /* --- نظام المنشورات (فيسبوك ستايل) --- */
         .post-card { background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
+        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
         .post-avatar { width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-        
-        .post-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 2px; background: #ddd; cursor: pointer; }
-        .post-gallery img { width: 100%; height: 200px; object-fit: cover; }
-        
+        .post-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #ddd; cursor: pointer; }
+        .post-gallery img { width: 100%; height: 120px; object-fit: cover; }
         .post-content { padding: 15px; }
         .post-text { font-size: 0.95rem; color: #333; line-height: 1.6; }
         .more-text { display: none; }
-        .read-more-btn { color: var(--primary-color); cursor: pointer; font-weight: bold; display: block; margin-top: 5px; }
+        .read-more-btn { color: var(--primary-color); cursor: pointer; font-weight: bold; }
 
-        /* تنسيق السوق والتصنيفات (بدون تغيير) */
-        .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; }
-        .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; font-family: 'Cairo'; }
-        .cat-btn.active-cat { background: var(--primary-color); color: white; }
-        .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-        .product-img { width: 60px; height: 60px; border-radius: 8px; margin-left: 15px; }
-        
-        /* شريط السعر والمنيو */
-        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; display: none; }
+        /* --- تنسيق السوق (كودك الأصلي) --- */
+        .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; }
+        .cat-btn.active-cat { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+        .product-img { width: 60px; height: 60px; border-radius: 8px; margin-left: 15px; border: 1px solid #eee; }
+        .product-info { flex: 1; }
+        .product-info h4 { margin: 0; font-size: 0.9rem; }
+        .product-info p { margin: 5px 0 0; color: var(--primary-color); font-weight: bold; }
+        .controls { display: flex; gap: 8px; align-items: center; margin-top: 5px; }
+        .qty-control { display: flex; align-items: center; gap: 5px; background: #f8f9fa; border-radius: 6px; padding: 4px 8px; border: 1px solid #ddd; }
+        .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; color: var(--primary-color); }
+        .add-btn { background: var(--success-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
+        .details-btn { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
+
+        /* --- شريط السعر والنافذة --- */
+        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; box-sizing: border-box; display: none; }
+        .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
         nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-item { text-align: center; font-size: 0.85rem; color: #666; cursor: pointer; flex: 1; }
         .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
+        .modal-content { background: white; margin: 40px auto; padding: 25px; border-radius: 20px; width: 85%; max-width: 450px; text-align: center; position: relative; }
 
-        /* نافذة عرض الصور الكبيرة (Lightbox) */
+        /* --- نافذة عرض الصور (Lightbox) --- */
         .lightbox { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
-        .lightbox img { max-width: 95%; max-height: 80%; border-radius: 5px; }
-        .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 35px; cursor: pointer; }
-        
+        .lightbox img { max-width: 90%; max-height: 80%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
         .page { display: none; }
         .page.active { display: block; }
     </style>
@@ -57,7 +66,7 @@
                 <div class="post-card" onclick="showPage('market', 'سوق مساعد المهندس', document.getElementById('nav-market'))" style="padding:20px; text-align:center; cursor:pointer;"><h3>🛒 سوق مساعد المهندس</h3></div>
                 <div class="post-card" onclick="showPage('solutions', 'الحلول الصناعية')" style="padding:20px; text-align:center; cursor:pointer;"><h3>🏭 الحلول الصناعية</h3></div>
                 <div class="post-card" onclick="showPage('automation', 'التحكم الآلي')" style="padding:20px; text-align:center; cursor:pointer;"><h3>🤖 التحكم الآلي</h3></div>
-                <div class="post-card" onclick="showPage('projects', 'مشاريعنا')" style="padding:20px; text-align:center; cursor:pointer;"><h3>⚙️ مشاريعنا</h3></div>
+                <div class="post-card" onclick="showPage('projects', 'مشاريعنا', document.getElementById('nav-projects'))" style="padding:20px; text-align:center; cursor:pointer;"><h3>⚙️ مشاريعنا</h3></div>
             </div>
         </div>
 
@@ -67,6 +76,7 @@
                 <button class="cat-btn" onclick="filterMarket('كارتات إلكترونية', this)">كارتات إلكترونية</button>
                 <button class="cat-btn" onclick="filterMarket('كلاسيك كنترول', this)">كلاسيك كنترول</button>
                 <button class="cat-btn" onclick="filterMarket('أجهزة', this)">أجهزة</button>
+                <button class="cat-btn" onclick="filterMarket('معدات صناعية', this)">معدات صناعية</button>
             </div>
             <div id="market-products"></div>
         </div>
@@ -77,11 +87,11 @@
     </div>
 
     <div id="cart-bar" class="floating-cart">
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <div class="cart-info" style="display:flex; justify-content:space-between; margin-bottom:8px;">
             <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
             <span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color)">تفريغ 🗑️</span>
         </div>
-        <button style="width:100%; background:var(--success-color); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; font-family:'Cairo';" onclick="checkoutWhatsApp()">إتمام الشراء ✅</button>
+        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">إتمام الشراء (واتساب) ✅</button>
     </div>
 
     <nav>
@@ -90,67 +100,72 @@
         <div id="nav-projects" class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️<br>المشاريع</div>
     </nav>
 
+    <div id="detailsModal" class="modal" onclick="closeModalOnEmpty(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span style="position:absolute; left:15px; top:10px; font-size:30px; cursor:pointer; color:#aaa;" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
     <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
-        <span class="lightbox-close">&times;</span>
         <img id="lightbox-img" src="">
     </div>
 
     <script>
-        // داتا المنشورات للتجربة
-        const postsData = {
-            solutions: [
-                { title: 'حلول ماكينات الحقن', text: 'بنقدملك حلول متكاملة لتطوير دوائر التحكم في ماكينات الحقن، وتوفير كارتات الـ LVDT وحساسات الـ NTC لضمان أعلى دقة في المشوار والحرارة. النظام بتاعنا بيخلي الماكينة تشتغل بسلاسة أكتر وبأقل أعطال ممكنة.', images: ['images/01 (1).jpg', 'images/01 (2).jpg', 'images/01 (3).jpg'] }
-            ],
-            automation: [
-                { title: 'أنظمة التحكم الآلي PLC', text: 'برمجة وتصميم لوحات تحكم كاملة باستخدام PLC و HMI. لو عايز تحول مصنعك لنظام أتوماتيك بالكامل، إحنا معاك من أول التصميم لحد التشغيل والمعايرة.', images: ['images/01 (4).jpg', 'images/01 (2).jpg', 'images/01 (1).jpg'] }
-            ],
-            projects: [
-                { title: 'مشروع تطوير لوحة كسر', text: 'تم بفضل الله الانتهاء من تحديث نظام التحكم لكسارة بلاستيك كبرى، وإضافة أنظمة حماية للمواتير وتحسين استهلاك الطاقة بنسبة 20%.', images: ['images/01 (3).jpg', 'images/01 (4).jpg', 'images/01 (2).jpg'] }
-            ]
-        };
-
+        // داتا المنتجات (السوق)
         const products = [
-            { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg' },
-            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg' }
+            { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق لماكينات الحقن.' },
+            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة.' }
         ];
+
+        // داتا المنشورات (باقي الصفحات)
+        const postsData = {
+            solutions: [{ title: 'الحلول الصناعية', text: 'بنقدم حلول ذكية لتطوير خطوط الإنتاج وماكينات البلاستيك باستخدام أحدث الحساسات والكارتات الإلكترونية. هدفنا تقليل الهالك وزيادة الإنتاجية.', images: ['images/01 (1).jpg', 'images/01 (2).jpg', 'images/01 (3).jpg'] }],
+            automation: [{ title: 'التحكم الآلي', text: 'تصميم وبرمجة لوحات PLC ودوائر الكلاسيك كنترول. بنهتم بكل تفصيلة في اللوحة لضمان سهولة الصيانة والأمان الكامل.', images: ['images/01 (4).jpg', 'images/01 (2).jpg', 'images/01 (1).jpg'] }],
+            projects: [{ title: 'مشاريعنا المنفذة', text: 'تم بفضل الله الانتهاء من تحديث نظام التحكم لإحدى الماكينات الكبرى، مع تركيب كارتات LVDT لمعايرة المسافات بدقة 0.01 مم.', images: ['images/01 (3).jpg', 'images/01 (4).jpg', 'images/01 (2).jpg'] }]
+        };
 
         let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
 
+        // --- وظائف السوق (كودك الأصلي تماماً) ---
+        function renderMarket(filter = 'الكل') {
+            const container = document.getElementById('market-products');
+            const filtered = filter === 'الكل' ? products : products.filter(p => p.cat === filter);
+            container.innerHTML = filtered.map(p => {
+                const cartItem = cart.find(i => i.id === p.id);
+                return `
+                <div class="product-row" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+                    <div style="display:flex; align-items:center;"><img src="${p.img}" class="product-img"><div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div></div>
+                    <div class="controls"><div class="qty-control"><button onclick="changeQty(this, 1)">+</button><span class="qty-val">${cartItem ? cartItem.qty : 1}</span><button onclick="changeQty(this, -1)">-</button></div>
+                    <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button><button class="add-btn" style="background: ${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" onclick="toggleCart(this)">${cartItem ? 'إلغاء' : 'إضافة'}</button></div>
+                </div>`;
+            }).join('');
+            updateTotal();
+        }
+
+        // --- وظيفة المنشورات ---
         function renderPosts(pageId) {
             const container = document.getElementById(pageId);
             const posts = postsData[pageId] || [];
             container.innerHTML = posts.map(post => `
                 <div class="post-card">
-                    <div class="post-header">
-                        <div class="post-avatar">DH</div>
-                        <div style="font-weight:bold;">${post.title}</div>
-                    </div>
-                    <div class="post-gallery">
-                        ${post.images.map(img => `<img src="${img}" onclick="openLightbox('${img}', event)">`).join('')}
-                    </div>
+                    <div class="post-header"><div class="post-avatar">DH</div><div><strong>${post.title}</strong></div></div>
+                    <div class="post-gallery">${post.images.map(img => `<img src="${img}" onclick="openLightbox('${img}')">`).join('')}</div>
                     <div class="post-content">
-                        <div class="post-text">
-                            ${post.text.substring(0, 80)}<span class="more-text" id="more-${post.title}">${post.text.substring(80)}</span>
-                            <span class="read-more-btn" onclick="toggleReadMore(this, 'more-${post.title}')">... المزيد</span>
-                        </div>
+                        <p class="post-text">${post.text.substring(0, 70)}<span class="more-text" id="m-${pageId}">${post.text.substring(70)}</span>
+                        <span class="read-more-btn" onclick="toggleText(this, 'm-${pageId}')">... المزيد</span></p>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
-        function toggleReadMore(btn, moreId) {
-            const moreText = document.getElementById(moreId);
-            if (moreText.style.display === "inline") {
-                moreText.style.display = "none";
-                btn.innerText = "... المزيد";
-            } else {
-                moreText.style.display = "inline";
-                btn.innerText = " عرض أقل";
-            }
+        function toggleText(btn, id) {
+            const span = document.getElementById(id);
+            const isOpen = span.style.display === "inline";
+            span.style.display = isOpen ? "none" : "inline";
+            btn.innerText = isOpen ? "... المزيد" : " عرض أقل";
         }
 
-        function openLightbox(src, event) {
-            event.stopPropagation();
+        function openLightbox(src) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').style.display = 'flex';
         }
@@ -166,43 +181,48 @@
             document.getElementById('cart-bar').style.display = (pageId === 'market') ? 'block' : 'none';
         }
 
-        // وظائف السوق (نفس الكود السابق)
-        function renderMarket(filter = 'الكل') {
-            const container = document.getElementById('market-products');
-            const filtered = filter === 'الكل' ? products : products.filter(p => p.cat === filter);
-            container.innerHTML = filtered.map(p => {
-                const item = cart.find(i => i.id === p.id);
-                return `
-                <div class="product-row" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
-                    <div style="display:flex; align-items:center;"><img src="${p.img}" class="product-img"><div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div></div>
-                    <button class="add-btn" style="background: ${item ? 'var(--danger-color)' : 'var(--success-color)'}; color:white; border:none; padding:8px 15px; border-radius:6px; font-family:'Cairo';" onclick="toggleCart(this)">${item ? 'إلغاء' : 'إضافة'}</button>
-                </div>`;
-            }).join('');
-            updateTotal();
+        // بقية وظائف الكارت والسوق (كما قدمتها أنت)
+        function saveCart() { localStorage.setItem('dh_cart', JSON.stringify(cart)); }
+        function changeQty(btn, delta) {
+            let row = btn.closest('.product-row');
+            let qtySpan = row.querySelector('.qty-val');
+            let currentQty = parseInt(qtySpan.innerText);
+            if (currentQty + delta >= 1) {
+                qtySpan.innerText = currentQty + delta;
+                let item = cart.find(i => i.id === row.getAttribute('data-id'));
+                if (item) { item.qty = currentQty + delta; saveCart(); updateTotal(); }
+            }
         }
-
-        function filterMarket(cat, btn) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
-            btn.classList.add('active-cat');
-            renderMarket(cat);
-        }
-
         function toggleCart(btn) {
             let row = btn.closest('.product-row');
             let id = row.getAttribute('data-id');
             if (btn.innerText === "إضافة") {
-                cart.push({ id, name: row.getAttribute('data-name'), price: parseInt(row.getAttribute('data-price')), qty: 1 });
+                cart.push({ id, name: row.getAttribute('data-name'), price: parseInt(row.getAttribute('data-price')), qty: parseInt(row.querySelector('.qty-val').innerText) });
                 btn.innerText = "إلغاء"; btn.style.background = "var(--danger-color)";
             } else {
                 cart = cart.filter(i => i.id !== id);
                 btn.innerText = "إضافة"; btn.style.background = "var(--success-color)";
             }
-            localStorage.setItem('dh_cart', JSON.stringify(cart));
-            updateTotal();
+            saveCart(); updateTotal();
         }
-
         function updateTotal() { document.getElementById('total-price').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0); }
         function clearCart() { cart = []; localStorage.removeItem('dh_cart'); renderMarket(); }
+        function filterMarket(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            btn.classList.add('active-cat');
+            renderMarket(cat);
+        }
+        function checkoutWhatsApp() {
+            let msg = "*طلب جديد من DH Automation*%0A%0A" + cart.map(i => `• ${i.name} (${i.qty})`).join("%0A");
+            window.open(`https://wa.me/201227091465?text=${msg}%0A%0A*الإجمالي: ${document.getElementById('total-price').innerText} ج.م*`, '_blank');
+        }
+        function showDetails(id) {
+            const p = products.find(item => item.id === id);
+            document.getElementById('modalBody').innerHTML = `<img src="${p.img}" style="width:100%; border-radius:12px;"><h3>${p.name}</h3><p>${p.desc}</p>`;
+            document.getElementById('detailsModal').style.display = "block";
+        }
+        function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
+        function closeModalOnEmpty(event) { if (event.target.id === "detailsModal") closeModal(); }
 
         renderMarket();
     </script>
