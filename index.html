@@ -12,7 +12,7 @@
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
-        /* تنسيق التصنيفات في السوق */
+        /* تنسيق التصنيفات */
         .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
         .categories-bar::-webkit-scrollbar { display: none; }
         .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; }
@@ -43,9 +43,10 @@
         .nav-item { text-align: center; font-size: 0.85rem; color: #666; cursor: pointer; flex: 1; }
         .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
 
+        /* نافذة التفاصيل */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); overflow-y: auto; }
-        .modal-content { background: white; margin: 40px auto; padding: 25px; border-radius: 20px; width: 85%; max-width: 450px; text-align: center; position: relative; }
-        .close-modal { position: absolute; left: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #aaa; }
+        .modal-content { background: white; margin: 40px auto; padding: 25px; border-radius: 20px; width: 85%; max-width: 450px; text-align: center; position: relative; pointer-events: auto; }
+        .close-modal { position: absolute; left: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #aaa; z-index: 2001; }
         
         .page { display: none; }
         .page.active { display: block; }
@@ -92,15 +93,17 @@
         <div id="nav-projects" class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️<br>المشاريع</div>
     </nav>
 
-    <div id="detailsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal()">&times;</span><div id="modalBody"></div></div></div>
+    <div id="detailsModal" class="modal" onclick="closeModalOnEmpty(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
 
     <script>
-        // داتا المنتجات مع إضافة "Category" لكل منتج
         const products = [
             { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق لماكينات الحقن.' },
-            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة.' },
-            { id: '3', cat: 'كلاسيك كنترول', name: 'كونتاكتور 9 أمبير', price: 450, img: 'images/01 (3).jpg', desc: 'كونتاكتور بجودة عالية للدوائر الصناعية.' },
-            { id: '4', cat: 'معدات صناعية', name: 'سخان ماكينة حقن', price: 800, img: 'images/01 (4).jpg', desc: 'سخان سيراميك شديد التحمل.' }
+            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة.' }
         ];
 
         let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
@@ -108,14 +111,12 @@
         function renderMarket(filter = 'الكل') {
             const container = document.getElementById('market-products');
             const filtered = filter === 'الكل' ? products : products.filter(p => p.cat === filter);
-            
             container.innerHTML = filtered.map(p => {
                 const cartItem = cart.find(i => i.id === p.id);
-                const qty = cartItem ? cartItem.qty : 1;
                 return `
                 <div class="product-row" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
                     <div style="display:flex; align-items:center;"><img src="${p.img}" class="product-img"><div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div></div>
-                    <div class="controls"><div class="qty-control"><button onclick="changeQty(this, 1)">+</button><span class="qty-val">${qty}</span><button onclick="changeQty(this, -1)">-</button></div>
+                    <div class="controls"><div class="qty-control"><button onclick="changeQty(this, 1)">+</button><span class="qty-val">${cartItem ? cartItem.qty : 1}</span><button onclick="changeQty(this, -1)">-</button></div>
                     <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button><button class="add-btn" style="background: ${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" onclick="toggleCart(this)">${cartItem ? 'إلغاء' : 'إضافة'}</button></div>
                 </div>`;
             }).join('');
@@ -162,11 +163,9 @@
             saveCart(); updateTotal();
         }
 
-        function updateTotal() {
-            document.getElementById('total-price').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-        }
-
+        function updateTotal() { document.getElementById('total-price').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0); }
         function clearCart() { cart = []; localStorage.removeItem('dh_cart'); renderMarket(); }
+        
         function checkoutWhatsApp() {
             let msg = "*طلب جديد من DH Automation*%0A%0A" + cart.map(i => `• ${i.name} (${i.qty})`).join("%0A");
             window.open(`https://wa.me/201227091465?text=${msg}%0A%0A*الإجمالي: ${document.getElementById('total-price').innerText} ج.م*`, '_blank');
@@ -176,9 +175,21 @@
             const p = products.find(item => item.id === id);
             document.getElementById('modalBody').innerHTML = `<img src="${p.img}" style="width:100%; border-radius:12px;"><h3>${p.name}</h3><p>${p.desc}</p>`;
             document.getElementById('detailsModal').style.display = "block";
+            document.body.style.overflow = "hidden";
         }
 
-        function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
+        function closeModal() { 
+            document.getElementById('detailsModal').style.display = "none"; 
+            document.body.style.overflow = "auto";
+        }
+
+        // الوظيفة اللي طلبتها: لو داس في الفراغ يقفل
+        function closeModalOnEmpty(event) {
+            if (event.target.id === "detailsModal") {
+                closeModal();
+            }
+        }
+
         renderMarket();
     </script>
 </body>
