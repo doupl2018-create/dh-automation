@@ -6,351 +6,138 @@
     <title>DH Automation - مساعد المهندس</title>
     
     <style>
-        /* --- قسم التنسيق CSS (كل حاجة هنا يا هندسة) --- */
+        /* --- التنسيق العام (CSS) --- */
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5; /* خلفية هادية زي الفيس */
+            margin: 0; padding: 0;
+            background-color: #f0f2f5;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             direction: rtl;
-            padding-bottom: 80px; /* عشان الأزرار اللي تحت متغطيش المحتوى */
+            padding-bottom: 80px;
         }
 
         .main-header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background-color: #2c3e50; color: white;
+            padding: 15px; text-align: center;
+            position: sticky; top: 0; z-index: 1000;
         }
 
-        .main-header h1 { margin: 0; font-size: 20px; }
-        .main-header p { margin: 5px 0 0; font-size: 14px; opacity: 0.8; }
-
-        /* تنسيق الكارت (المنشور) */
+        /* تنسيق المنشورات (رتم الفيسبوك) */
         .post-card {
-            background: white;
-            margin: 15px auto;
-            max-width: 550px;
-            border-radius: 10px;
+            background: white; margin: 15px auto;
+            max-width: 550px; border-radius: 10px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-            overflow: hidden;
-            border: 1px solid #ddd;
+            overflow: hidden; border: 1px solid #ddd;
         }
 
-        .post-header {
-            display: flex;
-            padding: 12px;
-            align-items: center;
-        }
+        .post-header { display: flex; padding: 12px; align-items: center; }
+        .user-logo { width: 45px; height: 45px; border-radius: 50%; margin-left: 12px; background: #3498db; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .post-text { padding: 5px 15px 15px; }
+        .more-content { display: none; }
+        .read-more-btn { background: none; border: none; color: #1877f2; font-weight: 600; cursor: pointer; }
 
-        .user-logo {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            margin-left: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
+        /* تنسيق صفحة السوق (اللي انت بعته) */
+        .product-row {
+            display: flex; align-items: center;
+            background: white; margin: 10px;
+            padding: 10px; border-radius: 8px;
+            border-bottom: 1px solid #eee;
         }
-
-        .post-info .username {
-            display: block;
-            font-weight: bold;
-            font-size: 15px;
-            color: #1c1e21;
-        }
-
-        .post-info .post-time {
-            font-size: 12px;
-            color: #65676b;
-        }
-
-        .post-text {
-            padding: 5px 15px 15px;
-        }
-
-        .post-text h3 {
-            margin: 5px 0 10px 0;
-            color: #050505;
-            font-size: 17px;
-        }
-
-        .summary-text {
-            font-size: 15px;
-            line-height: 1.5;
-            color: #1c1e21;
-        }
-
-        .more-content {
-            display: none; /* مخفي في البداية */
-        }
-
-        .read-more-btn {
-            background: none;
-            border: none;
-            color: #1877f2;
-            padding: 5px 0;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* تنسيق منطقة الصور */
-        .post-images-container {
-            position: relative;
-            cursor: pointer;
-            background: #eee;
-            width: 100%;
-            min-height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .post-images-container img {
-            width: 100%;
-            display: block;
-            max-height: 450px;
-            object-fit: cover;
-        }
-
-        .image-overlay-count {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 13px;
-        }
-
-        /* نافذة عرض الصور (Lightbox) */
-        .lightbox-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 2000;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #lightbox-img {
-            max-width: 95%;
-            max-height: 75%;
-            border-radius: 4px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        .close-lightbox {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 35px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .lightbox-controls {
-            margin-top: 25px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .lightbox-controls button {
-            background: #444;
-            border: none;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; margin-left: 15px; }
+        .product-info h4 { margin: 0; color: #333; }
+        .product-info p { margin: 5px 0 0; color: #27ae60; font-weight: bold; }
 
         /* الأزرار السفلية (البرنس) */
         .bottom-toolbar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid #ddd;
-            z-index: 1000;
+            position: fixed; bottom: 0; width: 100%;
+            background: white; display: flex;
+            justify-content: space-around; padding: 12px 0;
+            border-top: 1px solid #ddd; z-index: 1000;
         }
-
         .bottom-toolbar button {
-            background: #e4e6eb;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            color: #050505;
-            flex: 0.3;
-            margin: 0 5px;
+            background: #e4e6eb; border: none;
+            padding: 10px 20px; border-radius: 8px;
+            font-weight: bold; color: #050505; flex: 0.3; margin: 0 5px;
         }
-
-        .download-link {
-            display: inline-block;
-            margin-top: 10px;
-            background: #fdf0e0;
-            color: #d35400;
-            padding: 8px 12px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            border: 1px dashed #d35400;
-        }
+        .active-btn { background: #1877f2 !important; color: white !important; }
     </style>
 </head>
 <body>
 
     <header class="main-header">
-        <h1>DH Automation</h1>
-        <p>مساعد المهندس - نسخة الاختبار</p>
+        <h1 id="page-title">DH Automation</h1>
     </header>
 
-    <main>
-        <div class="post-card">
-            <div class="post-header">
-                <div class="user-logo" style="background: #e67e22;">ص</div>
-                <div class="post-info">
-                    <span class="username">قسم صيانة الكروت الإلكترونية</span>
-                    <span class="post-time">الآن</span>
-                </div>
-            </div>
-            <div class="post-text">
-                <h3>صيانة كارت LVDT</h3>
-                <p class="summary-text">
-                    تم الانتهاء من فحص دائرة التغذية لكارت LVDT وتغيير العناصر التالفة لضمان استقرار الإشارة..
-                    <span class="more-content" id="p1">
-                        تمت معايرة الدخل والخرج والتأكد من توافق القيم مع الحساس الملحق. الكارت جاهز الآن للتركيب والعمل بكفاءة.
-                    </span>
-                </p>
-                <button class="read-more-btn" onclick="togglePost('p1', this)">اقرأ المزيد</button>
-            </div>
-            <div class="post-images-container" onclick="openGallery(['img_lvdt_1.jpg', 'img_lvdt_2.jpg'])">
-                <img src="https://via.placeholder.com/600x300/e67e22/ffffff?text=LVDT+Card+Photo" alt="صورة الكارت">
-                <div class="image-overlay-count">+2 صور</div>
-            </div>
-        </div>
-
-        <div class="post-card">
-            <div class="post-header">
-                <div class="user-logo" style="background: #27ae60;">ب</div>
-                <div class="post-info">
-                    <span class="username">قسم البرمجة والأتمتة</span>
-                    <span class="post-time">منذ ساعة</span>
-                </div>
-            </div>
-            <div class="post-text">
-                <h3>برمجة انفرتر Sunch (SAVCH)</h3>
-                <p class="summary-text">
-                    أهم إعدادات التشغيل الخارجي وضبط التردد الأقصى لحماية الموتور من السخونة الزائدة..
-                    <span class="more-content" id="p2">
-                        برجاء مراجعة البارامتر P0.01 ليكون (1) للتشغيل من الأزرار الخارجية، والبارامتر P0.03 لضبط التردد على 50 هرتز.
-                    </span>
-                </p>
-                <button class="read-more-btn" onclick="togglePost('p2', this)">اقرأ المزيد</button>
-            </div>
-            <div class="post-images-container" onclick="openGallery(['sunch_1.jpg', 'sunch_2.jpg', 'sunch_3.jpg'])">
-                <img src="https://via.placeholder.com/600x300/27ae60/ffffff?text=Sunch+Inverter+Programming" alt="برمجة الانفرتر">
-                <div class="image-overlay-count">+3 صور</div>
-            </div>
-        </div>
-
-        <div class="post-card">
-            <div class="post-header">
-                <div class="user-logo" style="background: #2980b9;">ك</div>
-                <div class="post-info">
-                    <span class="username">مركز الكتالوجات الفنية</span>
-                    <span class="post-time">أمس</span>
-                </div>
-            </div>
-            <div class="post-text">
-                <h3>كتالوج INVT GD200A</h3>
-                <p class="summary-text">
-                    دليل المستخدم الكامل لإنفرتر INVT باللغة العربية، يحتوي على شرح كامل للأعطال والحلول..
-                    <span class="more-content" id="p3">
-                        يمكنك الآن تحميل الملف PDF وحفظه على موبايلك للرجوع إليه في موقع العمل بدون إنترنت.
-                    </span>
-                </p>
-                <button class="read-more-btn" onclick="togglePost('p3', this)">اقرأ المزيد</button>
-                <br>
-                <a href="invt_manual.pdf" class="download-link">📥 تحميل كتالوج الـ PDF</a>
-            </div>
-        </div>
-    </main>
-
-    <div id="gallery-box" class="lightbox-overlay">
-        <span class="close-lightbox" onclick="closeGallery()">&times;</span>
-        <img id="lightbox-img" src="">
-        <div class="lightbox-controls">
-            <button onclick="prevImg()">السابق</button>
-            <button onclick="nextImg()">التالي</button>
-        </div>
-    </div>
+    <main id="content-area">
+        </main>
 
     <div class="bottom-toolbar">
-        <button onclick="location.reload()">تحديث</button>
-        <button onclick="alert('صفحة السوق ستظل بتصميمها الأصلي')">السوق</button>
+        <button id="btn-home" onclick="showPosts()" class="active-btn">الرئيسية</button>
+        <button id="btn-market" onclick="renderMarket()">السوق</button>
         <button onclick="window.location.href='https://wa.me/201234567890'">دعم واتس</button>
     </div>
 
     <script>
-        // وظيفة إظهار وإخفاء النص (اقرأ المزيد)
-        function togglePost(id, btn) {
-            var content = document.getElementById(id);
-            if (content.style.display === "inline") {
-                content.style.display = "none";
+        // داتا السوق (بتاعتك يا هندسة)
+        const products = [
+            { id: 1, name: 'حساس NTC', price: 150, img: 'images/01.jpg' },
+            { id: 2, name: 'انفرتر Sunch 5HP', price: 4500, img: 'images/02.jpg' },
+            { id: 3, name: 'كارت LVDT معدل', price: 1200, img: 'images/03.jpg' }
+        ];
+
+        // وظيفة عرض المنشورات (رتم الفيسبوك)
+        function showPosts() {
+            document.getElementById('page-title').innerText = "المنشورات الفنية";
+            document.getElementById('btn-home').classList.add('active-btn');
+            document.getElementById('btn-market').classList.remove('active-btn');
+            
+            const content = `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="user-logo">ص</div>
+                        <div class="post-info"><span class="username">قسم الصيانة</span><span class="post-time">الآن</span></div>
+                    </div>
+                    <div class="post-text">
+                        <h3>صيانة كارت LVDT</h3>
+                        <p class="summary">تم فحص الكارت وتجربته بنجاح.. <span id="m1" class="more-content">تم تغيير المكثفات وضبط دائرة التغذية.</span></p>
+                        <button class="read-more-btn" onclick="toggleText('m1', this)">اقرأ المزيد</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('content-area').innerHTML = content;
+        }
+
+        // وظيفة عرض السوق (اللي انت بعتها مع تعديل الربط)
+        function renderMarket() {
+            document.getElementById('page-title').innerText = "متجر المهندس";
+            document.getElementById('btn-market').classList.add('active-btn');
+            document.getElementById('btn-home').classList.remove('active-btn');
+
+            const marketDiv = document.getElementById('content-area');
+            marketDiv.innerHTML = products.map(p => `
+                <div class="product-row" data-id="${p.id}">
+                    <img src="${p.img}" class="product-img">
+                    <div class="product-info">
+                        <h4>${p.name}</h4>
+                        <p>${p.price} ج.م</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // وظيفة اقرأ المزيد
+        function toggleText(id, btn) {
+            const el = document.getElementById(id);
+            if (el.style.display === "inline") {
+                el.style.display = "none";
                 btn.innerText = "اقرأ المزيد";
             } else {
-                content.style.display = "inline";
+                el.style.display = "inline";
                 btn.innerText = "عرض أقل";
             }
         }
 
-        // وظائف الجاليري وعرض الصور
-        let currentImgs = [];
-        let currentIndex = 0;
-
-        function openGallery(imgArray) {
-            currentImgs = imgArray;
-            currentIndex = 0;
-            showImg();
-            document.getElementById('gallery-box').style.display = "flex";
-        }
-
-        function closeGallery() {
-            document.getElementById('gallery-box').style.display = "none";
-        }
-
-        function showImg() {
-            // ملاحظة: بما أن الصور قد لا تكون موجودة حالياً، سنستخدم Placeholder للتجربة
-            // استبدل السطر التالي بـ: document.getElementById('lightbox-img').src = currentImgs[currentIndex];
-            document.getElementById('lightbox-img').src = "https://via.placeholder.com/800x600/333/fff?text=Photo+" + (currentIndex + 1);
-        }
-
-        function nextImg() {
-            currentIndex = (currentIndex + 1) % currentImgs.length;
-            showImg();
-        }
-
-        function prevImg() {
-            currentIndex = (currentIndex - 1 + currentImgs.length) % currentImgs.length;
-            showImg();
-        }
+        // تشغيل المنشورات أول ما الصفحة تحمل
+        window.onload = showPosts;
     </script>
 </body>
 </html>
