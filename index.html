@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DH Automation</title>
+    
+    <link rel="icon" type="image/jpeg" href="images/Icon-page.jpg">
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -72,6 +75,15 @@
             transform: scale(0.98);
         }
 
+        /* تنسيق الصور جوه الكروت عشان تطلع شيك */
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
         /* شريط التنقل السفلي (Bottom Nav) - أهم جزء لإحساس الموبايل */
         nav {
             position: fixed;
@@ -98,7 +110,7 @@
             font-weight: bold;
         }
 
-        .nav-item i {
+        .nav-item span.icon {
             display: block;
             font-size: 1.5rem;
             margin-bottom: 2px;
@@ -118,7 +130,10 @@
 
     <div id="projects" class="page">
         <h2>تطوير تقنيات الحقن</h2>
-        <div class="card">مشاريع تعديل ماكينات البلاستيك وصيانتها...</div>
+        <div class="card">
+            <h3>حلول الأتمتة والصيانة</h3>
+            <p>مشاريع تعديل ماكينات البلاستيك وصيانتها... يمكنك إضافة صور المشاريع هنا.</p>
+        </div>
     </div>
 
     <div id="info" class="page">
@@ -134,19 +149,19 @@
 
 <nav>
     <div class="nav-item active-nav" onclick="showPage('market', 'سوق مساعد المهندس', this)">
-        <span>🛒</span><br>السوق
+        <span class="icon">🛒</span>السوق
     </div>
     <div class="nav-item" onclick="showPage('projects', 'تطوير التقنيات', this)">
-        <span>⚙️</span><br>المشاريع
+        <span class="icon">⚙️</span>المشاريع
     </div>
     <div class="nav-item" onclick="showPage('info', 'المعلومات', this)">
-        <span>📚</span><br>المعلومات
+        <span class="icon">📚</span>المعلومات
     </div>
     <div class="nav-item" onclick="showPage('support', 'الدعم', this)">
-        <span>🛠️</span><br>الدعم
+        <span class="icon">🛠️</span>الدعم
     </div>
     <div class="nav-item" onclick="openWhatsApp()">
-        <span>💬</span><br>دردشة
+        <span class="icon">💬</span>دردشة
     </div>
 </nav>
 
@@ -166,22 +181,12 @@
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => item.classList.remove('active-nav'));
         element.classList.add('active-nav');
-
-        // اهتزاز خفيف (Haptic Feedback) لو الاندرويد بيدعمه
-        if (window.navigator.vibrate) {
-            window.navigator.vibrate(50);
-        }
     }
 
     function openWhatsApp() {
-        // حط رقمك هنا مكان الرقم ده
-        window.location.href = "https://wa.me/201114394767";
+        // حط رقمك هنا مكان الرقم الافتراضي ده
+        window.location.href = "https://wa.me/201234567890";
     }
-
-    // التعامل مع زرار الرجوع في الاندرويد
-    window.onpopstate = function() {
-        // يمكنك إضافة منطق هنا للرجوع للصفحة الرئيسية بدل الخروج من التطبيق
-    };
 </script>
 
 </body>
