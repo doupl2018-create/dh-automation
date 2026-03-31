@@ -4,9 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DH Automation</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="images/Icon-page.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 1. التنسيق (CSS) */
+        :root { --primary-color: #1a73e8; --bg-color: #f0f2f5; --success-color: #28a745; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; direction: rtl; }
+        
+        header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
+        
+        .container { padding: 70px 15px 220px 15px; } /* مساحة عشان الزراير اللي تحت */
+
+        .product-row { background: white; padding: 12px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; flex-wrap: wrap; }
+        .product-img { width: 60px; height: 60px; border-radius: 8px; margin-left: 15px; }
+        .product-info { flex: 1; min-width: 120px; }
+        .product-info h4 { margin: 0; font-size: 0.9rem; }
+        .product-info p { margin: 5px 0 0; color: var(--primary-color); font-weight: bold; }
+
+        .controls { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+        .qty-control { display: flex; align-items: center; gap: 8px; background: #eee; border-radius: 5px; padding: 4px 8px; }
+        .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; padding: 0 5px; }
+
+        .add-btn { background: var(--success-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
+        .details-btn { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
+
+        /* شريط السعر والواتساب */
+        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; box-sizing: border-box; }
+        .cart-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
+
+        /* المنيو السفلي */
+        nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
+        .nav-item { text-align: center; font-size: 0.8rem; color: #666; cursor: pointer; }
+        .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
+
+        /* النافذة المنبثقة (حل مشكلة الاسكرول) */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); overflow-y: auto; }
+        .modal-content { background: white; margin: 40px auto; padding: 20px; border-radius: 15px; width: 85%; max-width: 450px; text-align: center; position: relative; }
+        .close-modal { position: absolute; left: 15px; top: 10px; font-size: 25px; cursor: pointer; color: #888; }
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
 </head>
 <body>
 
@@ -14,7 +52,6 @@
 
     <div class="container">
         <div id="market" class="page active">
-            
             <div class="product-row" data-id="1" data-name="حساس NTC" data-price="150">
                 <img src="images/01 (1).jpg" class="product-img">
                 <div class="product-info">
@@ -31,42 +68,19 @@
                     <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
                 </div>
             </div>
-
-            <div class="product-row" data-id="2" data-name="كارت LVDT" data-price="1200">
-                <img src="images/01 (2).jpg" class="product-img">
-                <div class="product-info">
-                    <h4>كارت تحكم LVDT</h4>
-                    <p>1200 ج.م</p>
-                </div>
-                <div class="controls">
-                    <div class="qty-control">
-                        <button onclick="changeQty(this, 1)">+</button>
-                        <span class="qty-val">1</span>
-                        <button onclick="changeQty(this, -1)">-</button>
-                    </div>
-                    <button class="details-btn" onclick="showDetails('2')">تفاصيل</button>
-                    <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
-                </div>
             </div>
-
-        </div>
 
         <div id="projects" class="page">
-            <div class="card">
-                <h2>تطوير تقنيات الحقن</h2>
-                <p>محتوى مشاريعك الهندسية هيظهر هنا يا هندسة.</p>
-            </div>
+            <h2 style="text-align:center;">تطوير تقنيات الحقن</h2>
         </div>
     </div>
 
     <div class="floating-cart">
         <div class="cart-info">
             <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
-            <span class="clear-cart" onclick="clearCart()">تفريغ 🗑️</span>
+            <span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color)">تفريغ 🗑️</span>
         </div>
-        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">
-            إتمام الشراء (واتساب) ✅
-        </button>
+        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">إتمام الشراء (واتساب) ✅</button>
     </div>
 
     <nav>
@@ -77,10 +91,74 @@
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
-            <div id="modalBody" class="modal-body"></div>
+            <div id="modalBody"></div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // 2. البرمجة (JavaScript)
+        let cart = [];
+        const productsData = {
+            '1': { title: 'حساس حرارة NTC', description: 'حساس عالي الدقة يتحمل الحرارة العالية، مثالي لماكينات الحقن وسريع الاستجابة.', image: 'images/01 (1).jpg' }
+        };
+
+        function showPage(pageId, title, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.getElementById('header-title').innerText = title;
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
+            element.classList.add('active-nav');
+        }
+
+        function changeQty(btn, delta) {
+            let row = btn.closest('.product-row');
+            let qtySpan = row.querySelector('.qty-val');
+            let currentQty = parseInt(qtySpan.innerText);
+            if (currentQty + delta >= 1) {
+                qtySpan.innerText = currentQty + delta;
+                let id = row.getAttribute('data-id');
+                let item = cart.find(i => i.id === id);
+                if (item) { item.qty = currentQty + delta; updateTotal(); }
+            }
+        }
+
+        function toggleCart(btn) {
+            let row = btn.closest('.product-row');
+            let id = row.getAttribute('data-id');
+            if (btn.innerText === "إضافة") {
+                cart.push({ id, name: row.getAttribute('data-name'), price: parseInt(row.getAttribute('data-price')), qty: parseInt(row.querySelector('.qty-val').innerText) });
+                btn.innerText = "إلغاء"; btn.style.background = "#dc3545";
+            } else {
+                cart = cart.filter(i => i.id !== id);
+                btn.innerText = "إضافة"; btn.style.background = "var(--success-color)";
+            }
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            document.getElementById('total-price').innerText = total;
+        }
+
+        function clearCart() {
+            cart = []; updateTotal();
+            document.querySelectorAll('.add-btn').forEach(b => { b.innerText = "إضافة"; b.style.background = "var(--success-color)"; });
+        }
+
+        function checkoutWhatsApp() {
+            if (cart.length === 0) return alert("السلة فاضية!");
+            let msg = "طلب جديد:%0A" + cart.map(i => `- ${i.name} (${i.qty} قطعة)`).join("%0A");
+            window.open(`https://wa.me/201227091465?text=${msg}%0Aالإجمالي: ${document.getElementById('total-price').innerText} ج.م`, '_blank');
+        }
+
+        function showDetails(id) {
+            const p = productsData[id];
+            document.getElementById('modalBody').innerHTML = `<img src="${p.image}" style="width:100%; border-radius:10px;"><h3>${p.title}</h3><p>${p.description}</p>`;
+            document.getElementById('detailsModal').style.display = "block";
+        }
+
+        function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
+        window.onclick = function(e) { if (e.target.className === 'modal') closeModal(); }
+    </script>
 </body>
 </html>
