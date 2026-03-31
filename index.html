@@ -12,20 +12,23 @@
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
-        /* --- نظام المنشورات (فيسبوك ستايل) --- */
+        /* --- نظام المنشورات مع سحب الصور --- */
         .post-card { background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
         .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
         .post-avatar { width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-        .post-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #ddd; cursor: pointer; }
-        .post-gallery img { width: 100%; height: 120px; object-fit: cover; }
+        
+        /* ميزة السحب (Slider) */
+        .post-gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; background: #000; }
+        .post-gallery::-webkit-scrollbar { display: none; }
+        .post-gallery img { width: 100%; flex-shrink: 0; height: 250px; object-fit: contain; scroll-snap-align: start; cursor: pointer; }
+        
         .post-content { padding: 15px; }
-        .post-text { font-size: 0.95rem; color: #333; line-height: 1.6; }
+        .post-text { font-size: 0.95rem; color: #333; line-height: 1.6; margin: 0; }
         .more-text { display: none; }
-        .read-more-btn { color: var(--primary-color); cursor: pointer; font-weight: bold; }
+        .read-more-btn { color: var(--primary-color); cursor: pointer; font-weight: bold; display: inline-block; margin-top: 5px; }
 
-        /* --- تنسيق السوق (كودك الأصلي) --- */
+        /* --- تنسيق السوق (المعتمد) --- */
         .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
-        .categories-bar::-webkit-scrollbar { display: none; }
         .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; }
         .cat-btn.active-cat { background: var(--primary-color); color: white; border-color: var(--primary-color); }
         .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
@@ -39,7 +42,7 @@
         .add-btn { background: var(--success-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
         .details-btn { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
 
-        /* --- شريط السعر والنافذة --- */
+        /* --- الأجزاء العائمة --- */
         .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; box-sizing: border-box; display: none; }
         .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
         nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
@@ -47,10 +50,8 @@
         .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
         .modal-content { background: white; margin: 40px auto; padding: 25px; border-radius: 20px; width: 85%; max-width: 450px; text-align: center; position: relative; }
-
-        /* --- نافذة عرض الصور (Lightbox) --- */
         .lightbox { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
-        .lightbox img { max-width: 90%; max-height: 80%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .lightbox img { max-width: 95%; max-height: 80%; border-radius: 8px; }
 
         .page { display: none; }
         .page.active { display: block; }
@@ -74,9 +75,7 @@
             <div class="categories-bar">
                 <button class="cat-btn active-cat" onclick="filterMarket('الكل', this)">الكل</button>
                 <button class="cat-btn" onclick="filterMarket('كارتات إلكترونية', this)">كارتات إلكترونية</button>
-                <button class="cat-btn" onclick="filterMarket('كلاسيك كنترول', this)">كلاسيك كنترول</button>
                 <button class="cat-btn" onclick="filterMarket('أجهزة', this)">أجهزة</button>
-                <button class="cat-btn" onclick="filterMarket('معدات صناعية', this)">معدات صناعية</button>
             </div>
             <div id="market-products"></div>
         </div>
@@ -87,7 +86,7 @@
     </div>
 
     <div id="cart-bar" class="floating-cart">
-        <div class="cart-info" style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
             <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
             <span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color)">تفريغ 🗑️</span>
         </div>
@@ -112,13 +111,13 @@
     </div>
 
     <script>
-        // داتا المنتجات (السوق)
+        const APP_VERSION = "1.2"; // غير الرقم ده لما تنزل تحديث
+
         const products = [
             { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق لماكينات الحقن.' },
             { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة.' }
         ];
 
-        // داتا المنشورات (باقي الصفحات)
         const postsData = {
             solutions: [{ title: 'الحلول الصناعية', text: 'بنقدم حلول ذكية لتطوير خطوط الإنتاج وماكينات البلاستيك باستخدام أحدث الحساسات والكارتات الإلكترونية. هدفنا تقليل الهالك وزيادة الإنتاجية.', images: ['images/01 (1).jpg', 'images/01 (2).jpg', 'images/01 (3).jpg'] }],
             automation: [{ title: 'التحكم الآلي', text: 'تصميم وبرمجة لوحات PLC ودوائر الكلاسيك كنترول. بنهتم بكل تفصيلة في اللوحة لضمان سهولة الصيانة والأمان الكامل.', images: ['images/01 (4).jpg', 'images/01 (2).jpg', 'images/01 (1).jpg'] }],
@@ -127,7 +126,14 @@
 
         let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
 
-        // --- وظائف السوق (كودك الأصلي تماماً) ---
+        function smartRefresh() {
+            const savedVersion = localStorage.getItem('app_version');
+            if (savedVersion !== APP_VERSION) {
+                localStorage.setItem('app_version', APP_VERSION);
+                window.location.reload(true);
+            }
+        }
+
         function renderMarket(filter = 'الكل') {
             const container = document.getElementById('market-products');
             const filtered = filter === 'الكل' ? products : products.filter(p => p.cat === filter);
@@ -136,21 +142,25 @@
                 return `
                 <div class="product-row" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
                     <div style="display:flex; align-items:center;"><img src="${p.img}" class="product-img"><div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div></div>
-                    <div class="controls"><div class="qty-control"><button onclick="changeQty(this, 1)">+</button><span class="qty-val">${cartItem ? cartItem.qty : 1}</span><button onclick="changeQty(this, -1)">-</button></div>
-                    <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button><button class="add-btn" style="background: ${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" onclick="toggleCart(this)">${cartItem ? 'إلغاء' : 'إضافة'}</button></div>
+                    <div class="controls">
+                        <div class="qty-control"><button onclick="changeQty(this, 1)">+</button><span class="qty-val">${cartItem ? cartItem.qty : 1}</span><button onclick="changeQty(this, -1)">-</button></div>
+                        <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button>
+                        <button class="add-btn" style="background: ${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" onclick="toggleCart(this)">${cartItem ? 'إلغاء' : 'إضافة'}</button>
+                    </div>
                 </div>`;
             }).join('');
             updateTotal();
         }
 
-        // --- وظيفة المنشورات ---
         function renderPosts(pageId) {
             const container = document.getElementById(pageId);
             const posts = postsData[pageId] || [];
             container.innerHTML = posts.map(post => `
                 <div class="post-card">
                     <div class="post-header"><div class="post-avatar">DH</div><div><strong>${post.title}</strong></div></div>
-                    <div class="post-gallery">${post.images.map(img => `<img src="${img}" onclick="openLightbox('${img}')">`).join('')}</div>
+                    <div class="post-gallery">
+                        ${post.images.map(img => `<img src="${img}" onclick="openLightbox('${img}')">`).join('')}
+                    </div>
                     <div class="post-content">
                         <p class="post-text">${post.text.substring(0, 70)}<span class="more-text" id="m-${pageId}">${post.text.substring(70)}</span>
                         <span class="read-more-btn" onclick="toggleText(this, 'm-${pageId}')">... المزيد</span></p>
@@ -176,13 +186,10 @@
             document.getElementById('header-title').innerText = title;
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
             if(element) element.classList.add('active-nav');
-            
             if(['solutions', 'automation', 'projects'].includes(pageId)) renderPosts(pageId);
             document.getElementById('cart-bar').style.display = (pageId === 'market') ? 'block' : 'none';
         }
 
-        // بقية وظائف الكارت والسوق (كما قدمتها أنت)
-        function saveCart() { localStorage.setItem('dh_cart', JSON.stringify(cart)); }
         function changeQty(btn, delta) {
             let row = btn.closest('.product-row');
             let qtySpan = row.querySelector('.qty-val');
@@ -193,6 +200,7 @@
                 if (item) { item.qty = currentQty + delta; saveCart(); updateTotal(); }
             }
         }
+
         function toggleCart(btn) {
             let row = btn.closest('.product-row');
             let id = row.getAttribute('data-id');
@@ -205,6 +213,8 @@
             }
             saveCart(); updateTotal();
         }
+
+        function saveCart() { localStorage.setItem('dh_cart', JSON.stringify(cart)); }
         function updateTotal() { document.getElementById('total-price').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0); }
         function clearCart() { cart = []; localStorage.removeItem('dh_cart'); renderMarket(); }
         function filterMarket(cat, btn) {
@@ -224,7 +234,10 @@
         function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
         function closeModalOnEmpty(event) { if (event.target.id === "detailsModal") closeModal(); }
 
-        renderMarket();
+        window.onload = () => {
+            smartRefresh();
+            renderMarket();
+        };
     </script>
 </body>
 </html>
