@@ -3,174 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DH Automation | مساعد المهندس</title>
+    <title>DH.Automation | متجر مساعد المهندس</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #e67e22;
-            --light: #ecf0f1;
-            --dark: #1a252f;
+            --header-bg: #1a1a1a;
+            --main-blue: #0056b3;
+            --green-btn: #28a745;
+            --red-btn: #dc3545;
+            --bg-light: #f4f4f4;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
-            background-color: var(--light);
-            color: var(--dark);
+            background-color: var(--bg-light);
         }
 
-        /* شريط التنقل */
-        nav {
-            background: var(--primary);
+        /* الهيدر الأسود العلوي */
+        header {
+            background: var(--header-bg);
             color: white;
-            padding: 1rem 2rem;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        nav .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+        .nav-links { display: flex; gap: 15px; }
+        .nav-links a { color: white; text-decoration: none; font-size: 14px; cursor: pointer; }
 
-        nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; }
-
-        nav ul li a {
+        /* حاوية السلة */
+        .cart-container {
+            background: var(--main-blue);
+            margin: 15px;
+            padding: 15px;
+            border-radius: 10px;
             color: white;
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        nav ul li a:hover { color: var(--accent); }
+        .cart-btns { display: flex; gap: 5px; }
+        .btn-sm { border: none; padding: 5px 10px; border-radius: 5px; color: white; cursor: pointer; }
 
-        /* الأقسام */
-        .page-section {
-            display: none;
-            padding: 40px 20px;
-            max-width: 1200px;
-            margin: auto;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* الكروت */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
+        /* عنوان القسم */
+        .category-title {
+            background: #007bff;
+            color: white;
+            margin: 10px 15px;
+            padding: 10px;
             border-radius: 8px;
-            border-right: 5px solid var(--accent);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            font-weight: bold;
         }
 
-        .btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
+        /* كارت المنتج */
+        .product-card {
+            background: white;
+            margin: 10px 15px;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        h1 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .product-info { flex: 1; text-align: right; }
+        .product-info h3 { margin: 0 0 5px 0; font-size: 16px; color: #333; }
+        .price { color: var(--green-btn); font-weight: bold; margin: 5px 0; }
+        .details-tag { background: #17a2b8; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+
+        .product-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; margin-right: 10px; }
+
+        /* أزرار التحكم */
+        .controls { display: flex; align-items: center; gap: 5px; margin-top: 10px; }
+        .qty-input { width: 30px; text-align: center; border: 1px solid #ccc; }
+        .btn-plus-minus { background: #eee; border: 1px solid #ccc; width: 25px; height: 25px; cursor: pointer; }
+        .btn-add { background: var(--green-btn); color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+
+        /* إخفاء الأقسام */
+        .page-content { display: none; }
+        .active { display: block; }
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="logo">DH Automation</div>
-    <ul>
-        <li><a onclick="showSection('home')">الرئيسية</a></li>
-        <li><a onclick="showSection('market')">سوق مساعد المهندس</a></li>
-        <li><a onclick="showSection('services')">خدماتنا</a></li>
-        <li><a onclick="showSection('projects')">أعمالنا</a></li>
-    </ul>
-</nav>
-
-<section id="home" class="page-section active">
-    <h1>مرحباً بك في DH Automation</h1>
-    <p>نحن متخصصون في الحلول الهندسية المتكاملة، البرمجة الصناعية، وتوفير قطع الغيار النادرة.</p>
-    <div class="grid">
-        <div class="card">
-            <h3>أحدث الأجهزة</h3>
-            <p>تحقق من توفر الـ Inverters وقطع تحكم الـ LVDT في السوق.</p>
-            <button class="btn" onclick="showSection('market')">دخول السوق</button>
-        </div>
+<header>
+    <div style="font-size: 20px;">🔍</div>
+    <div style="font-weight: bold;">DH.Automation</div>
+    <div class="nav-links">
+        <a onclick="showPage('market')">المتجر</a>
+        <a onclick="showPage('services')">خدماتنا</a>
     </div>
-</section>
+</header>
 
-<section id="market" class="page-section">
-    <h1>سوق مساعد المهندس</h1>
-    <p>البحث في الكتالوجات (Sunch, Invt, إلخ...)</p>
-    <input type="text" placeholder="ابحث عن بارامتر أو موديل..." style="width:100%; padding:10px; margin-bottom:20px;">
-    <div class="grid" id="market-items">
-        <div class="card">
-            <h3>Sunch Inverter</h3>
-            <p>موديل فئة SAVCH - متاح الآن.</p>
-            <button class="btn">عرض التفاصيل</button>
+<div id="market" class="page-content active">
+    <div class="cart-container">
+        <div class="cart-btns">
+            <button class="btn-sm" style="background:var(--green-btn)">إرسال</button>
+            <button class="btn-sm" style="background:var(--red-btn)">إفراغ</button>
         </div>
+        <div id="cart-total">🛒 السلة: 0 (0 ج.م)</div>
     </div>
-</section>
 
-<section id="services" class="page-section">
-    <h1>خدماتنا المهنية</h1>
-    <div class="grid">
-        <div class="card">
-            <h3>برمجة Microcontrollers</h3>
-            <p>تصميم دوائر وبرمجة PIC باستخدام MPLAB و MikroC.</p>
-        </div>
-        <div class="card">
-            <h3>برمجة PLC & HMI</h3>
-            <p>برمجة وتعديل أنظمة التحكم للماكينات وخطوط الإنتاج.</p>
-        </div>
-        <div class="card">
-            <h3>تطبيقات Desktop</h3>
-            <p>تحويل الكتالوجات الورقية إلى برامج إلكترونية (مثل تطبيق DH الحالي).</p>
-        </div>
-    </div>
-</section>
+    <div class="category-title">كارتات إلكترونية</div>
 
-<section id="projects" class="page-section">
-    <h1>معرض الأعمال</h1>
-    <div class="grid">
-        <div class="card">
-            <h3>PFC Controller</h3>
-            <p>مشروع تحسين معامل القدرة باستخدام PIC18F4520.</p>
+    <div class="product-card">
+        <div>
+            <button class="btn-add">أضف</button>
+            <div class="controls">
+                <button class="btn-plus-minus">-</button>
+                <input type="text" class="qty-input" value="1">
+                <button class="btn-plus-minus">+</button>
+            </div>
         </div>
-        <div class="card">
-            <h3>تعديل سيارة Shahín</h3>
-            <p>نظام تبريد متطور يعمل بـ PWM و Microcontroller.</p>
+        <div class="product-info">
+            <h3>كارت مساطر سنترتو</h3>
+            <span class="details-tag">تفاصيل</span>
+            <div class="price">290 ج.م</div>
         </div>
+        <img src="https://via.placeholder.com/70" class="product-img" alt="product">
     </div>
-</section>
+
+    <div class="product-card">
+        <div>
+            <button class="btn-add">أضف</button>
+            <div class="controls">
+                <button class="btn-plus-minus">-</button>
+                <input type="text" class="qty-input" value="1">
+                <button class="btn-plus-minus">+</button>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3>كارت خرج عشرة قناة</h3>
+            <span class="details-tag">تفاصيل</span>
+            <div class="price">1800 ج.م</div>
+        </div>
+        <img src="https://via.placeholder.com/70" class="product-img" alt="product">
+    </div>
+</div>
+
+<div id="services" class="page-content">
+    <div style="padding: 20px; text-align: center;">
+        <h2>خدماتنا الهندسية</h2>
+        <p>برمجة PLC - تصميم دوائر - صيانة انفرتر</p>
+    </div>
+</div>
 
 <script>
-    function showSection(sectionId) {
-        // إخفاء جميع الأقسام
-        document.querySelectorAll('.page-section').forEach(section => {
-            section.classList.remove('active');
-        });
-        // إظهار القسم المطلوب
-        document.getElementById(sectionId).classList.add('active');
-        
-        // إغلاق قائمة الموبايل إذا وجدت (اختياري)
-        window.scrollTo(0, 0);
+    function showPage(pageId) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
     }
 </script>
 
