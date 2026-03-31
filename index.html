@@ -3,162 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DH.Automation | متجر مساعد المهندس</title>
+    <title>DH.Automation | الحلول الهندسية</title>
     <style>
         :root {
             --header-bg: #1a1a1a;
             --main-blue: #0056b3;
             --green-btn: #28a745;
-            --red-btn: #dc3545;
+            --accent: #e67e22;
             --bg-light: #f4f4f4;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: var(--bg-light);
-        }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: var(--bg-light); text-align: right; }
 
-        /* الهيدر الأسود العلوي */
+        /* الهيدر الثابت */
         header {
-            background: var(--header-bg);
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background: var(--header-bg); color: white; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
-        .nav-links { display: flex; gap: 15px; }
-        .nav-links a { color: white; text-decoration: none; font-size: 14px; cursor: pointer; }
+        .nav-links a { color: white; text-decoration: none; font-size: 14px; cursor: pointer; margin-right: 15px; font-weight: bold; }
+        .nav-links a:hover { color: var(--accent); }
 
-        /* حاوية السلة */
-        .cart-container {
-            background: var(--main-blue);
-            margin: 15px;
-            padding: 15px;
-            border-radius: 10px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-btns { display: flex; gap: 5px; }
-        .btn-sm { border: none; padding: 5px 10px; border-radius: 5px; color: white; cursor: pointer; }
-
-        /* عنوان القسم */
-        .category-title {
-            background: #007bff;
-            color: white;
-            margin: 10px 15px;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        /* كارت المنتج */
-        .product-card {
-            background: white;
-            margin: 10px 15px;
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .product-info { flex: 1; text-align: right; }
-        .product-info h3 { margin: 0 0 5px 0; font-size: 16px; color: #333; }
-        .price { color: var(--green-btn); font-weight: bold; margin: 5px 0; }
-        .details-tag { background: #17a2b8; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
-
-        .product-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; margin-right: 10px; }
-
-        /* أزرار التحكم */
-        .controls { display: flex; align-items: center; gap: 5px; margin-top: 10px; }
-        .qty-input { width: 30px; text-align: center; border: 1px solid #ccc; }
-        .btn-plus-minus { background: #eee; border: 1px solid #ccc; width: 25px; height: 25px; cursor: pointer; }
-        .btn-add { background: var(--green-btn); color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
-
-        /* إخفاء الأقسام */
-        .page-content { display: none; }
+        /* نظام التبديل بين الصفحات */
+        .page-content { display: none; padding-bottom: 50px; animation: fadeIn 0.3s ease; }
         .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- تصميم الصفحة الرئيسية --- */
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://via.placeholder.com/800x400');
+            background-size: cover; height: 250px; color: white;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+
+        .main-cards-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px;
+        }
+
+        .main-card {
+            background: white; padding: 20px; border-radius: 12px; text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; border-bottom: 4px solid var(--main-blue);
+        }
+        .main-card i { font-size: 30px; display: block; margin-bottom: 10px; }
+
+        /* --- تصميم المتجر (نفس الستايل اللي طلبته) --- */
+        .cart-container {
+            background: var(--main-blue); margin: 15px; padding: 15px;
+            border-radius: 10px; color: white; display: flex; justify-content: space-between; align-items: center;
+        }
+        .product-card {
+            background: white; margin: 10px 15px; padding: 12px;
+            border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .controls-area { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .btn-add { background: var(--green-btn); color: white; border: none; padding: 5px 10px; border-radius: 5px; width: 100%; cursor: pointer; }
+        .qty-box { display: flex; align-items: center; gap: 3px; }
+        .qty-input { width: 25px; text-align: center; border: 1px solid #ccc; }
+        .product-info { flex: 2; }
+        .price { color: var(--green-btn); font-weight: bold; }
+        .product-img { width: 60px; height: 60px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-size: 20px;">🔍</div>
-    <div style="font-weight: bold;">DH.Automation</div>
+    <div style="font-weight: bold; color: var(--accent);">DH.Automation</div>
     <div class="nav-links">
-        <a onclick="showPage('market')">المتجر</a>
-        <a onclick="showPage('services')">خدماتنا</a>
+        <a onclick="showPage('home-page')">الرئيسية</a>
+        <a onclick="showPage('market-page')">المتجر</a>
+        <a onclick="showPage('services-page')">خدماتنا</a>
     </div>
 </header>
 
-<div id="market" class="page-content active">
-    <div class="cart-container">
-        <div class="cart-btns">
-            <button class="btn-sm" style="background:var(--green-btn)">إرسال</button>
-            <button class="btn-sm" style="background:var(--red-btn)">إفراغ</button>
-        </div>
-        <div id="cart-total">🛒 السلة: 0 (0 ج.م)</div>
+<div id="home-page" class="page-content active">
+    <div class="hero-section">
+        <h1>DH Automation</h1>
+        <p>حلول هندسية، برمجة صناعية، وتجارة إلكترونية</p>
     </div>
 
-    <div class="category-title">كارتات إلكترونية</div>
+    <div class="main-cards-grid">
+        <div class="main-card" onclick="showPage('market-page')">
+            <span>🛒</span>
+            <h3>سوق المهندس</h3>
+            <p>قطع غيار ونوادر</p>
+        </div>
+        <div class="main-card" onclick="showPage('services-page')">
+            <span>⚙️</span>
+            <h3>خدماتنا</h3>
+            <p>برمجة وصيانة</p>
+        </div>
+    </div>
+    
+    <div style="padding: 20px; background: white; margin: 15px; border-radius: 10px;">
+        <h3>آخر الأعمال</h3>
+        <p>• تطوير نظام PFC باستخدام PIC18F4520</p>
+        <p>• تعديل أنظمة تبريد سيارات (Fiat Shahín)</p>
+    </div>
+</div>
+
+<div id="market-page" class="page-content">
+    <div class="cart-container">
+        <div style="display:flex; gap:5px;">
+            <button style="background:var(--green-btn); border:none; color:white; padding:5px 10px; border-radius:5px;" onclick="sendOrder()">إرسال</button>
+            <button style="background:#dc3545; border:none; color:white; padding:5px 10px; border-radius:5px;" onclick="clearCart()">إفراغ</button>
+        </div>
+        <div id="cart-status">🛒 السلة: <span id="cart-count">0</span> (<span id="cart-total">0</span> ج)</div>
+    </div>
+
+    <div style="background:#007bff; color:white; padding:10px; margin:10px 15px; border-radius:8px; text-align:center;">كارتات إلكترونية</div>
 
     <div class="product-card">
-        <div>
-            <button class="btn-add">أضف</button>
-            <div class="controls">
-                <button class="btn-plus-minus">-</button>
-                <input type="text" class="qty-input" value="1">
-                <button class="btn-plus-minus">+</button>
+        <div class="controls-area">
+            <button class="btn-add" onclick="addToCart('كارت مساطر', 290, 1)">أضف</button>
+            <div class="qty-box">
+                <button onclick="changeQty('qty1', 1)">+</button>
+                <input type="text" id="qty1" class="qty-input" value="1" readonly>
+                <button onclick="changeQty('qty1', -1)">-</button>
             </div>
         </div>
         <div class="product-info">
             <h3>كارت مساطر سنترتو</h3>
-            <span class="details-tag">تفاصيل</span>
             <div class="price">290 ج.م</div>
         </div>
-        <img src="https://via.placeholder.com/70" class="product-img" alt="product">
-    </div>
-
-    <div class="product-card">
-        <div>
-            <button class="btn-add">أضف</button>
-            <div class="controls">
-                <button class="btn-plus-minus">-</button>
-                <input type="text" class="qty-input" value="1">
-                <button class="btn-plus-minus">+</button>
-            </div>
-        </div>
-        <div class="product-info">
-            <h3>كارت خرج عشرة قناة</h3>
-            <span class="details-tag">تفاصيل</span>
-            <div class="price">1800 ج.م</div>
-        </div>
-        <img src="https://via.placeholder.com/70" class="product-img" alt="product">
+        <img src="https://via.placeholder.com/60" class="product-img">
     </div>
 </div>
 
-<div id="services" class="page-content">
-    <div style="padding: 20px; text-align: center;">
+<div id="services-page" class="page-section page-content">
+    <div style="padding: 20px;">
         <h2>خدماتنا الهندسية</h2>
-        <p>برمجة PLC - تصميم دوائر - صيانة انفرتر</p>
+        <div class="main-card" style="margin-bottom: 10px; text-align: right;">
+            <h4>برمجة الميكروكنترولر</h4>
+            <p>تطوير الأنظمة المدمجة باستخدام عائلة PIC و MikroC.</p>
+        </div>
+        <div class="main-card" style="text-align: right;">
+            <h4>الأتمتة الصناعية</h4>
+            <p>برمجة PLC وصيانة لوحات التحكم وخطوط الإنتاج.</p>
+        </div>
     </div>
 </div>
 
 <script>
+    // نظام تبديل الصفحات
     function showPage(pageId) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    // منطق السلة
+    let totalItems = 0; let totalPrice = 0;
+    function changeQty(id, delta) {
+        let input = document.getElementById(id);
+        let val = parseInt(input.value) + delta;
+        if (val < 1) val = 1;
+        input.value = val;
+    }
+    function addToCart(name, price, idNum) {
+        let qty = parseInt(document.getElementById('qty' + idNum).value);
+        totalItems += qty; totalPrice += (price * qty);
+        document.getElementById('cart-count').innerText = totalItems;
+        document.getElementById('cart-total').innerText = totalPrice;
+        alert("تمت الإضافة!");
+    }
+    function clearCart() {
+        totalItems = 0; totalPrice = 0;
+        document.getElementById('cart-count').innerText = "0";
+        document.getElementById('cart-total').innerText = "0";
     }
 </script>
 
