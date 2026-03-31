@@ -192,10 +192,24 @@
         element.classList.add('active-nav');
     }
 
+    // الدالة المعدلة لتحديث السعر فوراً
     function changeQty(btn, delta) {
-        let qtySpan = btn.parentElement.querySelector('.qty-val');
+        let row = btn.closest('.product-row');
+        let id = row.getAttribute('data-id');
+        let qtySpan = row.querySelector('.qty-val');
         let currentQty = parseInt(qtySpan.innerText);
-        if (currentQty + delta >= 1) qtySpan.innerText = currentQty + delta;
+        let newQty = currentQty + delta;
+
+        if (newQty >= 1) {
+            qtySpan.innerText = newQty;
+            
+            // لو المنتج موجود فعلاً في السلة، حدث الكمية بتاعته فوراً
+            let itemInCart = cart.find(item => item.id === id);
+            if (itemInCart) {
+                itemInCart.qty = newQty;
+                updateTotal(); // حدث الإجمالي فوراً
+            }
+        }
     }
 
     function toggleCart(btn) {
@@ -229,6 +243,8 @@
             btn.innerText = "إضافة";
             btn.classList.remove('remove-btn');
         });
+        // تصفير أرقام العدادات في الواجهة أيضاً
+        document.querySelectorAll('.qty-val').forEach(span => span.innerText = "1");
     }
 
     function checkoutWhatsApp() {
