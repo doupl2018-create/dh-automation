@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>DH Automation</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     
@@ -12,12 +16,12 @@
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
-        /* --- نظام المنشورات مع سحب الصور --- */
+        /* --- نظام المنشورات مع سحب الصور (Slider) --- */
         .post-card { background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
         .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
         .post-avatar { width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
         
-        /* ميزة السحب (Slider) */
+        /* خاصية السحب الأفقي للصور */
         .post-gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; background: #000; }
         .post-gallery::-webkit-scrollbar { display: none; }
         .post-gallery img { width: 100%; flex-shrink: 0; height: 250px; object-fit: contain; scroll-snap-align: start; cursor: pointer; }
@@ -27,7 +31,7 @@
         .more-text { display: none; }
         .read-more-btn { color: var(--primary-color); cursor: pointer; font-weight: bold; display: inline-block; margin-top: 5px; }
 
-        /* --- تنسيق السوق (المعتمد) --- */
+        /* --- تنسيق السوق --- */
         .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
         .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; }
         .cat-btn.active-cat { background: var(--primary-color); color: white; border-color: var(--primary-color); }
@@ -111,7 +115,8 @@
     </div>
 
     <script>
-        const APP_VERSION = "1.2"; // غير الرقم ده لما تنزل تحديث
+        // دايماً غير رقم الإصدار لما تعدل أي حاجة في المنتجات أو الكود
+        const APP_VERSION = "1.3"; 
 
         const products = [
             { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق لماكينات الحقن.' },
@@ -119,18 +124,21 @@
         ];
 
         const postsData = {
-            solutions: [{ title: 'الحلول الصناعية', text: 'بنقدم حلول ذكية لتطوير خطوط الإنتاج وماكينات البلاستيك باستخدام أحدث الحساسات والكارتات الإلكترونية. هدفنا تقليل الهالك وزيادة الإنتاجية.', images: ['images/01 (1).jpg', 'images/01 (2).jpg', 'images/01 (3).jpg'] }],
-            automation: [{ title: 'التحكم الآلي', text: 'تصميم وبرمجة لوحات PLC ودوائر الكلاسيك كنترول. بنهتم بكل تفصيلة في اللوحة لضمان سهولة الصيانة والأمان الكامل.', images: ['images/01 (4).jpg', 'images/01 (2).jpg', 'images/01 (1).jpg'] }],
-            projects: [{ title: 'مشاريعنا المنفذة', text: 'تم بفضل الله الانتهاء من تحديث نظام التحكم لإحدى الماكينات الكبرى، مع تركيب كارتات LVDT لمعايرة المسافات بدقة 0.01 مم.', images: ['images/01 (3).jpg', 'images/01 (4).jpg', 'images/01 (2).jpg'] }]
+            solutions: [{ title: 'الحلول الصناعية', text: 'بنقدم حلول ذكية لتطوير خطوط الإنتاج وماكينات البلاستيك باستخدام أحدث الحساسات والكارتات الإلكترونية.', images: ['images/01 (1).jpg', 'images/01 (2).jpg', 'images/01 (3).jpg'] }],
+            automation: [{ title: 'التحكم الآلي', text: 'تصميم وبرمجة لوحات PLC ودوائر الكلاسيك كنترول. بنهتم بكل تفصيلة لضمان سهولة الصيانة.', images: ['images/01 (4).jpg', 'images/01 (2).jpg', 'images/01 (1).jpg'] }],
+            projects: [{ title: 'مشاريعنا المنفذة', text: 'تم بفضل الله الانتهاء من تحديث نظام التحكم لإحدى الماكينات الكبرى بدقة 0.01 مم.', images: ['images/01 (3).jpg', 'images/01 (4).jpg', 'images/01 (2).jpg'] }]
         };
 
         let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
 
+        // دالة التحديث الذكي - تكسر الكاش غصب عن المتصفح
         function smartRefresh() {
             const savedVersion = localStorage.getItem('app_version');
             if (savedVersion !== APP_VERSION) {
                 localStorage.setItem('app_version', APP_VERSION);
-                window.location.reload(true);
+                // إضافة متغير عشوائي للرابط لإجبار الموبايل على التحميل من السيرفر
+                const cleanUrl = window.location.href.split('?')[0];
+                window.location.href = cleanUrl + '?u=' + new Date().getTime();
             }
         }
 
