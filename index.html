@@ -12,188 +12,159 @@
             --light-bg: #f8f9fa;
         }
 
-        /* منع التمرير الأفقي تماماً لحل مشكلة الشريط الأسود */
+        /* إصلاح التمرير (الاسكرول) */
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            overflow-x: hidden; /* أهم سطر لحل المشكلة */
+            margin: 0; padding: 0; width: 100%;
             background-color: var(--light-bg);
             font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow-x: hidden; /* منع الاهتزاز العرضي فقط */
+            overflow-y: auto;   /* تفعيل التمرير الطولي بشكل إجباري */
+            height: auto;
+            -webkit-overflow-scrolling: touch; /* سلاسة التمرير في الآيفون */
         }
 
-        /* --- الهيدر الموحد --- */
+        /* مؤشر التحديث */
+        #refresh-indicator {
+            position: fixed; top: -50px; left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-orange);
+            color: white; padding: 10px 20px;
+            border-radius: 30px; font-weight: bold;
+            z-index: 4000; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
         header {
-            background: var(--dark-bg);
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            width: 100%;
-            box-sizing: border-box;
+            background: var(--dark-bg); color: white; padding: 10px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000; width: 100%; box-sizing: border-box;
         }
 
-        .logo-section { display: flex; align-items: center; gap: 10px; }
-        .logo { font-weight: bold; font-size: 1.1rem; color: var(--accent-orange); text-decoration: none; }
+        .logo-section { display: flex; align-items: center; gap: 15px; }
+        .logo { font-weight: bold; font-size: 1.2rem; color: var(--accent-orange); text-decoration: none; }
 
-        .nav-links { display: flex; gap: 12px; margin-right: 15px; }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: 0.3s;
-        }
+        .nav-links { display: flex; gap: 10px; }
+        .nav-links a { color: white; text-decoration: none; font-size: 0.85rem; padding: 5px 8px; }
+        @media (max-width: 850px) { .nav-links { display: none; } }
 
-        /* إخفاء الروابط في الموبايل لمنع الزحام */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-        }
-
-        /* منطقة المستخدم */
-        .user-profile-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
+        .user-area { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .engineer-icon {
-            font-size: 20px;
-            background: white;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid var(--accent-orange);
+            font-size: 20px; background: white; border-radius: 50%;
+            width: 35px; height: 35px; display: flex; justify-content: center;
+            align-items: center; border: 2px solid var(--accent-orange);
         }
 
-        #header-user-name { font-size: 0.8rem; font-weight: bold; white-space: nowrap; color: white; }
-
-        /* --- البانر الخلفي --- */
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), 
                         url('01.jpg') no-repeat center center/cover !important;
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-            border-bottom: 6px solid var(--main-blue);
-            width: 100%;
-            box-sizing: border-box;
+            color: white; padding: 60px 20px; text-align: center;
+            border-bottom: 6px solid var(--main-blue); width: 100%; box-sizing: border-box;
         }
 
-        /* --- القائمة الجانبية --- */
-        .side-menu {
-            position: fixed; top: 0; right: -280px; width: 260px; height: 100%;
-            background: var(--dark-bg); color: white; transition: 0.3s ease-in-out; z-index: 2000;
-            padding: 20px; box-sizing: border-box;
-        }
-        .side-menu.open { right: 0; }
-        
-        .overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.7); display: none; z-index: 1500; 
-        }
-
-        /* كروت الأقسام */
+        /* شبكة الأقسام */
         .nav-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            padding: 15px;
-            max-width: 500px;
-            margin: -40px auto 30px;
-            box-sizing: border-box;
+            display: grid; grid-template-columns: 1fr; gap: 20px;
+            padding: 20px; max-width: 600px; margin: -40px auto 40px; box-sizing: border-box;
         }
+
+        @media (min-width: 768px) { .nav-grid { grid-template-columns: 1fr 1fr; max-width: 900px; } }
 
         .nav-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: white; padding: 25px; border-radius: 15px;
+            text-align: center; text-decoration: none; color: inherit;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: 0.3s;
         }
+        .nav-card:active { transform: scale(0.98); }
+        .nav-card .icon { font-size: 40px; margin-bottom: 15px; display: block; }
+        .nav-card h2 { margin: 0; font-size: 1.2rem; }
 
-        /* نافذة الاسم */
-        #nameModal { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); z-index: 3000; justify-content: center; align-items: center; 
-        }
+        #nameModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; width: 85%; max-width: 350px; }
     </style>
 </head>
 <body>
 
+<div id="refresh-indicator">جاري التحديث... 🔄</div>
+
 <div id="nameModal">
     <div class="modal-content">
-        <h2 style="color:var(--main-blue)">مرحباً يا هندسة</h2>
-        <input type="text" id="userNameInput" placeholder="ادخل اسمك هنا..." style="width:90%; padding:10px; margin:15px 0; border:1px solid #ddd; border-radius:8px; text-align:center;">
-        <br>
-        <button onclick="saveName()" style="background:var(--main-blue); color:white; border:none; padding:10px 30px; border-radius:8px; cursor:pointer;">دخول</button>
+        <h2>مرحباً يا هندسة</h2>
+        <input type="text" id="userNameInput" placeholder="ادخل اسمك هنا..." style="width:90%; padding:12px; margin:15px 0; border:1px solid #ddd; border-radius:8px; text-align:center;">
+        <button onclick="saveName()" style="background:var(--main-blue); color:white; border:none; padding:10px 40px; border-radius:8px; font-weight:bold;">دخول</button>
     </div>
-</div>
-
-<div id="overlay" class="overlay" onclick="toggleMenu()"></div>
-<div id="sideMenu" class="side-menu">
-    <div style="text-align:center; padding-bottom:20px; border-bottom:1px solid #333;">
-        <div style="font-size: 40px;">👷‍♂️</div>
-        <h3 id="menu-user-name" style="color:var(--accent-orange)">المهندس</h3>
-    </div>
-    <a href="index.html" style="display:block; color:white; text-decoration:none; padding:15px; border-bottom:1px solid #222; text-align:right;">🏠 الرئيسية</a>
-    <a href="market.html" style="display:block; color:white; text-decoration:none; padding:15px; border-bottom:1px solid #222; text-align:right;">🛒 السوق</a>
-    <a href="industrial-solutions.html" style="display:block; color:white; text-decoration:none; padding:15px; border-bottom:1px solid #222; text-align:right;">🏭 الحلول</a>
-    <a href="projects.html" style="display:block; color:white; text-decoration:none; padding:15px; border-bottom:1px solid #222; text-align:right;">🏗️ أعمالنا</a>
-    <button onclick="resetUser()" style="width:100%; background:none; border:none; color:var(--accent-orange); padding:15px; text-align:right; cursor:pointer; font-size:1rem;">👤 تغيير الحساب</button>
 </div>
 
 <header>
     <div class="logo-section">
         <a href="index.html" class="logo">DH.Automation</a>
         <nav class="nav-links">
+            <a href="index.html">الرئيسية</a>
             <a href="market.html">السوق</a>
+            <a href="industrial-solutions.html">الحلول</a>
             <a href="projects.html">أعمالنا</a>
         </nav>
     </div>
-    
-    <div class="user-profile-btn" onclick="toggleMenu()">
-        <span id="header-user-name">مهندس...</span>
+    <div class="user-area" onclick="location.reload(true)">
+        <span id="header-user-name" style="color:white; font-size:0.85rem; font-weight:bold;">مهندس...</span>
         <div class="engineer-icon">👷‍♂️</div>
     </div>
 </header>
 
 <section class="hero">
-    <h1 style="font-size: 1.8rem; margin:0;">DH Automation</h1>
-    <p style="font-size: 0.9rem; opacity: 0.9;">حلول هندسية مبتكرة وأتمتة صناعية متطورة</p>
+    <h1 style="font-size: 2rem; margin:0;">DH Automation</h1>
+    <p style="margin-top:10px; opacity:0.9;">أهلاً بك يا باشمهندس</p>
 </section>
 
 <div class="nav-grid">
     <a href="market.html" class="nav-card">
-        <div style="font-size:30px; margin-bottom:10px;">🛒</div>
-        <h2 style="font-size:1.1rem; margin:0;">سوق مساعد المهندس</h2>
-        <p style="font-size:0.8rem; color:#666;">انفرترات، كروت، وقطع غيار.</p>
+        <span class="icon">🛒</span>
+        <h2>سوق مساعد المهندس</h2>
+        <p>انفرترات وقطع غيار.</p>
+    </a>
+    <a href="industrial-solutions.html" class="nav-card">
+        <span class="icon">🏭</span>
+        <h2>الحلول الصناعية</h2>
+        <p>تطوير خطوط الإنتاج.</p>
+    </a>
+    <a href="projects.html" class="nav-card">
+        <span class="icon">🏗️</span>
+        <h2>أعمالنا المنفذة</h2>
+        <p>معرض المشاريع السابقة.</p>
     </a>
     <a href="services.html" class="nav-card">
-        <div style="font-size:30px; margin-bottom:10px;">⚙️</div>
-        <h2 style="font-size:1.1rem; margin:0;">خدماتنا وأعمالنا</h2>
-        <p style="font-size:0.8rem; color:#666;">برمجة PLC وصيانة أنظمة التحكم.</p>
+        <span class="icon">⚙️</span>
+        <h2>خدماتنا البرمجية</h2>
+        <p>PLC و Microcontrollers.</p>
     </a>
 </div>
 
 <script>
+    let touchStart = 0;
+    const indicator = document.getElementById('refresh-indicator');
+
+    window.addEventListener('touchstart', (e) => { touchStart = e.touches[0].pageY; });
+    
+    window.addEventListener('touchmove', (e) => {
+        const diff = e.touches[0].pageY - touchStart;
+        // لا يظهر المؤشر إلا إذا كنا في قمة الصفحة ونسحب لأسفل
+        if (window.scrollY <= 0 && diff > 80) {
+            indicator.style.top = '20px';
+        }
+    });
+
+    window.addEventListener('touchend', (e) => {
+        const diff = e.changedTouches[0].pageY - touchStart;
+        if (window.scrollY <= 0 && diff > 150) {
+            window.location.reload(true);
+        } else {
+            indicator.style.top = '-50px';
+        }
+    });
+
     window.onload = function() {
         const savedName = localStorage.getItem('engineerName');
-        if (savedName) {
-            updateUI(savedName);
-        } else {
-            document.getElementById('nameModal').style.display = 'flex';
-        }
+        if (savedName) updateUI(savedName);
+        else document.getElementById('nameModal').style.display = 'flex';
     };
 
     function saveName() {
@@ -207,21 +178,6 @@
 
     function updateUI(name) {
         document.getElementById('header-user-name').innerText = "مهندس " + name;
-        document.getElementById('menu-user-name').innerText = "مهندس " + name;
-    }
-
-    function toggleMenu() {
-        const menu = document.getElementById('sideMenu');
-        const overlay = document.getElementById('overlay');
-        menu.classList.toggle('open');
-        overlay.style.display = menu.classList.contains('open') ? 'block' : 'none';
-    }
-
-    function resetUser() {
-        if(confirm("هل تريد تغيير الاسم؟")) {
-            localStorage.removeItem('engineerName');
-            window.location.reload();
-        }
     }
 </script>
 
