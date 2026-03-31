@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DH Automation</title>
-    
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="images/Icon-page.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
@@ -15,37 +14,64 @@
 
     <div class="container">
         <div id="market" class="page active">
+            
             <div class="product-row" data-id="1" data-name="حساس NTC" data-price="150">
                 <img src="images/01 (1).jpg" class="product-img">
                 <div class="product-info">
                     <h4>حساس حرارة NTC</h4>
                     <p>150 ج.م</p>
                 </div>
-                <div class="qty-control" style="display: flex; align-items: center; gap: 5px; margin-left: 10px;">
-                    <button class="qty-btn" onclick="changeQty(this, -1)" style="width:25px; height:25px;">-</button>
-                    <span class="qty-val">1</span>
-                    <button class="qty-btn" onclick="changeQty(this, 1)" style="width:25px; height:25px;">+</button>
+                <div class="controls">
+                    <div class="qty-control">
+                        <button onclick="changeQty(this, 1)">+</button>
+                        <span class="qty-val">1</span>
+                        <button onclick="changeQty(this, -1)">-</button>
+                    </div>
+                    <button class="details-btn" onclick="showDetails('1')">تفاصيل</button>
+                    <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
                 </div>
-                <button class="details-btn" onclick="showDetails('1')">تفاصيل</button>
-                <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
             </div>
 
-            <div class="cart-summary" style="background: white; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #ddd;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>الإجمالي: <b id="total-price" style="font-size: 1.2rem; color: #1a73e8;">0</b> ج.م</span>
-                    <button onclick="clearCart()" style="color: #dc3545; border: none; background: none; cursor: pointer; font-family: 'Cairo';">إفراغ السلة 🗑️</button>
+            <div class="product-row" data-id="2" data-name="كارت LVDT" data-price="1200">
+                <img src="images/01 (2).jpg" class="product-img">
+                <div class="product-info">
+                    <h4>كارت تحكم LVDT</h4>
+                    <p>1200 ج.م</p>
                 </div>
-                <button class="checkout-btn" onclick="checkoutWhatsApp()" style="width: 100%; background: #25d366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer;">إتمام الشراء عبر واتساب ✅</button>
+                <div class="controls">
+                    <div class="qty-control">
+                        <button onclick="changeQty(this, 1)">+</button>
+                        <span class="qty-val">1</span>
+                        <button onclick="changeQty(this, -1)">-</button>
+                    </div>
+                    <button class="details-btn" onclick="showDetails('2')">تفاصيل</button>
+                    <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
+                </div>
             </div>
+
         </div>
 
-        <div id="projects" class="page"><h2>تطوير تقنيات الحقن</h2></div>
-        <div id="info" class="page"><h2>معلومات الدعم</h2></div>
+        <div id="projects" class="page">
+            <div class="card">
+                <h2>تطوير تقنيات الحقن</h2>
+                <p>محتوى مشاريعك الهندسية هيظهر هنا يا هندسة.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-cart">
+        <div class="cart-info">
+            <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
+            <span class="clear-cart" onclick="clearCart()">تفريغ 🗑️</span>
+        </div>
+        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">
+            إتمام الشراء (واتساب) ✅
+        </button>
     </div>
 
     <nav>
-        <div class="nav-item active-nav" onclick="showPage('market', 'السوق', this)">🛒 السوق</div>
-        <div class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️ المشاريع</div>
+        <div class="nav-item active-nav" onclick="showPage('market', 'السوق', this)">🛒<br>السوق</div>
+        <div class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️<br>المشاريع</div>
     </nav>
 
     <div id="detailsModal" class="modal">
