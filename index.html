@@ -20,7 +20,7 @@
             overflow-x: hidden;
         }
 
-        /* --- الهيدر المطور (Navigation Bar) --- */
+        /* --- الهيدر الموحد لجميع الأقسام --- */
         header {
             background: var(--dark-bg);
             color: white;
@@ -37,42 +37,56 @@
         .logo-section { display: flex; align-items: center; gap: 15px; }
         .logo { font-weight: bold; font-size: 1.2rem; color: var(--accent-orange); text-decoration: none; }
 
-        /* روابط الأقسام في الهيدر */
-        .nav-links { display: flex; gap: 20px; margin-right: 20px; }
+        /* روابط الأقسام العلوي (تظهر في الشاشات الكبيرة) */
+        .nav-links { display: flex; gap: 15px; margin-right: 20px; }
         .nav-links a {
             color: white;
             text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.3s;
-            padding: 5px 10px;
+            font-size: 0.85rem;
+            padding: 5px 8px;
             border-radius: 5px;
+            transition: 0.3s;
         }
-        .nav-links a:hover { background: rgba(255,255,255,0.1); color: var(--accent-orange); }
+        .nav-links a:hover { color: var(--accent-orange); background: rgba(255,255,255,0.05); }
 
-        .engineer-icon {
-            font-size: 24px;
-            background: #fff;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid var(--accent-orange);
-            cursor: pointer;
-        }
-        
+        /* منطقة المستخدم وأيقونة المهندس */
         .user-profile-btn {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 50px;
+            transition: 0.2s;
+        }
+        .user-profile-btn:hover { background: rgba(255,255,255,0.1); }
+
+        .engineer-icon {
+            font-size: 22px;
+            background: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid var(--accent-orange);
         }
 
-        /* إخفاء الروابط في الشاشات الصغيرة واظهارها في الكبيرة */
-        @media (max-width: 768px) {
-            .nav-links { display: none; } 
+        #header-user-name { font-size: 0.85rem; font-weight: bold; white-space: nowrap; }
+
+        @media (max-width: 768px) { .nav-links { display: none; } }
+
+        /* --- البانر الخلفي (تم تصحيح اسم الملف لـ 01.jpg) --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), 
+                        url('01.jpg') no-repeat center center/cover !important;
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 8px solid var(--main-blue);
         }
+        .hero h1 { margin: 0; font-size: 2.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
 
         /* --- القائمة الجانبية --- */
         .side-menu {
@@ -83,62 +97,21 @@
         .side-menu.open { right: 0; }
         .side-menu a, .side-menu button {
             display: block; color: white; text-decoration: none; padding: 15px;
-            border-bottom: 1px solid #333; font-size: 1rem; width: 100%; text-align: right;
-            background: none; border: none; cursor: pointer;
+            border-bottom: 1px solid #333; text-align: right; background: none; border: none; width: 100%; cursor: pointer;
         }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 1500; }
 
-        /* --- التصميم الأساسي --- */
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('01.JPG') no-repeat center center/cover;
-            color: white;
-            padding: 80px 20px;
-            text-align: center;
-            border-bottom: 8px solid var(--main-blue);
-        }
-        .hero h1 { margin: 0; font-size: 2.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
-
-        .nav-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            padding: 20px;
-            max-width: 650px;
-            margin: -60px auto 40px; 
-        }
-
-        .nav-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            transition: 0.3s ease;
-        }
+        /* --- شبكة التنقل الرئيسية --- */
+        .nav-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 20px; max-width: 650px; margin: -60px auto 40px; }
+        .nav-card { background: white; padding: 25px; border-radius: 15px; text-align: center; text-decoration: none; color: inherit; box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: 0.3s; }
         .nav-card:active { transform: scale(0.97); }
-        .nav-card .icon { font-size: 40px; margin-bottom: 15px; display: block; }
-        .nav-card h2 { margin: 0; font-size: 1.4rem; color: #111; }
+        .nav-card .icon { font-size: 40px; margin-bottom: 10px; display: block; }
 
         /* --- نافذة إدخال الاسم (Modal) --- */
-        #nameModal {
-            display: none; position: fixed; top: 0; left: 0; 
-            width: 100%; height: 100%; background: rgba(0,0,0,0.9); 
-            z-index: 3000; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: white; padding: 30px; border-radius: 20px; 
-            text-align: center; width: 85%; max-width: 400px;
-        }
-        .modal-content input {
-            width: 90%; padding: 12px; margin: 20px 0; border: 2px solid #ddd; 
-            border-radius: 10px; text-align: center; font-size: 1rem;
-        }
-        .modal-content button {
-            background: var(--main-blue); color: white; border: none; 
-            padding: 12px 40px; border-radius: 10px; font-weight: bold;
-        }
+        #nameModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 400px; }
+        .modal-content input { width: 80%; padding: 12px; margin: 20px 0; border: 2px solid #ddd; border-radius: 10px; text-align: center; }
+        .modal-content button { background: var(--main-blue); color: white; border: none; padding: 12px 40px; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
         footer { text-align: center; padding: 25px; color: #888; background: white; border-top: 1px solid #eee; }
     </style>
@@ -147,7 +120,7 @@
 
 <div id="nameModal">
     <div class="modal-content">
-        <h2 style="color: var(--main-blue);">مرحباً بك يا هندسة</h2>
+        <h2>مرحباً بك يا هندسة</h2>
         <p>برجاء تسجيل اسمك في DH Automation:</p>
         <input type="text" id="userNameInput" placeholder="اكتب اسمك هنا...">
         <button onclick="saveName()">دخول</button>
@@ -161,7 +134,7 @@
         <h3 id="menu-user-name">المهندس</h3>
     </div>
     <a href="index.html">🏠 الرئيسية</a>
-    <a href="market.html">🛒 سوق مساعد المهندس</a>
+    <a href="market.html">🛒 السوق</a>
     <a href="industrial-solutions.html">🏭 الحلول الصناعية</a>
     <a href="projects.html">🏗️ أعمالنا</a>
     <a href="services.html">⚙️ خدماتنا</a>
@@ -181,7 +154,7 @@
     </div>
     
     <div class="user-profile-btn" onclick="toggleMenu()">
-        <span id="header-user-name" style="font-size: 0.9rem; font-weight: bold;">مهندس...</span>
+        <span id="header-user-name">مهندس...</span>
         <div class="engineer-icon">👷‍♂️</div>
     </div>
 </header>
@@ -201,19 +174,16 @@
     <a href="industrial-solutions.html" class="nav-card">
         <span class="icon">🏭</span>
         <h2>الحلول الصناعية</h2>
-        <p>أنظمة متكاملة لخطوط الإنتاج وتطوير الماكينات الصناعية.</p>
     </a>
 
     <a href="projects.html" class="nav-card">
         <span class="icon">🏗️</span>
         <h2>أعمالنا</h2>
-        <p>معرض المشاريع المنفذة وتطبيقات الأتمتة الناجحة.</p>
     </a>
 
     <a href="services.html" class="nav-card">
         <span class="icon">⚙️</span>
         <h2>خدماتنا</h2>
-        <p>برمجة PLC، تصميم دوائر PIC، وصيانة أنظمة التحكم.</p>
     </a>
 </div>
 
@@ -237,8 +207,6 @@
             localStorage.setItem('engineerName', nameInput);
             updateUI(nameInput);
             document.getElementById('nameModal').style.display = 'none';
-        } else {
-            alert("برجاء إدخال الاسم يا هندسة");
         }
     }
 
