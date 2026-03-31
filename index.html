@@ -6,7 +6,6 @@
     <title>DH Automation</title>
     
     <link rel="stylesheet" href="style.css">
-    
     <link rel="icon" href="images/Icon-page.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -22,9 +21,26 @@
                     <h4>حساس حرارة NTC</h4>
                     <p>150 ج.م</p>
                 </div>
+                <div class="qty-control" style="display: flex; align-items: center; gap: 5px; margin-left: 10px;">
+                    <button class="qty-btn" onclick="changeQty(this, -1)" style="width:25px; height:25px;">-</button>
+                    <span class="qty-val">1</span>
+                    <button class="qty-btn" onclick="changeQty(this, 1)" style="width:25px; height:25px;">+</button>
+                </div>
+                <button class="details-btn" onclick="showDetails('1')">تفاصيل</button>
                 <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
             </div>
+
+            <div class="cart-summary" style="background: white; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #ddd;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>الإجمالي: <b id="total-price" style="font-size: 1.2rem; color: #1a73e8;">0</b> ج.م</span>
+                    <button onclick="clearCart()" style="color: #dc3545; border: none; background: none; cursor: pointer; font-family: 'Cairo';">إفراغ السلة 🗑️</button>
+                </div>
+                <button class="checkout-btn" onclick="checkoutWhatsApp()" style="width: 100%; background: #25d366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer;">إتمام الشراء عبر واتساب ✅</button>
             </div>
+        </div>
+
+        <div id="projects" class="page"><h2>تطوير تقنيات الحقن</h2></div>
+        <div id="info" class="page"><h2>معلومات الدعم</h2></div>
     </div>
 
     <nav>
@@ -32,12 +48,13 @@
         <div class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️ المشاريع</div>
     </nav>
 
-    <script src="script.js"></script>
     <div id="detailsModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <div id="modalBody" class="modal-body"></div>
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalBody" class="modal-body"></div>
+        </div>
     </div>
-</div>
+
+    <script src="script.js"></script>
 </body>
 </html>
