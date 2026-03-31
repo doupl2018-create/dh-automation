@@ -34,3 +34,38 @@ function checkoutWhatsApp() {
     });
     window.open(`https://wa.me/201227091465?text=${message}`, '_blank');
 }
+// بيانات المنتجات: الصور والكلام
+const productsData = {
+    '1': {
+        title: 'حساس حرارة NTC',
+        description: 'حساس عالي الدقة يتحمل الحرارة العالية، مثالي لماكينات الحقن.',
+        image: 'images/01 (1).jpg'
+    },
+    '2': {
+        title: 'كارت تحكم LVDT',
+        description: 'كارت احترافي لمعايرة مشوار البلاطة بدقة عالية.',
+        image: 'images/01 (2).jpg'
+    }
+};
+
+function showDetails(id) {
+    const product = productsData[id];
+    let content = `
+        <img src="${product.image}">
+        <h3>${product.title}</h3>
+        <p>${product.description}</p>
+    `;
+    document.getElementById('modalBody').innerHTML = content;
+    document.getElementById('detailsModal').style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById('detailsModal').style.display = "none";
+}
+
+// قفل النافذة لو دوست بره المربع الأبيض
+window.onclick = function(event) {
+    if (event.target == document.getElementById('detailsModal')) {
+        closeModal();
+    }
+}
