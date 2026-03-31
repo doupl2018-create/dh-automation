@@ -1,90 +1,169 @@
-<script>
-    // تحديث مصفوفة المنتجات بالصور الحقيقية من GitHub الخاص بك
-    const products = [
-        { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس حرارة عالي الدقة، مصمم خصيصاً للعمل في البيئات الصناعية القاسية مثل ماكينات حقن البلاستيك والغلايات. يتميز بسرعة الاستجابة الحرارية ومقاومة عالية للتآكل.' },
-        { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT المطور', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة (LVDT Card) النسخة الاحترافية. يدعم مخارج تناظرية دقيقة وتوافق كامل مع أنظمة التحكم PLC المختلفة. يضمن استقرار الإشارة حتى في وجود نويز عالي.' },
-        { id: '3', cat: 'كلاسيك كنترول', name: 'كونتاكتور شنايدر 18A', price: 850, img: 'images/01 (3).jpg', desc: 'كونتاكتور أصلي لتحمل الأحمال الشاقة، مناسب للمواتير بقدرة تصل إلى 7.5 حصان. عمر افتراضي طويل ونقاط تلامس من الفضة عالية الجودة.' },
-        { id: '4', cat: 'أجهزة', name: 'تايمر ديجيتال متعدد الوظائف', price: 450, img: 'images/01 (4).jpg', desc: 'تايمر بـ 8 أوضاع تشغيل مختلفة، شاشة LED واضحة، وسهولة في البرمجة. مثالي للوحات التحكم التي تتطلب توقيتات دقيقة جداً.' },
-        { id: '5', cat: 'معدات صناعية', name: 'باور سبلاي 24V 10A', price: 950, img: 'images/01 (5).jpg', desc: 'مزود طاقة بنظام سويتشينج مود، يوفر تيار مستقر جداً لتغذية الحساسات والكارتات الإلكترونية، مع حماية ضد القفلة وزيادة الحمل.' }
-    ];
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DH Automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #1a73e8; --bg-color: #f0f2f5; --success-color: #28a745; --danger-color: #dc3545; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; direction: rtl; color: #333; }
+        header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .container { padding: 80px 15px 150px 15px; max-width: 600px; margin: 0 auto; }
 
-    // بيانات صفحة المشاريع (لعرض المنشورات الطويلة)
-    const projectsData = [
-        {
-            title: "تطوير خط إنتاج بلاستيك بالكامل",
-            img: "images/01 (1).jpg",
-            text: "تم بحمد الله الانتهاء من تحديث نظام التحكم لخط إنتاج بالكامل. قمنا باستبدال الأنظمة القديمة بكارتات LVDT مطورة من إنتاجنا للتحكم في حركة البلاطة، مع ربطها بشاشات HMI لتسهيل المراقبة. تم تحسين الإنتاجية بنسبة 30% وتقليل الهالك بشكل ملحوظ."
-        },
-        {
-            title: "نظام توفير الطاقة للمصانع",
-            img: "images/01 (3).jpg",
-            text: "مشروع تحسين معامل القدرة (Power Factor Correction). استخدمنا فيها مكثفات بجودة عالية ونظام تحكم ذكي يعتمد على ميكروكنترولر PIC18F للحفاظ على استهلاك الطاقة في الحدود المثالية وتجنب غرامات الكهرباء."
-        }
-    ];
-
-    // دالة عرض المشاريع في صفحة "مشاريعنا"
-    function renderProjects() {
-        const container = document.getElementById('projects');
-        container.innerHTML = `<h2 style="text-align:center; padding:20px;">معرض أعمالنا ⚙️</h2>` + projectsData.map(p => `
-            <div style="background:white; margin:15px; border-radius:15px; overflow:hidden; box-shadow:0 3px 10px rgba(0,0,0,0.1);">
-                <img src="${p.img}" style="width:100%; height:200px; object-fit:cover;">
-                <div style="padding:15px;">
-                    <h3 style="margin-top:0;">${p.title}</h3>
-                    <p style="color:#555; font-size:0.9rem; line-height:1.6;">${p.text}</p>
-                    <button class="details-btn" style="width:100%; padding:10px;" onclick="showPostDetails('${p.title}', '${p.img}', '${p.text}')">اقرأ المزيد عن المشروع</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // دالة عرض الحلول الصناعية
-    function renderSolutions() {
-        const container = document.getElementById('solutions');
-        container.innerHTML = `
-            <div style="padding:20px; text-align:center;">
-                <h2>الحلول الصناعية 🛠️</h2>
-                <div style="background:white; padding:20px; border-radius:15px; margin-bottom:15px;">
-                    <img src="images/01 (2).jpg" style="width:100%; border-radius:10px;">
-                    <h3>برمجة الـ PLC والـ HMI</h3>
-                    <p>نقدم خدمات البرمجة المتقدمة لأنظمة Siemens و Delta و Invt. حلول ذكية لربط الماكينات ببعضها وتسهيل عملية التشغيل.</p>
-                </div>
-                <div style="background:white; padding:20px; border-radius:15px;">
-                    <img src="images/01 (4).jpg" style="width:100%; border-radius:10px;">
-                    <h3>تصميم اللوحات الكهربائية</h3>
-                    <p>تصميم وتجميع لوحات الباور والكنترول بأعلى معايير الأمان والكفاءة، مع رسم المخططات باستخدام CAD.</p>
-                </div>
-            </div>
-        `;
-    }
-
-    // دالة المودال الخاصة بالمنشورات (لمزيد من الكلام)
-    function showPostDetails(title, img, text) {
-        document.getElementById('modalBody').innerHTML = `
-            <img src="${img}" style="width:100%; border-radius:12px; margin-bottom:15px;">
-            <h2 style="color:var(--primary-color)">${title}</h2>
-            <div style="text-align:right; line-height:1.8; color:#333; font-size:1rem;">
-                ${text} ${text} ${text} </div>
-            <button class="whatsapp-btn" style="margin-top:20px;" onclick="closeModal()">إغلاق</button>
-        `;
-        document.getElementById('detailsModal').style.display = "block";
-    }
-
-    // تحديث دالة showPage لتشغيل الرندر عند فتح الصفحة
-    function showPage(pageId, title, navId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        document.getElementById('header-title').innerText = title;
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
-        document.getElementById(navId).classList.add('active-nav');
+        /* الكروت */
+        .card { background: white; border-radius: 15px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        // إخفاء/إظهار السلة
-        document.getElementById('cart-bar').style.display = (pageId === 'market' && cart.length > 0) ? 'block' : 'none';
+        .card-img { width: 100%; height: 220px; object-fit: cover; background: #eee; }
+        .card-content { padding: 15px; }
+        .card-title { margin: 0 0 10px 0; font-size: 1.2rem; color: var(--primary-color); }
+        .card-text { font-size: 0.95rem; line-height: 1.7; color: #555; height: 80px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 
-        // تشغيل الرندر الخاص بكل صفحة
-        if(pageId === 'projects') renderProjects();
-        if(pageId === 'solutions') renderSolutions();
-    }
+        /* الأزرار */
+        .btn-more { width: 100%; background: #e8f0fe; color: var(--primary-color); border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; margin-top: 10px; }
+        
+        /* المتجر */
+        .product-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .prod-img { width: 70px; height: 70px; border-radius: 10px; margin-left: 12px; object-fit: cover; }
+        .prod-info { flex: 1; }
+        .prod-price { color: var(--success-color); font-weight: bold; margin-top: 4px; }
 
-    // تشغيل أولي للسوق
-    renderMarket();
-</script>
+        /* المودال (النافذة المنبثقة) */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
+        .modal-content { background: white; margin: 10% auto; padding: 25px; border-radius: 20px; width: 85%; max-width: 450px; position: relative; max-height: 80vh; overflow-y: auto; text-align: right; }
+        .close-modal { position: absolute; left: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #999; }
+
+        /* التنقل السفلي */
+        nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
+        .nav-item { text-align: center; font-size: 0.8rem; color: #888; cursor: pointer; flex: 1; transition: 0.3s; }
+        .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
+
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <header id="header-title">DH Automation</header>
+
+    <div class="container">
+        <div id="home" class="page active">
+            <h2 style="text-align:center;">أهلاً بك يا هندسة 🛠️</h2>
+            <div class="card" onclick="showPage('projects', 'مشاريعنا', 'nav-projects')">
+                <img src="images/01 (1).jpg" class="card-img" onerror="this.src='https://via.placeholder.com/400x220?text=DH+Project'">
+                <div class="card-content"><h3>استكشف مشاريعنا</h3><p>شاهد أحدث الأنظمة البرمجية ولوحات التحكم التي قمنا بتنفيذها.</p></div>
+            </div>
+            <div class="card" onclick="showPage('market', 'المتجر', 'nav-market')">
+                <img src="images/01 (2).jpg" class="card-img" onerror="this.src='https://via.placeholder.com/400x220?text=DH+Market'">
+                <div class="card-content"><h3>متجر قطع الغيار</h3><p>حساسات، كارتات LVDT، ومستلزمات التحكم الآلي.</p></div>
+            </div>
+        </div>
+
+        <div id="market" class="page">
+            <div id="market-list"></div>
+        </div>
+
+        <div id="projects" class="page">
+            <div id="projects-list"></div>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal" onclick="if(event.target.id === 'detailsModal') closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <nav>
+        <div id="nav-home" class="nav-item active-nav" onclick="showPage('home', 'DH Automation', 'nav-home')">🏠<br>الرئيسية</div>
+        <div id="nav-market" class="nav-item" onclick="showPage('market', 'السوق', 'nav-market')">🛒<br>السوق</div>
+        <div id="nav-projects" class="nav-item" onclick="showPage('projects', 'المشاريع', 'nav-projects')">⚙️<br>المشاريع</div>
+    </nav>
+
+    <script>
+        // بيانات المتجر
+        const products = [
+            { id: 1, name: "حساس NTC الصناعي", price: 150, img: "images/01 (1).jpg", desc: "هذا الحساس مصمم للعمل تحت درجات حرارة عالية تصل إلى 200 درجة مئوية. يتميز بدقة متناهية في القراءة وتوافق تام مع أجهزة التحكم الرقمية. مناسب جداً لماكينات الحقن وخطوط الإنتاج التي تتطلب مراقبة لحظية للحرارة لضمان جودة المنتج النهائي ومنع التلف." },
+            { id: 2, name: "كارت LVDT للمعايرة", price: 1200, img: "images/01 (2).jpg", desc: "كارت احترافي لمعالجة إشارات الـ Linear Variable Differential Transformer. يستخدم في معايرة مشوار البلاطة في ماكينات البلاستيك. الكارت يحتوي على دوائر تنقية نويز (Filter) متقدمة لضمان استقرار القراءة حتى في وجود مواتير وقدرات عالية بجانب الكارت." }
+        ];
+
+        // بيانات المشاريع (كلام كتير للتجربة)
+        const projects = [
+            { 
+                title: "تطوير نظام التحكم في مصنع بلاستيك", 
+                img: "images/01 (3).jpg", 
+                text: "في هذا المشروع قمنا باستبدال نظام التحكم القديم (Relay Logic) بنظام PLC حديث من ماركة Delta. شمل العمل تصميم اللوحة الكهربائية، برمجة الـ HMI لعرض العمليات بشكل رسومي، وربط كارتات LVDT لمعايرة حركة القوالب. النتائج كانت مذهلة حيث انخفض زمن الدورة (Cycle Time) بنسبة 15% وزادت دقة المنتج النهائي بشكل كبير جداً مما أرضى العميل." 
+            },
+            { 
+                title: "لوحة تحسين معامل القدرة PFC", 
+                img: "images/01 (4).jpg", 
+                text: "مشروع متكامل لتوفير استهلاك الكهرباء في ورشة تصنيع كبرى. تم استخدام منظم ذكي يقوم بقياس القدرة الغير فعالة (Reactive Power) وإدخال المكثفات تدريجياً للحفاظ على معامل قدرة قريب من الواحد الصحيح. هذا المشروع ساهم في إلغاء غرامات شركة الكهرباء وتخفيف الحمل على الكابلات والمحولات الرئيسية للورشة."
+            }
+        ];
+
+        // عرض السوق
+        function renderMarket() {
+            const list = document.getElementById('market-list');
+            list.innerHTML = products.map(p => `
+                <div class="product-item" onclick="showDetails('prod', ${p.id})">
+                    <img src="${p.img}" class="prod-img" onerror="this.src='https://via.placeholder.com/70'">
+                    <div class="prod-info">
+                        <strong>${p.name}</strong>
+                        <div class="prod-price">${p.price} ج.م</div>
+                    </div>
+                    <button class="btn-more" style="width:auto; padding:5px 15px;">عرض</button>
+                </div>
+            `).join('');
+        }
+
+        // عرض المشاريع
+        function renderProjects() {
+            const list = document.getElementById('projects-list');
+            list.innerHTML = projects.map((p, index) => `
+                <div class="card">
+                    <img src="${p.img}" class="card-img" onerror="this.src='https://via.placeholder.com/400x220'">
+                    <div class="card-content">
+                        <h3 class="card-title">${p.title}</h3>
+                        <p class="card-text">${p.text}</p>
+                        <button class="btn-more" onclick="showDetails('proj', ${index})">اقرأ المزيد ..</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // فتح المودال بتفاصيل كتير
+        function showDetails(type, id) {
+            let content = "";
+            if(type === 'prod') {
+                const p = products.find(i => i.id === id);
+                content = `<img src="${p.img}" style="width:100%; border-radius:15px;"><br><h2>${p.name}</h2><p style="line-height:1.8;">${p.desc}</p><h3 style="color:var(--success-color)">السعر: ${p.price} ج.م</h3>`;
+            } else {
+                const p = projects[id];
+                content = `<img src="${p.img}" style="width:100%; border-radius:15px;"><br><h2>${p.title}</h2><p style="line-height:1.8;">${p.text} ${p.text} ${p.text}</p>`;
+            }
+            document.getElementById('modalBody').innerHTML = content;
+            document.getElementById('detailsModal').style.display = "block";
+        }
+
+        function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
+
+        function showPage(pageId, title, navId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.getElementById('header-title').innerText = title;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+            document.getElementById(navId).classList.add('active-nav');
+            
+            if(pageId === 'market') renderMarket();
+            if(pageId === 'projects') renderProjects();
+            window.scrollTo(0,0);
+        }
+
+        // تشغيل أولي
+        renderMarket();
+        renderProjects();
+    </script>
+</body>
+</html>
