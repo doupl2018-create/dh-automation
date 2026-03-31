@@ -2,128 +2,187 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DH Automation | مساعد المهندس</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DH Automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* 1. تعريف الألوان الأساسية (الوضع الفاتح - الافتراضي) */
         :root {
-            --bg-body: #f4f7f6;
-            --bg-card: #ffffff;
-            --text-main: #333333;
-            --primary: #007bff;
-            --header-bg: #ffffff;
-            --border-color: #dddddd;
-        }
-
-        /* 2. تبديل الألوان أوتوماتيك لو الموبايل (Dark Mode) */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-body: #0f0f0f;
-                --bg-card: #1e1e26;
-                --text-main: #e0e0e0;
-                --primary: #00d2ff;
-                --header-bg: #1a1a1a;
-                --border-color: #333333;
-            }
+            --primary-color: #1a73e8; /* أزرق تقني */
+            --bg-color: #f8f9fa;
+            --text-color: #333;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0; padding: 0;
-            transition: background 0.3s ease; /* تنعيم النقلة بين الأوضاع */
-        }
-
-        .header {
-            text-align: center;
-            padding: 30px 10px;
-            background: var(--header-bg);
-            border-bottom: 3px solid var(--primary);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .logo-text {
-            font-size: 26px;
-            font-weight: bold;
-            color: var(--primary);
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
-            letter-spacing: 2px;
+            padding: 0;
+            user-select: none; /* منع التحديد لإعطاء إحساس التطبيق */
+            -webkit-tap-highlight-color: transparent;
         }
 
+        /* رأس الصفحة (Header) الثابت */
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* حاوية المحتوى */
         .container {
-            max-width: 500px;
-            margin: 20px auto;
-            padding: 0 15px;
+            padding: 80px 15px 100px 15px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        /* الأقسام (تظهر كأنها صفحات داخلية) */
+        .page {
+            display: none; /* مخفي افتراضياً */
+            animation: fadeIn 0.3s ease-in-out;
         }
 
+        .active {
+            display: block; /* يظهر القسم النشط فقط */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* كروت الأقسام */
         .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            background: white;
             border-radius: 12px;
             padding: 20px;
-            text-decoration: none;
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-right: 5px solid var(--primary-color);
+            cursor: pointer;
             transition: transform 0.2s;
         }
 
-        .card:active { transform: scale(0.95); }
-
-        .card i {
-            font-size: 30px;
-            margin-bottom: 10px;
-            color: var(--primary);
+        .card:active {
+            transform: scale(0.98);
         }
 
-        .footer {
+        /* شريط التنقل السفلي (Bottom Nav) - أهم جزء لإحساس الموبايل */
+        nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
             text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            color: #888;
+            font-size: 0.8rem;
+            color: #666;
+            cursor: pointer;
+            flex: 1;
         }
+
+        .nav-item.active-nav {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .nav-item i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 class="logo-text">DH AUTOMATION</h1>
-        <p style="font-size: 12px; opacity: 0.7;">INDUSTRIAL SOLUTIONS & FIRMWARE</p>
+<header id="header-title">DH Automation</header>
+
+<div class="container">
+    <div id="market" class="page active">
+        <h2>سوق مساعد المهندس</h2>
+        <div class="card">هنا تعرض المنتجات والقطع المتوفرة...</div>
     </div>
 
-    <div class="container">
-        <div class="grid">
-            <a href="#" class="card">
-                <i class="fas fa-book"></i>
-                <span>كتالوجات Sunch</span>
-            </a>
-            <a href="#" class="card">
-                <i class="fas fa-microchip"></i>
-                <span>أكواد PIC</span>
-            </a>
-            <a href="#" class="card">
-                <i class="fas fa-calculator"></i>
-                <span>حسابات هندسية</span>
-            </a>
-            <a href="https://wa.me/201060309904" class="card">
-                <i class="fab fa-whatsapp" style="color: #25d366;"></i>
-                <span>الدعم الفني</span>
-            </a>
-        </div>
+    <div id="projects" class="page">
+        <h2>تطوير تقنيات الحقن</h2>
+        <div class="card">مشاريع تعديل ماكينات البلاستيك وصيانتها...</div>
     </div>
 
-    <div class="footer">
-        <p>Eng. Madbouli © 2026</p>
+    <div id="info" class="page">
+        <h2>معلومات الدعم</h2>
+        <div class="card">مقالات تقنية وكتالوجات Sunch وغيرها...</div>
     </div>
+
+    <div id="support" class="page">
+        <h2>الدعم الفني</h2>
+        <div class="card">تواصل مباشر لحل المشكلات التقنية...</div>
+    </div>
+</div>
+
+<nav>
+    <div class="nav-item active-nav" onclick="showPage('market', 'سوق مساعد المهندس', this)">
+        <span>🛒</span><br>السوق
+    </div>
+    <div class="nav-item" onclick="showPage('projects', 'تطوير التقنيات', this)">
+        <span>⚙️</span><br>المشاريع
+    </div>
+    <div class="nav-item" onclick="showPage('info', 'المعلومات', this)">
+        <span>📚</span><br>المعلومات
+    </div>
+    <div class="nav-item" onclick="showPage('support', 'الدعم', this)">
+        <span>🛠️</span><br>الدعم
+    </div>
+    <div class="nav-item" onclick="openWhatsApp()">
+        <span>💬</span><br>دردشة
+    </div>
+</nav>
+
+<script>
+    function showPage(pageId, title, element) {
+        // إخفاء كل الصفحات
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(p => p.classList.remove('active'));
+
+        // إظهار الصفحة المطلوبة
+        document.getElementById(pageId).classList.add('active');
+
+        // تحديث العنوان في الهيدر
+        document.getElementById('header-title').innerText = title;
+
+        // تحديث شكل القائمة السفلية
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => item.classList.remove('active-nav'));
+        element.classList.add('active-nav');
+
+        // اهتزاز خفيف (Haptic Feedback) لو الاندرويد بيدعمه
+        if (window.navigator.vibrate) {
+            window.navigator.vibrate(50);
+        }
+    }
+
+    function openWhatsApp() {
+        // حط رقمك هنا مكان الرقم ده
+        window.location.href = "https://wa.me/201114394767";
+    }
+
+    // التعامل مع زرار الرجوع في الاندرويد
+    window.onpopstate = function() {
+        // يمكنك إضافة منطق هنا للرجوع للصفحة الرئيسية بدل الخروج من التطبيق
+    };
+</script>
 
 </body>
 </html>
