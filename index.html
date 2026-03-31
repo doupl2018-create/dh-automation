@@ -3,272 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DH Automation Pro</title>
+    <title>DH Automation App</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
-            --primary: #1877f2; /* لون فيسبوك */
-            --bg-body: #f0f2f5;
-            --card-white: #ffffff;
-            --text-main: #050505;
-            --text-sub: #65676b;
-            --accent-green: #42b72a;
-        }
-
-        /* المود الليلي التلقائي */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-body: #18191a;
-                --card-white: #242526;
-                --text-main: #e4e6eb;
-                --text-sub: #b0b3b8;
-            }
+            --primary: #1877f2;
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #050505;
+            --sub-text: #65676b;
+            --green: #42b72a;
+            --red: #fa3e3e;
         }
 
         body {
-            margin: 0; background-color: var(--bg-body);
-            font-family: 'Cairo', sans-serif; padding-bottom: 80px;
-            color: var(--text-main);
+            margin: 0; background: var(--bg); font-family: 'Cairo', sans-serif;
+            color: var(--text); padding-bottom: 80px; overflow-x: hidden;
         }
 
-        /* هيدر عصري */
-        .app-header {
-            background: var(--card-white);
-            padding: 12px 16px;
+        /* نافذة طلب الاسم */
+        #nameModal {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: var(--card); padding: 30px; border-radius: 15px;
+            width: 80%; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .modal-content input {
+            width: 100%; padding: 12px; margin: 15px 0;
+            border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo';
+        }
+        .modal-content button {
+            background: var(--primary); color: white; border: none;
+            padding: 10px 25px; border-radius: 8px; font-weight: bold;
+        }
+
+        /* الهيدر والسلة */
+        .header {
+            background: var(--card); padding: 12px 16px;
             display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        .cart-status {
+            background: var(--primary); color: white; padding: 8px 12px;
+            border-radius: 10px; font-size: 13px; font-weight: bold;
         }
 
-        .app-logo { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
-
-        /* الصفحة الرئيسية (Dashboard) */
-        .home-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 12px; padding: 16px;
-        }
-
-        .nav-box {
-            background: var(--card-white); border-radius: 12px;
-            height: 120px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: 0.2s; border: 1px solid rgba(0,0,0,0.03);
-        }
-
-        .nav-box i { font-size: 2rem; color: var(--primary); margin-bottom: 8px; }
-        .nav-box span { font-weight: 700; font-size: 0.9rem; }
-
-        /* السلة (المتجر العلوي) */
-        .cart-strip {
-            background: var(--primary); color: white;
-            margin: 10px; border-radius: 12px; padding: 15px;
+        /* المتجر */
+        .shop-header {
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+            padding: 15px; background: #e7f3ff; margin: 10px; border-radius: 10px;
         }
-
-        /* كارت المنتج (النسخة المحسنة) */
         .product-card {
-            background: var(--card-white); margin: 8px 10px;
-            border-radius: 12px; padding: 12px;
-            display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: var(--card); margin: 10px; padding: 12px;
+            border-radius: 12px; display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-
-        .product-img { width: 85px; height: 85px; border-radius: 10px; object-fit: cover; }
+        .product-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
         .product-info { flex: 1; }
-        .product-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
-        .product-price { color: var(--accent-green); font-weight: 700; font-size: 0.9rem; }
-
-        .qty-control { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-        .btn-q { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #ddd; background: #f8f9fa; cursor: pointer; }
-        .btn-buy { background: var(--accent-green); color: white; border: none; padding: 6px 16px; border-radius: 6px; font-weight: bold; }
-        .btn-buy.added { background: #dc3545; }
-
-        /* المنشورات (شكل فيسبوك الاحترافي) */
-        .post {
-            background: var(--card-white); margin-top: 10px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        .qty-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+        .btn-add {
+            background: var(--green); color: white; border: none;
+            padding: 6px 15px; border-radius: 6px; font-weight: bold;
         }
+        .btn-add.added { background: var(--red); }
+        .btn-circle { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ddd; background: #f0f2f5; }
 
+        /* المنشورات بشكل احترافي */
+        .post { background: var(--card); margin-top: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 40px; height: 40px; background: #ddd; border-radius: 50%; }
-        .post-meta { font-size: 0.85rem; color: var(--text-sub); line-height: 1.2; }
-        .post-text { padding: 0 16px 12px; font-size: 0.95rem; line-height: 1.5; }
-        .post-image { width: 100%; max-height: 400px; object-fit: cover; border-top: 1px solid #f0f2f5; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #ccc; }
+        .post-text { padding: 0 16px 10px; font-size: 14px; }
         
-        .post-actions {
-            border-top: 1px solid #f0f2f5; border-bottom: 1px solid #f0f2f5;
-            padding: 8px 16px; display: flex; justify-content: space-around;
+        /* معرض الصور في المنشور */
+        .post-gallery {
+            display: flex; overflow-x: auto; gap: 5px; padding: 0 5px;
+            scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+        }
+        .post-gallery img {
+            width: 85%; flex-shrink: 0; height: 250px; 
+            object-fit: cover; border-radius: 5px; scroll-snap-align: start;
         }
 
-        .action-item { color: var(--text-sub); font-size: 0.9rem; font-weight: 600; cursor: pointer; }
-        .action-item i { margin-left: 5px; }
+        .post-footer { border-top: 1px solid #eee; padding: 10px; display: flex; justify-content: space-around; color: var(--sub-text); font-size: 13px; }
 
-        /* شريط سفلي - يشبه التطبيقات الحقيقية */
-        .bottom-bar {
-            position: fixed; bottom: 0; width: 100%;
-            background: var(--card-white); display: flex;
-            padding: 10px 0; border-top: 1px solid rgba(0,0,0,0.08);
-            z-index: 1000;
+        /* الأقسام الأربعة (الرئيسية) */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
+        .grid-item {
+            background: var(--card); height: 120px; border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-weight: bold;
         }
+        .grid-item i { font-size: 30px; color: var(--primary); margin-bottom: 10px; }
 
-        .bar-item { flex: 1; text-align: center; color: var(--text-sub); transition: 0.2s; }
-        .bar-item.active { color: var(--primary); }
-        .bar-item i { font-size: 1.4rem; display: block; margin-bottom: 2px; }
-        .bar-item span { font-size: 0.7rem; font-weight: 700; }
+        /* الناف بار السفلي */
+        .nav {
+            position: fixed; bottom: 0; width: 100%; background: var(--card);
+            display: flex; border-top: 1px solid #ddd; padding: 10px 0;
+        }
+        .nav-item { flex: 1; text-align: center; color: var(--sub-text); font-size: 12px; }
+        .nav-item.active { color: var(--primary); }
 
         .hidden { display: none; }
-        .back-btn { font-size: 1.2rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="app-header">
-        <div id="headerLeft"><i class="fas fa-bars"></i></div>
-        <div class="app-logo" id="pageTitle">DH Automation</div>
-        <div id="headerRight" class="back-btn hidden" onclick="goHome()"><i class="fas fa-chevron-left"></i></div>
+    <div id="nameModal" class="hidden">
+        <div class="modal-content">
+            <h3>مرحباً بك يا هندسة</h3>
+            <p>برجاء إدخال اسمك للتواصل معك</p>
+            <input type="text" id="userNameInput" placeholder="اكتب اسمك هنا...">
+            <button onclick="saveUserName()">دخول التطبيق</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <div style="font-weight: 800; color: var(--primary);">DH Automation</div>
+        <div class="cart-status">
+            <i class="fas fa-shopping-basket"></i> <span id="cartCount">0</span> قِطع
+        </div>
     </div>
 
     <div id="homePage">
-        <div class="home-grid">
-            <div class="nav-box" onclick="showSection('shop', 'سوق المهندس')">
-                <i class="fas fa-shopping-cart"></i>
-                <span>سوق مساعد المهندس</span>
-            </div>
-            <div class="nav-box" onclick="showSection('solutions', 'الحلول الصناعية')">
-                <i class="fas fa-lightbulb"></i>
-                <span>الحلول الصناعية</span>
-            </div>
-            <div class="nav-box" onclick="showSection('control', 'التحكم الآلي')">
-                <i class="fas fa-microchip"></i>
-                <span>التحكم الآلي</span>
-            </div>
-            <div class="nav-box" onclick="showSection('projects', 'مشاريعنا')">
-                <i class="fas fa-folder-open"></i>
-                <span>مشاريعنا</span>
-            </div>
+        <div class="grid">
+            <div class="grid-item" onclick="showPage('shop')"><i class="fas fa-store"></i>سوق المهندس</div>
+            <div class="grid-item" onclick="showPage('posts')"><i class="fas fa-tools"></i>الحلول الصناعية</div>
+            <div class="grid-item" onclick="showPage('posts')"><i class="fas fa-cpu"></i>التحكم الآلي</div>
+            <div class="grid-item" onclick="showPage('posts')"><i class="fas fa-diagram-project"></i>مشاريعنا</div>
         </div>
     </div>
 
     <div id="shopPage" class="hidden">
-        <div class="cart-strip">
-            <div style="font-weight: 700;">
-                <button onclick="alert('جاري الإرسال...')" style="background:white; color:var(--primary); border:none; padding:5px 12px; border-radius:5px; font-weight:bold">إرسال</button>
-                <button onclick="clearCart()" style="background:#ffc107; color:black; border:none; padding:5px 12px; border-radius:5px; font-weight:bold; margin-right:5px">إفراغ</button>
-            </div>
-            <div><i class="fas fa-basket-shopping"></i> <span id="cartInfo">0 (0 ج)</span></div>
+        <div class="shop-header">
+            <button onclick="clearCart()" style="background:var(--red); color:white; border:none; padding:5px 15px; border-radius:5px;">إفراغ السلة</button>
+            <div style="font-weight: bold;">المجموع: <span id="cartTotal">0</span> ج.م</div>
+            <button onclick="alert('جاري إرسال طلبك عبر الواتساب...')" style="background:var(--green); color:white; border:none; padding:5px 15px; border-radius:5px;">إرسال</button>
         </div>
 
-        <div class="product-card">
-            <div class="product-info">
-                <div class="product-name">كارت مساطر سنترتو</div>
-                <div class="product-price">290 ج.م</div>
-                <div class="qty-control">
-                    <button id="btn-p1" class="btn-buy" onclick="toggleCart('p1', 'كارت مساطر', 290)">أضف</button>
-                    <button class="btn-q" onclick="updateQ('p1', 1)">+</button>
-                    <input type="text" id="q-p1" value="1" class="btn-q" style="width:30px; border:none; text-align:center" readonly>
-                    <button class="btn-q" onclick="updateQ('p1', -1)">-</button>
+        <div id="productList">
+            <div class="product-card">
+                <div class="product-info">
+                    <div style="font-weight:bold">كارت مساطر سنترتو</div>
+                    <div style="color:var(--green); font-size:13px">290 ج.م</div>
+                    <div class="qty-row">
+                        <button id="btn-p1" class="btn-add" onclick="toggleCart('p1', 'كارت مساطر', 290)">أضف</button>
+                        <button class="btn-circle" onclick="changeQty('p1', 1)">+</button>
+                        <span id="q-p1">1</span>
+                        <button class="btn-circle" onclick="changeQty('p1', -1)">-</button>
+                    </div>
                 </div>
+                <img src="images/01 (1).jpg" class="product-img">
             </div>
-            <img src="images/01 (1).jpg" class="product-img">
+            <div class="product-card">
+                <div class="product-info">
+                    <div style="font-weight:bold">كارت خرج 10 قناة</div>
+                    <div style="color:var(--green); font-size:13px">1800 ج.م</div>
+                    <div class="qty-row">
+                        <button id="btn-p2" class="btn-add" onclick="toggleCart('p2', 'كارت خرج 10', 1800)">أضف</button>
+                        <button class="btn-circle" onclick="changeQty('p2', 1)">+</button>
+                        <span id="q-p2">1</span>
+                        <button class="btn-circle" onclick="changeQty('p2', -1)">-</button>
+                    </div>
+                </div>
+                <img src="images/01 (2).jpg" class="product-img">
+            </div>
         </div>
     </div>
 
     <div id="postsPage" class="hidden">
         <div class="post">
             <div class="post-header">
-                <div class="user-avatar"></div>
-                <div class="post-meta">
-                    <div style="font-weight: 800; color: var(--text-main);">DH Automation</div>
-                    <div>ساعة واحدة • <i class="fas fa-globe-americas"></i></div>
-                </div>
+                <div class="avatar"></div>
+                <div><b>DH Automation</b><br><small>منذ ساعتين • <i class="fas fa-globe-americas"></i></small></div>
             </div>
-            <div class="post-text">
-                تم اليوم تشغيل لوحة التحكم الخاصة بمصنع الغزل والنسيج. استخدمنا فيها تقنيات التحكم الذكي لضمان أعلى كفاءة.
+            <div class="post-text">أحدث مشاريع الأتمتة - معاينة لوحة التحكم الجديدة (صور متعددة)</div>
+            <div class="post-gallery">
+                <img src="images/01 (3).jpg">
+                <img src="images/01 (4).jpg">
+                <img src="images/01 (5).jpg">
             </div>
-            <img src="images/01 (3).jpg" class="post-image">
-            <div class="post-actions">
-                <div class="action-item"><i class="far fa-thumbs-up"></i> إعجاب</div>
-                <div class="action-item" onclick="quickComment()"><i class="far fa-comment"></i> تعليق سريع</div>
+            <div class="post-footer" onclick="addComment()">
+                <span><i class="far fa-thumbs-up"></i> إعجاب</span>
+                <span><i class="far fa-comment"></i> تعليق سريع</span>
             </div>
         </div>
     </div>
 
-    <div class="bottom-bar">
-        <div class="bar-item" onclick="goHome()"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-        <div class="bar-item" onclick="showSection('shop', 'المتجر')"><i class="fas fa-store"></i><span>المتجر</span></div>
-        <div class="bar-item" onclick="showSection('posts', 'المنشورات')"><i class="fas fa-users"></i><span>المجتمع</span></div>
+    <div class="nav">
+        <div class="nav-item active" onclick="showPage('home')"><i class="fas fa-home fa-lg"></i><br>الرئيسية</div>
+        <div class="nav-item" onclick="showPage('shop')"><i class="fas fa-store fa-lg"></i><br>المتجر</div>
+        <div class="nav-item" onclick="showPage('posts')"><i class="fas fa-rss fa-lg"></i><br>المنشورات</div>
     </div>
 
     <script>
-        let cart = JSON.parse(localStorage.getItem('dh_v3')) || {};
+        let cart = JSON.parse(localStorage.getItem('dh_v4')) || {};
 
-        function showSection(id, title) {
+        window.onload = () => {
+            // التحقق من الاسم
+            if (!localStorage.getItem('user_name')) {
+                document.getElementById('nameModal').classList.remove('hidden');
+            }
+            updateUI();
+        };
+
+        function saveUserName() {
+            let name = document.getElementById('userNameInput').value;
+            if (name.trim() !== "") {
+                localStorage.setItem('user_name', name);
+                document.getElementById('nameModal').classList.add('hidden');
+            } else {
+                alert("برجاء إدخال اسمك يا هندسة!");
+            }
+        }
+
+        function showPage(id) {
             document.getElementById('homePage').classList.add('hidden');
             document.getElementById('shopPage').classList.add('hidden');
             document.getElementById('postsPage').classList.add('hidden');
-            document.getElementById(id === 'shop' ? 'shopPage' : (id === 'home' ? 'homePage' : 'postsPage')).classList.remove('hidden');
-            document.getElementById('pageTitle').innerText = title;
-            document.getElementById('headerRight').classList.remove('hidden');
+            document.getElementById(id + 'Page').classList.remove('hidden');
+            
+            // تحديث حالة الناف بار
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            // كود بسيط لتغيير لون الأيقونة المختارة
         }
 
-        function goHome() {
-            showSection('home', 'DH Automation');
-            document.getElementById('headerRight').classList.add('hidden');
-        }
-
-        function updateQ(id, delta) {
+        function changeQty(id, delta) {
             let el = document.getElementById('q-' + id);
-            let val = parseInt(el.value) + delta;
-            if(val >= 1) {
-                el.value = val;
-                if(cart[id]) { cart[id].qty = val; save(); }
+            let val = parseInt(el.innerText) + delta;
+            if (val >= 1) {
+                el.innerText = val;
+                if (cart[id]) { cart[id].qty = val; save(); }
             }
         }
 
         function toggleCart(id, name, price) {
             let btn = document.getElementById('btn-' + id);
-            if(cart[id]) {
+            if (cart[id]) {
                 delete cart[id];
-                btn.classList.remove('added'); btn.innerText = "أضف";
+                btn.classList.remove('added');
+                btn.innerText = "أضف";
             } else {
-                let qty = parseInt(document.getElementById('q-' + id).value);
+                let qty = parseInt(document.getElementById('q-' + id).innerText);
                 cart[id] = { name, price, qty };
-                btn.classList.add('added'); btn.innerText = "إلغاء";
+                btn.classList.add('added');
+                btn.innerText = "إلغاء";
             }
             save();
         }
 
+        function clearCart() {
+            if (confirm("هل تريد إفراغ السلة بالكامل؟")) {
+                cart = {};
+                localStorage.removeItem('dh_v4');
+                // إعادة ضبط كل الأزرار والكميات يدوياً
+                document.querySelectorAll('.btn-add').forEach(btn => {
+                    btn.classList.remove('added');
+                    btn.innerText = "أضف";
+                });
+                document.querySelectorAll('[id^="q-"]').forEach(q => q.innerText = "1");
+                updateUI();
+            }
+        }
+
         function save() {
-            localStorage.setItem('dh_v3', JSON.stringify(cart));
+            localStorage.setItem('dh_v4', JSON.stringify(cart));
             updateUI();
         }
 
         function updateUI() {
-            let total = 0, count = 0;
-            for(let id in cart) {
-                count++; total += (cart[id].price * cart[id].qty);
+            let count = 0, total = 0;
+            for (let id in cart) {
+                count++;
+                total += (cart[id].price * cart[id].qty);
                 let btn = document.getElementById('btn-' + id);
-                if(btn) {
-                    btn.classList.add('added'); btn.innerText = "إلغاء";
-                    document.getElementById('q-' + id).value = cart[id].qty;
+                if (btn) {
+                    btn.classList.add('added');
+                    btn.innerText = "إلغاء";
+                    document.getElementById('q-' + id).innerText = cart[id].qty;
                 }
             }
-            document.getElementById('cartInfo').innerText = count + " (" + total + " ج)";
+            document.getElementById('cartCount').innerText = count;
+            document.getElementById('cartTotal').innerText = total;
         }
 
-        function quickComment() {
-            let name = localStorage.getItem('app_user') || prompt("اكتب اسمك للتعليق مرة واحدة:");
-            if(name) {
-                localStorage.setItem('app_user', name);
-                alert("شكراً يا مهندس " + name + "، تم استلام تعليقك.");
-            }
+        function addComment() {
+            let user = localStorage.getItem('user_name');
+            alert("أهلاً يا بشمهندس " + user + "، تم إرسال تعليقك!");
         }
-
-        window.onload = updateUI;
     </script>
 </body>
 </html>
