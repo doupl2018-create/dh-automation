@@ -5,42 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DH Automation</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         :root { --primary-color: #1a73e8; --bg-color: #f0f2f5; --success-color: #28a745; --danger-color: #dc3545; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; direction: rtl; }
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
-        /* المنشورات والسلايدر */
-        .post-card { background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
-        .post-header { padding: 12px; border-bottom: 1px solid #f0f0f0; font-weight: bold; }
-        .post-gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; background: #eee; }
-        .post-gallery::-webkit-scrollbar { display: none; }
-        .post-gallery img { width: 100%; flex-shrink: 0; height: 250px; object-fit: contain; scroll-snap-align: start; }
-        .post-content { padding: 15px; font-size: 0.95rem; }
-
-        /* السوق والمنتجات */
+        /* تنسيق التصنيفات */
         .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
-        .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; }
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; }
         .cat-btn.active-cat { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        /* الكروت والمنتجات */
+        .home-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .category-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; }
         
-        .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; }
-        .product-img { width: 65px; height: 65px; border-radius: 8px; margin-left: 10px; }
+        .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+        .product-img { width: 60px; height: 60px; border-radius: 8px; margin-left: 15px; border: 1px solid #eee; }
         .product-info { flex: 1; }
         .product-info h4 { margin: 0; font-size: 0.9rem; }
         .product-info p { margin: 5px 0 0; color: var(--primary-color); font-weight: bold; }
 
-        /* أزرار الزيادة والنقصان */
-        .controls { display: flex; gap: 8px; align-items: center; margin-top: 10px; width: 100%; justify-content: flex-end; }
-        .qty-control { display: flex; align-items: center; gap: 10px; background: #f8f9fa; border-radius: 6px; padding: 5px 10px; border: 1px solid #ddd; }
-        .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; color: var(--primary-color); font-size: 1.2rem; }
-        .add-btn { border: none; padding: 8px 15px; border-radius: 6px; color: white; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; }
+        .controls { display: flex; gap: 8px; align-items: center; margin-top: 5px; }
+        .qty-control { display: flex; align-items: center; gap: 5px; background: #f8f9fa; border-radius: 6px; padding: 4px 8px; border: 1px solid #ddd; }
+        .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; color: var(--primary-color); }
 
-        /* الكارت والناف */
-        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; display: none; box-sizing: border-box; }
+        .add-btn { background: var(--success-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
+        .details-btn { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
+
+        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; box-sizing: border-box; display: none; }
+        .cart-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
+        
         nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-item { text-align: center; font-size: 0.85rem; color: #666; cursor: pointer; flex: 1; }
         .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
+
+        /* نافذة التفاصيل */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); overflow-y: auto; }
+        .modal-content { background: white; margin: 40px auto; padding: 25px; border-radius: 20px; width: 85%; max-width: 450px; text-align: center; position: relative; pointer-events: auto; }
+        .close-modal { position: absolute; left: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #aaa; z-index: 2001; }
+        
+        .page { display: none; }
+        .page.active { display: block; }
     </style>
 </head>
 <body>
@@ -49,31 +58,33 @@
 
     <div class="container">
         <div id="home" class="page active">
-            <div style="display: grid; gap: 15px;">
-                <div class="post-card" onclick="showPage('market', 'سوق المهندس', document.getElementById('nav-market'))" style="padding:20px; text-align:center; cursor:pointer; background:#e8f0fe; color:var(--primary-color)"><h3>🛒 دخول السوق</h3></div>
-                <div id="home-posts"></div>
+            <div class="home-grid">
+                <div class="category-card" onclick="showPage('market', 'سوق مساعد المهندس', document.getElementById('nav-market'))"><i>🛒</i><h3>سوق مساعد المهندس</h3></div>
+                <div class="category-card" onclick="showPage('solutions', 'الحلول الصناعية', document.getElementById('nav-home'))"><i>🏭</i><h3>الحلول الصناعية</h3></div>
+                <div class="category-card" onclick="showPage('automation', 'التحكم الآلي', document.getElementById('nav-home'))"><i>🤖</i><h3>التحكم الآلي</h3></div>
+                <div class="category-card" onclick="showPage('projects', 'مشاريعنا', document.getElementById('nav-projects'))"><i>⚙️</i><h3>مشاريعنا</h3></div>
             </div>
         </div>
 
         <div id="market" class="page">
             <div class="categories-bar">
                 <button class="cat-btn active-cat" onclick="filterMarket('الكل', this)">الكل</button>
-                <button class="cat-btn" onclick="filterMarket('كارتات', this)">كارتات</button>
+                <button class="cat-btn" onclick="filterMarket('كارتات إلكترونية', this)">كارتات إلكترونية</button>
+                <button class="cat-btn" onclick="filterMarket('كلاسيك كنترول', this)">كلاسيك كنترول</button>
                 <button class="cat-btn" onclick="filterMarket('أجهزة', this)">أجهزة</button>
+                <button class="cat-btn" onclick="filterMarket('معدات صناعية', this)">معدات صناعية</button>
             </div>
             <div id="market-products"></div>
         </div>
 
-        <div id="solutions" class="page"></div>
-        <div id="projects" class="page"></div>
+        <div id="solutions" class="page"><h3>قريباً الحلول الصناعية</h3></div>
+        <div id="automation" class="page"><h3>قريباً التحكم الآلي</h3></div>
+        <div id="projects" class="page"><h3>معرض أعمالنا</h3></div>
     </div>
 
     <div id="cart-bar" class="floating-cart">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
-            <span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color); font-weight:bold;">تفريغ السلة 🗑️</span>
-        </div>
-        <button class="whatsapp-btn" onclick="checkoutWhatsApp()" style="width:100%; background:var(--success-color); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; font-family:'Cairo'">إتمام الطلب (واتساب) ✅</button>
+        <div class="cart-info"><span>الإجمالي: <b id="total-price">0</b> ج.م</span><span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color)">تفريغ 🗑️</span></div>
+        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">إتمام الشراء (واتساب) ✅</button>
     </div>
 
     <nav>
@@ -82,109 +93,34 @@
         <div id="nav-projects" class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️<br>المشاريع</div>
     </nav>
 
+    <div id="detailsModal" class="modal" onclick="closeModalOnEmpty(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
     <script>
         const products = [
-            { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg' },
-            { id: '2', cat: 'كارتات', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg' }
+            { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق لماكينات الحقن.' },
+            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة.' }
         ];
-
-        const postsData = {
-            home: [{ title: 'خدماتنا', text: 'صيانة وبرمجة بأعلى دقة.', images: ['images/01 (1).jpg', 'images/01 (2).jpg'] }],
-            projects: [{ title: 'مشروع بلاستيك', text: 'تم تحديث اللوحة.', images: ['images/01 (3).jpg'] }]
-        };
 
         let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
 
         function renderMarket(filter = 'الكل') {
             const container = document.getElementById('market-products');
             const filtered = filter === 'الكل' ? products : products.filter(p => p.cat === filter);
-            
             container.innerHTML = filtered.map(p => {
                 const cartItem = cart.find(i => i.id === p.id);
                 return `
-                <div class="product-row" id="prod-${p.id}">
-                    <img src="${p.img}" class="product-img">
-                    <div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div>
-                    <div class="controls">
-                        <div class="qty-control">
-                            <button onclick="changeQty('${p.id}', 1)">+</button>
-                            <span id="qty-${p.id}">${cartItem ? cartItem.qty : 1}</span>
-                            <button onclick="changeQty('${p.id}', -1)">-</button>
-                        </div>
-                        <button class="add-btn" 
-                            style="background:${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" 
-                            onclick="toggleCart('${p.id}')">
-                            ${cartItem ? 'إلغاء' : 'إضافة'}
-                        </button>
-                    </div>
+                <div class="product-row" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+                    <div style="display:flex; align-items:center;"><img src="${p.img}" class="product-img"><div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div></div>
+                    <div class="controls"><div class="qty-control"><button onclick="changeQty(this, 1)">+</button><span class="qty-val">${cartItem ? cartItem.qty : 1}</span><button onclick="changeQty(this, -1)">-</button></div>
+                    <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button><button class="add-btn" style="background: ${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" onclick="toggleCart(this)">${cartItem ? 'إلغاء' : 'إضافة'}</button></div>
                 </div>`;
             }).join('');
             updateTotal();
-        }
-
-        function changeQty(id, delta) {
-            const qtySpan = document.getElementById(`qty-${id}`);
-            let current = parseInt(qtySpan.innerText);
-            if (current + delta >= 1) {
-                qtySpan.innerText = current + delta;
-                let item = cart.find(i => i.id === id);
-                if (item) { item.qty = current + delta; saveCart(); updateTotal(); }
-            }
-        }
-
-        function toggleCart(id) {
-            const p = products.find(x => x.id === id);
-            const index = cart.findIndex(i => i.id === id);
-            const btn = document.querySelector(`#prod-${id} .add-btn`);
-            const qty = parseInt(document.getElementById(`qty-${id}`).innerText);
-
-            if (index === -1) {
-                cart.push({ ...p, qty });
-                btn.innerText = "إلغاء"; btn.style.background = "var(--danger-color)";
-            } else {
-                cart.splice(index, 1);
-                btn.innerText = "إضافة"; btn.style.background = "var(--success-color)";
-            }
-            saveCart(); updateTotal();
-        }
-
-        function updateTotal() {
-            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            document.getElementById('total-price').innerText = total;
-            document.getElementById('cart-bar').style.display = (total > 0 && document.getElementById('market').classList.contains('active')) ? 'block' : 'none';
-        }
-
-        function clearCart() { cart = []; saveCart(); renderMarket(); }
-        function saveCart() { localStorage.setItem('dh_cart', JSON.stringify(cart)); }
-
-        function showPage(pageId, title, element) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.getElementById('header-title').innerText = title;
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-            if(element) element.classList.add('active-nav');
-            
-            if(pageId === 'home') renderPosts('home-posts', 'home');
-            if(pageId === 'projects') renderPosts('projects', 'projects');
-            if(pageId === 'market') renderMarket();
-            
-            updateTotal();
-            if (pageId !== 'home') window.history.pushState({ page: pageId, title: title }, title);
-        }
-
-        window.onpopstate = function(event) {
-            if (event.state) showPage(event.state.page, event.state.title, null);
-            else showPage('home', 'DH Automation', document.getElementById('nav-home'));
-        };
-
-        function renderPosts(id, key) {
-            const container = document.getElementById(id);
-            container.innerHTML = (postsData[key] || []).map(post => `
-                <div class="post-card">
-                    <div class="post-header">${post.title}</div>
-                    <div class="post-gallery">${post.images.map(img => `<img src="${img}">`).join('')}</div>
-                    <div class="post-content">${post.text}</div>
-                </div>`).join('');
         }
 
         function filterMarket(cat, btn) {
@@ -193,15 +129,68 @@
             renderMarket(cat);
         }
 
+        function showPage(pageId, title, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.getElementById('header-title').innerText = title;
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
+            if(element) element.classList.add('active-nav');
+            document.getElementById('cart-bar').style.display = (pageId === 'market') ? 'block' : 'none';
+        }
+
+        function saveCart() { localStorage.setItem('dh_cart', JSON.stringify(cart)); }
+        function changeQty(btn, delta) {
+            let row = btn.closest('.product-row');
+            let qtySpan = row.querySelector('.qty-val');
+            let currentQty = parseInt(qtySpan.innerText);
+            if (currentQty + delta >= 1) {
+                qtySpan.innerText = currentQty + delta;
+                let item = cart.find(i => i.id === row.getAttribute('data-id'));
+                if (item) { item.qty = currentQty + delta; saveCart(); updateTotal(); }
+            }
+        }
+
+        function toggleCart(btn) {
+            let row = btn.closest('.product-row');
+            let id = row.getAttribute('data-id');
+            if (btn.innerText === "إضافة") {
+                cart.push({ id, name: row.getAttribute('data-name'), price: parseInt(row.getAttribute('data-price')), qty: parseInt(row.querySelector('.qty-val').innerText) });
+                btn.innerText = "إلغاء"; btn.style.background = "var(--danger-color)";
+            } else {
+                cart = cart.filter(i => i.id !== id);
+                btn.innerText = "إضافة"; btn.style.background = "var(--success-color)";
+            }
+            saveCart(); updateTotal();
+        }
+
+        function updateTotal() { document.getElementById('total-price').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0); }
+        function clearCart() { cart = []; localStorage.removeItem('dh_cart'); renderMarket(); }
+        
         function checkoutWhatsApp() {
-            let msg = "*طلب جديد من DH Automation*%0A" + cart.map(i => `• ${i.name} (${i.qty})`).join("%0A");
+            let msg = "*طلب جديد من DH Automation*%0A%0A" + cart.map(i => `• ${i.name} (${i.qty})`).join("%0A");
             window.open(`https://wa.me/201227091465?text=${msg}%0A%0A*الإجمالي: ${document.getElementById('total-price').innerText} ج.م*`, '_blank');
         }
 
-        window.onload = () => {
-            renderPosts('home-posts', 'home');
-            window.history.replaceState({ page: 'home', title: 'DH Automation' }, 'DH Automation');
-        };
+        function showDetails(id) {
+            const p = products.find(item => item.id === id);
+            document.getElementById('modalBody').innerHTML = `<img src="${p.img}" style="width:100%; border-radius:12px;"><h3>${p.name}</h3><p>${p.desc}</p>`;
+            document.getElementById('detailsModal').style.display = "block";
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModal() { 
+            document.getElementById('detailsModal').style.display = "none"; 
+            document.body.style.overflow = "auto";
+        }
+
+        // الوظيفة اللي طلبتها: لو داس في الفراغ يقفل
+        function closeModalOnEmpty(event) {
+            if (event.target.id === "detailsModal") {
+                closeModal();
+            }
+        }
+
+        renderMarket();
     </script>
 </body>
 </html>
