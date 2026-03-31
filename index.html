@@ -1,246 +1,90 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DH Automation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { --primary-color: #1a73e8; --bg-color: #f0f2f5; --success-color: #28a745; --danger-color: #dc3545; --gray: #6c757d; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; direction: rtl; }
-        header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .container { padding: 75px 15px 230px 15px; max-width: 600px; margin: 0 auto; } 
+<script>
+    // تحديث مصفوفة المنتجات بالصور الحقيقية من GitHub الخاص بك
+    const products = [
+        { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس حرارة عالي الدقة، مصمم خصيصاً للعمل في البيئات الصناعية القاسية مثل ماكينات حقن البلاستيك والغلايات. يتميز بسرعة الاستجابة الحرارية ومقاومة عالية للتآكل.' },
+        { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT المطور', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة (LVDT Card) النسخة الاحترافية. يدعم مخارج تناظرية دقيقة وتوافق كامل مع أنظمة التحكم PLC المختلفة. يضمن استقرار الإشارة حتى في وجود نويز عالي.' },
+        { id: '3', cat: 'كلاسيك كنترول', name: 'كونتاكتور شنايدر 18A', price: 850, img: 'images/01 (3).jpg', desc: 'كونتاكتور أصلي لتحمل الأحمال الشاقة، مناسب للمواتير بقدرة تصل إلى 7.5 حصان. عمر افتراضي طويل ونقاط تلامس من الفضة عالية الجودة.' },
+        { id: '4', cat: 'أجهزة', name: 'تايمر ديجيتال متعدد الوظائف', price: 450, img: 'images/01 (4).jpg', desc: 'تايمر بـ 8 أوضاع تشغيل مختلفة، شاشة LED واضحة، وسهولة في البرمجة. مثالي للوحات التحكم التي تتطلب توقيتات دقيقة جداً.' },
+        { id: '5', cat: 'معدات صناعية', name: 'باور سبلاي 24V 10A', price: 950, img: 'images/01 (5).jpg', desc: 'مزود طاقة بنظام سويتشينج مود، يوفر تيار مستقر جداً لتغذية الحساسات والكارتات الإلكترونية، مع حماية ضد القفلة وزيادة الحمل.' }
+    ];
 
-        /* التصنيفات */
-        .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
-        .categories-bar::-webkit-scrollbar { display: none; }
-        .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 18px; border-radius: 25px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; transition: 0.3s; }
-        .cat-btn.active-cat { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+    // بيانات صفحة المشاريع (لعرض المنشورات الطويلة)
+    const projectsData = [
+        {
+            title: "تطوير خط إنتاج بلاستيك بالكامل",
+            img: "images/01 (1).jpg",
+            text: "تم بحمد الله الانتهاء من تحديث نظام التحكم لخط إنتاج بالكامل. قمنا باستبدال الأنظمة القديمة بكارتات LVDT مطورة من إنتاجنا للتحكم في حركة البلاطة، مع ربطها بشاشات HMI لتسهيل المراقبة. تم تحسين الإنتاجية بنسبة 30% وتقليل الهالك بشكل ملحوظ."
+        },
+        {
+            title: "نظام توفير الطاقة للمصانع",
+            img: "images/01 (3).jpg",
+            text: "مشروع تحسين معامل القدرة (Power Factor Correction). استخدمنا فيها مكثفات بجودة عالية ونظام تحكم ذكي يعتمد على ميكروكنترولر PIC18F للحفاظ على استهلاك الطاقة في الحدود المثالية وتجنب غرامات الكهرباء."
+        }
+    ];
 
-        /* الكروت والمنتجات */
-        .home-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .category-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s; }
-        .category-card:active { transform: scale(0.98); }
-        
-        .product-row { background: white; padding: 12px; margin-bottom: 12px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .product-img { width: 65px; height: 65px; border-radius: 8px; margin-left: 12px; object-fit: cover; border: 1px solid #eee; }
-        .product-info { flex: 1; }
-        .product-info h4 { margin: 0; font-size: 0.95rem; color: #333; }
-        .product-info p { margin: 4px 0 0; color: var(--primary-color); font-weight: bold; }
-
-        .controls { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-        .qty-control { display: flex; align-items: center; gap: 8px; background: #f1f3f4; border-radius: 8px; padding: 2px 8px; }
-        .qty-control button { border: none; background: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: var(--primary-color); padding: 0 5px; }
-        
-        .action-btns { display: flex; gap: 5px; }
-        .add-btn { border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; font-size: 0.8rem; min-width: 65px; color: white; transition: 0.2s; }
-        .details-btn { background: #e8f0fe; color: var(--primary-color); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; font-size: 0.8rem; }
-
-        /* السلة العائمة */
-        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); z-index: 999; display: none; border-radius: 15px 15px 0 0; }
-        .cart-info { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
-        .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; font-family: 'Cairo'; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
-        
-        nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
-        .nav-item { text-align: center; font-size: 0.75rem; color: #888; cursor: pointer; transition: 0.2s; }
-        .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
-
-        /* المودال المطور */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: white; margin: 15% auto; padding: 20px; border-radius: 20px; width: 85%; max-width: 400px; text-align: center; position: relative; }
-        .close-modal { position: absolute; left: 15px; top: 10px; font-size: 28px; cursor: pointer; color: #999; }
-        
-        .page { display: none; }
-        .page.active { display: block; }
-    </style>
-</head>
-<body>
-
-    <header id="header-title">DH Automation</header>
-
-    <div class="container">
-        <div id="home" class="page active">
-            <div class="home-grid">
-                <div class="category-card" onclick="showPage('market', 'سوق مساعد المهندس', 'nav-market')"><h3>🛒 سوق مساعد المهندس</h3></div>
-                <div class="category-card" onclick="showPage('solutions', 'الحلول الصناعية', 'nav-home')"><h3>🏭 الحلول الصناعية</h3></div>
-                <div class="category-card" onclick="showPage('projects', 'مشاريعنا', 'nav-projects')"><h3>⚙️ مشاريعنا</h3></div>
+    // دالة عرض المشاريع في صفحة "مشاريعنا"
+    function renderProjects() {
+        const container = document.getElementById('projects');
+        container.innerHTML = `<h2 style="text-align:center; padding:20px;">معرض أعمالنا ⚙️</h2>` + projectsData.map(p => `
+            <div style="background:white; margin:15px; border-radius:15px; overflow:hidden; box-shadow:0 3px 10px rgba(0,0,0,0.1);">
+                <img src="${p.img}" style="width:100%; height:200px; object-fit:cover;">
+                <div style="padding:15px;">
+                    <h3 style="margin-top:0;">${p.title}</h3>
+                    <p style="color:#555; font-size:0.9rem; line-height:1.6;">${p.text}</p>
+                    <button class="details-btn" style="width:100%; padding:10px;" onclick="showPostDetails('${p.title}', '${p.img}', '${p.text}')">اقرأ المزيد عن المشروع</button>
+                </div>
             </div>
-        </div>
+        `).join('');
+    }
 
-        <div id="market" class="page">
-            <div class="categories-bar">
-                <button class="cat-btn active-cat" onclick="filterMarket('الكل', this)">الكل</button>
-                <button class="cat-btn" onclick="filterMarket('كارتات إلكترونية', this)">كارتات إلكترونية</button>
-                <button class="cat-btn" onclick="filterMarket('كلاسيك كنترول', this)">كلاسيك كنترول</button>
-                <button class="cat-btn" onclick="filterMarket('أجهزة', this)">أجهزة</button>
+    // دالة عرض الحلول الصناعية
+    function renderSolutions() {
+        const container = document.getElementById('solutions');
+        container.innerHTML = `
+            <div style="padding:20px; text-align:center;">
+                <h2>الحلول الصناعية 🛠️</h2>
+                <div style="background:white; padding:20px; border-radius:15px; margin-bottom:15px;">
+                    <img src="images/01 (2).jpg" style="width:100%; border-radius:10px;">
+                    <h3>برمجة الـ PLC والـ HMI</h3>
+                    <p>نقدم خدمات البرمجة المتقدمة لأنظمة Siemens و Delta و Invt. حلول ذكية لربط الماكينات ببعضها وتسهيل عملية التشغيل.</p>
+                </div>
+                <div style="background:white; padding:20px; border-radius:15px;">
+                    <img src="images/01 (4).jpg" style="width:100%; border-radius:10px;">
+                    <h3>تصميم اللوحات الكهربائية</h3>
+                    <p>تصميم وتجميع لوحات الباور والكنترول بأعلى معايير الأمان والكفاءة، مع رسم المخططات باستخدام CAD.</p>
+                </div>
             </div>
-            <div id="market-products"></div>
-        </div>
+        `;
+    }
 
-        <div id="solutions" class="page"><center><br><h3>قريباً الحلول الصناعية 🛠️</h3></center></div>
-        <div id="projects" class="page"><center><br><h3>معرض أعمالنا ⚙️</h3></center></div>
-    </div>
+    // دالة المودال الخاصة بالمنشورات (لمزيد من الكلام)
+    function showPostDetails(title, img, text) {
+        document.getElementById('modalBody').innerHTML = `
+            <img src="${img}" style="width:100%; border-radius:12px; margin-bottom:15px;">
+            <h2 style="color:var(--primary-color)">${title}</h2>
+            <div style="text-align:right; line-height:1.8; color:#333; font-size:1rem;">
+                ${text} ${text} ${text} </div>
+            <button class="whatsapp-btn" style="margin-top:20px;" onclick="closeModal()">إغلاق</button>
+        `;
+        document.getElementById('detailsModal').style.display = "block";
+    }
 
-    <div id="cart-bar" class="floating-cart">
-        <div class="cart-info">
-            <span>الإجمالي: <span id="total-price">0</span> ج.م</span>
-            <span onclick="clearCart()" style="color:var(--danger-color); cursor:pointer; font-size:0.8rem;">تفريغ 🗑️</span>
-        </div>
-        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">إرسال الطلب عبر واتساب ✅</button>
-    </div>
+    // تحديث دالة showPage لتشغيل الرندر عند فتح الصفحة
+    function showPage(pageId, title, navId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.getElementById('header-title').innerText = title;
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
+        document.getElementById(navId).classList.add('active-nav');
+        
+        // إخفاء/إظهار السلة
+        document.getElementById('cart-bar').style.display = (pageId === 'market' && cart.length > 0) ? 'block' : 'none';
 
-    <nav>
-        <div id="nav-home" class="nav-item active-nav" onclick="showPage('home', 'DH Automation', 'nav-home')">🏠<br>الرئيسية</div>
-        <div id="nav-market" class="nav-item" onclick="showPage('market', 'السوق', 'nav-market')">🛒<br>السوق</div>
-        <div id="nav-projects" class="nav-item" onclick="showPage('projects', 'المشاريع', 'nav-projects')">⚙️<br>المشاريع</div>
-    </nav>
+        // تشغيل الرندر الخاص بكل صفحة
+        if(pageId === 'projects') renderProjects();
+        if(pageId === 'solutions') renderSolutions();
+    }
 
-    <div id="detailsModal" class="modal" onclick="closeModalOnEmpty(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <div id="modalBody"></div>
-        </div>
-    </div>
-
-    <script>
-        const products = [
-            { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/ntc.jpg', desc: 'حساس عالي الجودة متوافق مع ماكينات الحقن والافران.' },
-            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/lvdt.jpg', desc: 'كارت متخصص لمعايرة وقراءة مشوار البلاطة بدقة عالية.' }
-        ];
-
-        let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
-        let currentFilter = 'الكل';
-
-        // دالة تشغيل السوق
-        function renderMarket() {
-            const container = document.getElementById('market-products');
-            const filtered = currentFilter === 'الكل' ? products : products.filter(p => p.cat === currentFilter);
-            
-            container.innerHTML = filtered.map(p => {
-                const cartItem = cart.find(i => i.id === p.id);
-                const btnColor = cartItem ? 'var(--danger-color)' : 'var(--success-color)';
-                const btnText = cartItem ? 'إلغاء' : 'إضافة';
-                
-                return `
-                <div class="product-row" data-id="${p.id}">
-                    <div style="display:flex; align-items:center;">
-                        <img src="${p.img}" class="product-img" onerror="this.src='https://via.placeholder.com/65?text=DH'">
-                        <div class="product-info">
-                            <h4>${p.name}</h4>
-                            <p>${p.price} ج.م</p>
-                        </div>
-                    </div>
-                    <div class="controls">
-                        <div class="qty-control">
-                            <button onclick="changeQty('${p.id}', 1)">+</button>
-                            <span id="qty-${p.id}">${cartItem ? cartItem.qty : 1}</span>
-                            <button onclick="changeQty('${p.id}', -1)">-</button>
-                        </div>
-                        <div class="action-btns">
-                            <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button>
-                            <button class="add-btn" id="btn-${p.id}" style="background:${btnColor}" onclick="toggleCart('${p.id}')">${btnText}</button>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-            updateCartUI();
-        }
-
-        function filterMarket(cat, btn) {
-            currentFilter = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
-            btn.classList.add('active-cat');
-            renderMarket();
-        }
-
-        function showPage(pageId, title, navId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.getElementById('header-title').innerText = title;
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
-            document.getElementById(navId).classList.add('active-nav');
-            document.getElementById('cart-bar').style.display = (pageId === 'market' && cart.length > 0) ? 'block' : 'none';
-        }
-
-        function toggleCart(id) {
-            const product = products.find(p => p.id === id);
-            const index = cart.findIndex(item => item.id === id);
-            const qty = parseInt(document.getElementById(`qty-${id}`).innerText);
-
-            if (index === -1) {
-                cart.push({ ...product, qty });
-            } else {
-                cart.splice(index, 1);
-            }
-            saveAndRefresh(id);
-        }
-
-        function changeQty(id, delta) {
-            const qtyElement = document.getElementById(`qty-${id}`);
-            let currentQty = parseInt(qtyElement.innerText);
-            if (currentQty + delta >= 1) {
-                qtyElement.innerText = currentQty + delta;
-                const item = cart.find(i => i.id === id);
-                if (item) { item.qty = currentQty + delta; saveAndRefresh(id); }
-            }
-        }
-
-        function saveAndRefresh(id) {
-            localStorage.setItem('dh_cart', JSON.stringify(cart));
-            updateCartUI();
-            // تحديث شكل الزرار فوراً
-            const btn = document.getElementById(`btn-${id}`);
-            if(btn) {
-                const isInCart = cart.some(i => i.id === id);
-                btn.innerText = isInCart ? "إلغاء" : "إضافة";
-                btn.style.background = isInCart ? "var(--danger-color)" : "var(--success-color)";
-            }
-        }
-
-        function updateCartUI() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            document.getElementById('total-price').innerText = total;
-            const isMarket = document.getElementById('market').classList.contains('active');
-            document.getElementById('cart-bar').style.display = (isMarket && cart.length > 0) ? 'block' : 'none';
-        }
-
-        function clearCart() {
-            cart = [];
-            localStorage.removeItem('dh_cart');
-            renderMarket();
-        }
-
-        function showDetails(id) {
-            const p = products.find(item => item.id === id);
-            const isInCart = cart.some(i => i.id === id);
-            document.getElementById('modalBody').innerHTML = `
-                <img src="${p.img}" style="width:100%; border-radius:12px; margin-bottom:15px;">
-                <h3>${p.name}</h3>
-                <p style="color:#666; font-size:0.9rem;">${p.desc}</p>
-                <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
-                <button class="whatsapp-btn" onclick="toggleCart('${p.id}'); closeModal();" 
-                style="background:${isInCart ? 'var(--danger-color)' : 'var(--primary-color)'}">
-                ${isInCart ? 'حذف من السلة' : 'إضافة للسلة بـ ' + p.price + ' ج.م'}
-                </button>
-            `;
-            document.getElementById('detailsModal').style.display = "block";
-        }
-
-        function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
-        function closeModalOnEmpty(e) { if(e.target.id === "detailsModal") closeModal(); }
-
-        function checkoutWhatsApp() {
-            let msg = "*طلب جديد من DH Automation*%0A%0A";
-            msg += cart.map(i => `• ${i.name} [العدد: ${i.qty}]`).join("%0A");
-            msg += `%0A%0A*الإجمالي: ${document.getElementById('total-price').innerText} ج.م*`;
-            window.open(`https://wa.me/201227091465?text=${msg}`, '_blank');
-        }
-
-        // تشغيل أولي
-        renderMarket();
-    </script>
-</body>
-</html>
+    // تشغيل أولي للسوق
+    renderMarket();
+</script>
