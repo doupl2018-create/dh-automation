@@ -7,13 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* التنسيق البرنس اللي اتفقنا عليه */
         :root { --primary-color: #1a73e8; --bg-color: #f0f2f5; --success-color: #28a745; --danger-color: #dc3545; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; direction: rtl; }
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
-        /* كارت المنتج الديناميكي */
         .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
         .product-img { width: 60px; height: 60px; border-radius: 8px; margin-left: 15px; border: 1px solid #eee; }
         .product-info { flex: 1; }
@@ -23,11 +21,11 @@
         .controls { display: flex; gap: 8px; align-items: center; margin-top: 5px; }
         .qty-control { display: flex; align-items: center; gap: 5px; background: #f8f9fa; border-radius: 6px; padding: 4px 8px; border: 1px solid #ddd; }
         .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; color: var(--primary-color); padding: 0 5px; }
+        .qty-val { min-width: 20px; text-align: center; font-weight: bold; }
 
         .add-btn { background: var(--success-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
         .details-btn { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
 
-        /* شريط السعر والمنيو السفلي */
         .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; box-sizing: border-box; }
         .cart-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
         .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
@@ -35,7 +33,6 @@
         .nav-item { text-align: center; font-size: 0.85rem; color: #666; cursor: pointer; flex: 1; }
         .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
 
-        /* نافذة التفاصيل (الاسكرول شغال تمام) */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); overflow-y: auto; }
         .modal-content { background: white; margin: 40px auto; padding: 25px; border-radius: 20px; width: 85%; max-width: 450px; text-align: center; position: relative; }
         .close-modal { position: absolute; left: 15px; top: 10px; font-size: 30px; cursor: pointer; color: #aaa; }
@@ -50,7 +47,12 @@
 
     <div class="container">
         <div id="market" class="page active"></div>
-        <div id="projects" class="page"></div>
+        <div id="projects" class="page">
+            <div style="background:white; padding:20px; border-radius:12px; text-align:center;">
+                <h3>⚙️ مشاريع DH Automation</h3>
+                <p>قريباً سيتم عرض لوحات التحكم والبرمجيات الخاصة بنا.</p>
+            </div>
+        </div>
     </div>
 
     <div class="floating-cart">
@@ -74,18 +76,22 @@
     </div>
 
     <script>
-        // هنا البيانات.. ضيف أي منتج جديد هنا وهيظهر لوحده في الصفحة
         const products = [
             { id: '1', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق جداً لتحمل الحرارة العالية في ماكينات الحقن.' },
             { id: '2', name: 'كارت تحكم LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت احترافي لمعايرة مشوار البلاطة بدقة عالية.' }
         ];
 
-        let cart = [];
+        // محاولة تحميل السلة من الذاكرة المحلية
+        let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
 
-        // وظيفة رسم المنتجات في صفحة السوق
         function renderMarket() {
             const marketDiv = document.getElementById('market');
-            marketDiv.innerHTML = products.map(p => `
+            marketDiv.innerHTML = products.map(p => {
+                const cartItem = cart.find(i => i.id === p.id);
+                const inCart = !!cartItem;
+                const qty = inCart ? cartItem.qty : 1;
+
+                return `
                 <div class="product-row" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
                     <div style="display:flex; align-items:center;">
                         <img src="${p.img}" class="product-img">
@@ -97,23 +103,29 @@
                     <div class="controls">
                         <div class="qty-control">
                             <button onclick="changeQty(this, 1)">+</button>
-                            <span class="qty-val">1</span>
+                            <span class="qty-val">${qty}</span>
                             <button onclick="changeQty(this, -1)">-</button>
                         </div>
                         <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button>
-                        <button class="add-btn" onclick="toggleCart(this)">إضافة</button>
+                        <button class="add-btn" 
+                                style="background: ${inCart ? 'var(--danger-color)' : 'var(--success-color)'}"
+                                onclick="toggleCart(this)">${inCart ? 'إلغاء' : 'إضافة'}</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+            updateTotal();
         }
 
-        // باقي الوظائف البرنس
         function showPage(pageId, title, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.getElementById('header-title').innerText = title;
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
             element.classList.add('active-nav');
+        }
+
+        function saveCart() {
+            localStorage.setItem('dh_cart', JSON.stringify(cart));
         }
 
         function changeQty(btn, delta) {
@@ -124,7 +136,11 @@
                 qtySpan.innerText = currentQty + delta;
                 let id = row.getAttribute('data-id');
                 let item = cart.find(i => i.id === id);
-                if (item) { item.qty = currentQty + delta; updateTotal(); }
+                if (item) { 
+                    item.qty = currentQty + delta; 
+                    saveCart();
+                    updateTotal(); 
+                }
             }
         }
 
@@ -138,6 +154,7 @@
                 cart = cart.filter(i => i.id !== id);
                 btn.innerText = "إضافة"; btn.style.background = "var(--success-color)";
             }
+            saveCart();
             updateTotal();
         }
 
@@ -147,9 +164,10 @@
         }
 
         function clearCart() {
-            cart = []; updateTotal();
-            document.querySelectorAll('.add-btn').forEach(b => { b.innerText = "إضافة"; b.style.background = "var(--success-color)"; });
-            document.querySelectorAll('.qty-val').forEach(s => s.innerText = "1");
+            cart = [];
+            localStorage.removeItem('dh_cart');
+            updateTotal();
+            renderMarket(); // إعادة رسم الصفحة لتحديث أزرار الإضافة
         }
 
         function checkoutWhatsApp() {
@@ -167,7 +185,6 @@
         function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
         window.onclick = function(e) { if (e.target.className === 'modal') closeModal(); }
 
-        // تشغيل رسم المنتجات أول ما الصفحة تفتح
         renderMarket();
     </script>
 </body>
