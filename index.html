@@ -5,41 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DH Automation</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
         :root { --primary-color: #1a73e8; --bg-color: #f0f2f5; --success-color: #28a745; --danger-color: #dc3545; }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; direction: rtl; }
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
+        /* المنشورات والسلايدر */
         .post-card { background: white; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
-        .post-avatar { width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-        
-        /* تمرير الصور (الـ Slider اللي طلبته) */
+        .post-header { padding: 12px; border-bottom: 1px solid #f0f0f0; font-weight: bold; }
         .post-gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; background: #eee; }
         .post-gallery::-webkit-scrollbar { display: none; }
-        .post-gallery img { width: 100%; flex-shrink: 0; height: 250px; object-fit: contain; scroll-snap-align: start; cursor: pointer; }
-        
-        .post-content { padding: 15px; }
-        .post-text { font-size: 0.95rem; color: #333; line-height: 1.6; }
+        .post-gallery img { width: 100%; flex-shrink: 0; height: 250px; object-fit: contain; scroll-snap-align: start; }
+        .post-content { padding: 15px; font-size: 0.95rem; }
 
+        /* السوق والمنتجات */
         .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
         .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; }
         .cat-btn.active-cat { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .product-img { width: 60px; height: 60px; border-radius: 8px; margin-left: 15px; }
         
+        .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; }
+        .product-img { width: 65px; height: 65px; border-radius: 8px; margin-left: 10px; }
+        .product-info { flex: 1; }
+        .product-info h4 { margin: 0; font-size: 0.9rem; }
+        .product-info p { margin: 5px 0 0; color: var(--primary-color); font-weight: bold; }
+
+        /* أزرار الزيادة والنقصان */
+        .controls { display: flex; gap: 8px; align-items: center; margin-top: 10px; width: 100%; justify-content: flex-end; }
+        .qty-control { display: flex; align-items: center; gap: 10px; background: #f8f9fa; border-radius: 6px; padding: 5px 10px; border: 1px solid #ddd; }
+        .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; color: var(--primary-color); font-size: 1.2rem; }
+        .add-btn { border: none; padding: 8px 15px; border-radius: 6px; color: white; cursor: pointer; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; }
+
+        /* الكارت والناف */
         .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; display: none; box-sizing: border-box; }
-        .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
         nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-item { text-align: center; font-size: 0.85rem; color: #666; cursor: pointer; flex: 1; }
         .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
-
-        .page { display: none; }
-        .page.active { display: block; }
-        .lightbox { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
-        .lightbox img { max-width: 90%; max-height: 80%; }
     </style>
 </head>
 <body>
@@ -49,29 +50,30 @@
     <div class="container">
         <div id="home" class="page active">
             <div style="display: grid; gap: 15px;">
-                <div class="post-card" onclick="showPage('market', 'سوق مساعد المهندس', document.getElementById('nav-market'))" style="padding:20px; text-align:center; cursor:pointer;"><h3>🛒 سوق مساعد المهندس</h3></div>
-                <div class="post-card" onclick="showPage('solutions', 'الحلول الصناعية')" style="padding:20px; text-align:center; cursor:pointer;"><h3>🏭 الحلول الصناعية</h3></div>
-                <div class="post-card" onclick="showPage('automation', 'التحكم الآلي')" style="padding:20px; text-align:center; cursor:pointer;"><h3>🤖 التحكم الآلي</h3></div>
-                <div class="post-card" onclick="showPage('projects', 'مشاريعنا', document.getElementById('nav-projects'))" style="padding:20px; text-align:center; cursor:pointer;"><h3>⚙️ مشاريعنا</h3></div>
+                <div class="post-card" onclick="showPage('market', 'سوق المهندس', document.getElementById('nav-market'))" style="padding:20px; text-align:center; cursor:pointer; background:#e8f0fe; color:var(--primary-color)"><h3>🛒 دخول السوق</h3></div>
+                <div id="home-posts"></div>
             </div>
         </div>
 
         <div id="market" class="page">
             <div class="categories-bar">
                 <button class="cat-btn active-cat" onclick="filterMarket('الكل', this)">الكل</button>
-                <button class="cat-btn" onclick="filterMarket('كارتات إلكترونية', this)">كارتات</button>
+                <button class="cat-btn" onclick="filterMarket('كارتات', this)">كارتات</button>
+                <button class="cat-btn" onclick="filterMarket('أجهزة', this)">أجهزة</button>
             </div>
             <div id="market-products"></div>
         </div>
 
         <div id="solutions" class="page"></div>
-        <div id="automation" class="page"></div>
         <div id="projects" class="page"></div>
     </div>
 
     <div id="cart-bar" class="floating-cart">
-        <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
-        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">واتساب ✅</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
+            <span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color); font-weight:bold;">تفريغ السلة 🗑️</span>
+        </div>
+        <button class="whatsapp-btn" onclick="checkoutWhatsApp()" style="width:100%; background:var(--success-color); color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; font-family:'Cairo'">إتمام الطلب (واتساب) ✅</button>
     </div>
 
     <nav>
@@ -80,78 +82,124 @@
         <div id="nav-projects" class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️<br>المشاريع</div>
     </nav>
 
-    <div id="lightbox" class="lightbox" onclick="this.style.display='none'"><img id="lightbox-img"></div>
-
     <script>
         const products = [
             { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg' },
-            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg' }
+            { id: '2', cat: 'كارتات', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg' }
         ];
 
         const postsData = {
-            solutions: [{ title: 'الحلول الصناعية', text: 'تطوير خطوط الإنتاج.', images: ['images/01 (1).jpg', 'images/01 (2).jpg', 'images/01 (3).jpg'] }],
-            projects: [{ title: 'مشاريعنا', text: 'تحديث ماكينات البلاستيك.', images: ['images/01 (3).jpg', 'images/01 (4).jpg', 'images/01 (1).jpg'] }]
+            home: [{ title: 'خدماتنا', text: 'صيانة وبرمجة بأعلى دقة.', images: ['images/01 (1).jpg', 'images/01 (2).jpg'] }],
+            projects: [{ title: 'مشروع بلاستيك', text: 'تم تحديث اللوحة.', images: ['images/01 (3).jpg'] }]
         };
 
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
 
-        // نظام زرار الرجوع
+        function renderMarket(filter = 'الكل') {
+            const container = document.getElementById('market-products');
+            const filtered = filter === 'الكل' ? products : products.filter(p => p.cat === filter);
+            
+            container.innerHTML = filtered.map(p => {
+                const cartItem = cart.find(i => i.id === p.id);
+                return `
+                <div class="product-row" id="prod-${p.id}">
+                    <img src="${p.img}" class="product-img">
+                    <div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div>
+                    <div class="controls">
+                        <div class="qty-control">
+                            <button onclick="changeQty('${p.id}', 1)">+</button>
+                            <span id="qty-${p.id}">${cartItem ? cartItem.qty : 1}</span>
+                            <button onclick="changeQty('${p.id}', -1)">-</button>
+                        </div>
+                        <button class="add-btn" 
+                            style="background:${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" 
+                            onclick="toggleCart('${p.id}')">
+                            ${cartItem ? 'إلغاء' : 'إضافة'}
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+            updateTotal();
+        }
+
+        function changeQty(id, delta) {
+            const qtySpan = document.getElementById(`qty-${id}`);
+            let current = parseInt(qtySpan.innerText);
+            if (current + delta >= 1) {
+                qtySpan.innerText = current + delta;
+                let item = cart.find(i => i.id === id);
+                if (item) { item.qty = current + delta; saveCart(); updateTotal(); }
+            }
+        }
+
+        function toggleCart(id) {
+            const p = products.find(x => x.id === id);
+            const index = cart.findIndex(i => i.id === id);
+            const btn = document.querySelector(`#prod-${id} .add-btn`);
+            const qty = parseInt(document.getElementById(`qty-${id}`).innerText);
+
+            if (index === -1) {
+                cart.push({ ...p, qty });
+                btn.innerText = "إلغاء"; btn.style.background = "var(--danger-color)";
+            } else {
+                cart.splice(index, 1);
+                btn.innerText = "إضافة"; btn.style.background = "var(--success-color)";
+            }
+            saveCart(); updateTotal();
+        }
+
+        function updateTotal() {
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            document.getElementById('total-price').innerText = total;
+            document.getElementById('cart-bar').style.display = (total > 0 && document.getElementById('market').classList.contains('active')) ? 'block' : 'none';
+        }
+
+        function clearCart() { cart = []; saveCart(); renderMarket(); }
+        function saveCart() { localStorage.setItem('dh_cart', JSON.stringify(cart)); }
+
         function showPage(pageId, title, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.getElementById('header-title').innerText = title;
-            
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
             if(element) element.classList.add('active-nav');
             
-            if(['solutions', 'automation', 'projects'].includes(pageId)) renderPosts(pageId);
-            document.getElementById('cart-bar').style.display = (pageId === 'market') ? 'block' : 'none';
-
-            // تسجيل الصفحة في تاريخ الموبايل عشان لما يدوس "رجوع" يرجع للرئيسية
-            if (pageId !== 'home') {
-                window.history.pushState({ page: pageId, title: title }, title);
-            }
+            if(pageId === 'home') renderPosts('home-posts', 'home');
+            if(pageId === 'projects') renderPosts('projects', 'projects');
+            if(pageId === 'market') renderMarket();
+            
+            updateTotal();
+            if (pageId !== 'home') window.history.pushState({ page: pageId, title: title }, title);
         }
 
-        // مراقبة زرار الرجوع بتاع الموبايل
         window.onpopstate = function(event) {
-            if (event.state && event.state.page) {
-                showPage(event.state.page, event.state.title, null);
-            } else {
-                showPage('home', 'DH Automation', document.getElementById('nav-home'));
-            }
+            if (event.state) showPage(event.state.page, event.state.title, null);
+            else showPage('home', 'DH Automation', document.getElementById('nav-home'));
         };
 
-        function renderPosts(pageId) {
-            const container = document.getElementById(pageId);
-            const posts = postsData[pageId] || [];
-            container.innerHTML = posts.map(post => `
+        function renderPosts(id, key) {
+            const container = document.getElementById(id);
+            container.innerHTML = (postsData[key] || []).map(post => `
                 <div class="post-card">
-                    <div class="post-header"><strong>${post.title}</strong></div>
-                    <div class="post-gallery">
-                        ${post.images.map(img => `<img src="${img}" onclick="openLightbox('${img}')">`).join('')}
-                    </div>
-                    <div class="post-content"><p>${post.text}</p></div>
+                    <div class="post-header">${post.title}</div>
+                    <div class="post-gallery">${post.images.map(img => `<img src="${img}">`).join('')}</div>
+                    <div class="post-content">${post.text}</div>
                 </div>`).join('');
         }
 
-        function renderMarket() {
-            const container = document.getElementById('market-products');
-            container.innerHTML = products.map(p => `
-                <div class="product-row">
-                    <img src="${p.img}" class="product-img">
-                    <div style="flex:1"><h4>${p.name}</h4><b>${p.price} ج.م</b></div>
-                    <button onclick="addToCart('${p.id}')" style="background:var(--success-color); color:white; border:none; padding:8px; border-radius:5px;">إضافة</button>
-                </div>`).join('');
+        function filterMarket(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            btn.classList.add('active-cat');
+            renderMarket(cat);
         }
 
-        function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
-        function addToCart(id) { /* كود الكارت البسيط بتاعك */ alert('تمت الإضافة'); }
-        function checkoutWhatsApp() { window.open('https://wa.me/201227091465?text=طلب جديد'); }
+        function checkoutWhatsApp() {
+            let msg = "*طلب جديد من DH Automation*%0A" + cart.map(i => `• ${i.name} (${i.qty})`).join("%0A");
+            window.open(`https://wa.me/201227091465?text=${msg}%0A%0A*الإجمالي: ${document.getElementById('total-price').innerText} ج.م*`, '_blank');
+        }
 
         window.onload = () => {
-            renderMarket();
-            // وضع الحالة الابتدائية
+            renderPosts('home-posts', 'home');
             window.history.replaceState({ page: 'home', title: 'DH Automation' }, 'DH Automation');
         };
     </script>
