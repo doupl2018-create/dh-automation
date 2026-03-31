@@ -3,239 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DH Automation Store</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>DH Automation App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
             --primary-blue: #0056b3;
             --secondary-blue: #007bff;
             --success-green: #28a745;
             --danger-red: #dc3545;
-            --info-cyan: #17a2b8;
-            --bg-light: #f4f7f6;
-            --card-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            --bg-light: #f0f2f5;
+            --card-white: #ffffff;
         }
 
         body {
             margin: 0; background-color: var(--bg-light);
-            font-family: 'Segoe UI', sans-serif; padding-bottom: 80px;
+            font-family: 'Segoe UI', Tahoma, sans-serif; padding-bottom: 70px;
         }
 
-        /* شريط السلة العلوي - نفس الصورة */
-        .cart-header {
+        /* الهيدر الثابت */
+        .app-header {
             background-color: var(--primary-blue);
-            color: white; padding: 15px;
+            color: white; padding: 12px 15px;
             display: flex; justify-content: space-between; align-items: center;
-            border-radius: 10px; margin: 10px;
-            box-shadow: var(--card-shadow);
+            position: sticky; top: 0; z-index: 1000;
         }
 
-        .cart-header .btns { display: flex; gap: 8px; }
-        .btn-action {
-            border: none; border-radius: 5px; padding: 8px 15px;
-            color: white; font-weight: bold; cursor: pointer;
-        }
-        .btn-send { background-color: var(--success-green); }
-        .btn-clear { background-color: var(--danger-red); }
-
-        /* شريط الأقسام */
-        .category-bar {
-            background-color: var(--secondary-blue);
-            color: white; text-align: center;
-            padding: 12px; margin: 0 10px 15px;
-            border-radius: 8px; font-weight: bold;
+        /* واجهة الأقسام الأربعة (الرئيسية) */
+        .home-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 15px; padding: 20px; margin-top: 10px;
         }
 
-        /* كارت المنتج - تصميم أفقي مثل الصورة */
-        .product-card {
-            background: white; border-radius: 12px;
-            margin: 10px; padding: 12px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        .main-card {
+            background: var(--card-white); border-radius: 15px;
+            padding: 25px 10px; text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            cursor: pointer; transition: 0.2s;
         }
 
-        .product-right { display: flex; align-items: center; gap: 15px; flex: 1; justify-content: flex-end; }
-        .product-details { text-align: left; margin-right: 10px; }
-        .product-name { font-weight: bold; font-size: 14px; margin: 0; }
-        .product-price { color: var(--success-green); font-weight: bold; margin: 5px 0; font-size: 13px; }
-        .product-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; }
+        .main-card i { font-size: 35px; color: var(--secondary-blue); margin-bottom: 15px; }
+        .main-card div { font-weight: bold; font-size: 14px; color: #333; }
+
+        /* ستايل المتجر (اللي عجبك) */
+        .cart-bar {
+            background-color: var(--primary-blue); color: white;
+            padding: 12px; margin: 10px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .product-item {
+            background: white; border-radius: 12px; margin: 8px 10px;
+            padding: 10px; display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .product-right { display: flex; align-items: center; gap: 10px; flex: 1; justify-content: flex-end; }
+        .product-img { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; }
         
-        .btn-details {
-            background-color: var(--info-cyan); color: white;
-            border: none; border-radius: 5px; padding: 4px 10px; font-size: 12px;
-        }
-
-        /* التحكم في الكمية والزر - يسار الكارت */
-        .product-left { display: flex; align-items: center; gap: 10px; }
-        .qty-box { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
-        .qty-btn { background: #eee; border: none; width: 25px; height: 25px; font-weight: bold; }
-        .qty-val { width: 30px; text-align: center; border: none; font-size: 14px; }
+        .qty-input { border: 1px solid #ddd; width: 30px; text-align: center; border-radius: 4px; margin: 0 5px; }
+        .btn-qty { background: #eee; border: none; width: 25px; height: 25px; border-radius: 4px; }
         
         .btn-add {
-            background-color: var(--success-green); color: white;
-            border: none; border-radius: 5px; padding: 8px 20px; font-weight: bold;
+            background: var(--success-green); color: white; border: none;
+            padding: 8px 18px; border-radius: 6px; font-weight: bold;
         }
-        .btn-add.added { background-color: var(--danger-red); }
+        .btn-add.added { background: var(--danger-red); }
 
-        /* تصميم المنشورات المطور */
-        .post-container { padding: 10px; }
+        /* ستايل المنشورات للأقسام الأخرى */
         .post-card {
-            background: white; border-radius: 15px; margin-bottom: 20px;
-            overflow: hidden; box-shadow: var(--card-shadow);
+            background: white; margin: 15px 10px; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .post-header { padding: 15px; display: flex; align-items: center; gap: 10px; }
-        .post-user-img { width: 45px; height: 45px; background: #ddd; border-radius: 50%; }
-        .post-content { padding: 0 15px 15px; line-height: 1.6; }
-        .post-img-main { width: 100%; max-height: 300px; object-fit: cover; }
-        .post-footer {
-            border-top: 1px solid #eee; padding: 10px 15px;
-            display: flex; justify-content: space-between; font-size: 14px; color: #666;
-        }
+        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
+        .post-body { padding: 15px; line-height: 1.6; }
+        .post-img { width: 100%; max-height: 250px; object-fit: cover; }
 
         /* التنقل السفلي */
-        .nav-bottom {
-            position: fixed; bottom: 0; width: 100%;
-            background: white; display: flex; justify-content: space-around;
-            padding: 12px 0; border-top: 1px solid #ddd;
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            display: flex; justify-content: space-around; padding: 12px 0;
+            border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
-        .nav-item { color: #888; text-align: center; font-size: 12px; flex: 1; }
-        .nav-item.active { color: var(--primary-blue); }
+        .nav-link { color: #888; text-align: center; font-size: 11px; flex: 1; cursor: pointer; }
+        .nav-link.active { color: var(--primary-blue); }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="cart-header">
-        <div class="btns">
-            <button class="btn-action btn-send">إرسال</button>
-            <button class="btn-action btn-clear" onclick="clearCart()">إفراغ</button>
-        </div>
-        <div style="font-size: 16px;">
-             السلة: <span id="cartCount">0</span> (<span id="cartTotal">0</span> ج.م) <i class="fas fa-shopping-cart"></i>
+    <div class="app-header">
+        <span id="pageTitle">الرئيسية</span>
+        <i class="fas fa-microchip"></i>
+    </div>
+
+    <div id="homeSection">
+        <div class="home-grid">
+            <div class="main-card" onclick="openSection('shop', 'سوق مساعد المهندس')">
+                <i class="fas fa-shopping-basket"></i>
+                <div>سوق مساعد المهندس</div>
+            </div>
+            <div class="main-card" onclick="openSection('solutions', 'الحلول الصناعية')">
+                <i class="fas fa-tools"></i>
+                <div>الحلول الصناعية</div>
+            </div>
+            <div class="main-card" onclick="openSection('control', 'التحكم الآلي')">
+                <i class="fas fa-memory"></i>
+                <div>التحكم الآلي</div>
+            </div>
+            <div class="main-card" onclick="openSection('projects', 'مشاريعنا')">
+                <i class="fas fa-project-diagram"></i>
+                <div>مشاريعنا</div>
+            </div>
         </div>
     </div>
 
-    <div id="shopPage">
-        <div class="category-bar">كارتات الكترونية</div>
+    <div id="shopSection" class="hidden">
+        <div class="cart-bar">
+            <div>
+                <button onclick="sendOrder()" style="background:var(--success-green); color:white; border:none; padding:5px 10px; border-radius:4px;">إرسال</button>
+                <button onclick="clearCart()" style="background:var(--danger-red); color:white; border:none; padding:5px 10px; border-radius:4px;">إفراغ</button>
+            </div>
+            <div>السلة: <span id="cartCount">0</span> (<span id="cartTotal">0</span> ج)</div>
+        </div>
         
-        <div class="product-card">
-            <div class="product-left">
-                <button id="btn-p1" class="btn-add" onclick="toggleCart('p1', 'كارت مساطر سنترتو', 290)">أضف</button>
-                <div class="qty-box">
-                    <button class="qty-btn" onclick="updateQty('p1', 1)">+</button>
-                    <input type="text" class="qty-val" id="qty-p1" value="1" readonly>
-                    <button class="qty-btn" onclick="updateQty('p1', -1)">-</button>
-                </div>
+        <div class="product-item">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button id="btn-p1" class="btn-add" onclick="toggleCart('p1', 'كارت مساطر', 290)">أضف</button>
+                <button class="btn-qty" onclick="changeQty('p1', 1)">+</button>
+                <input type="text" class="qty-input" id="qty-p1" value="1" readonly>
+                <button class="btn-qty" onclick="changeQty('p1', -1)">-</button>
             </div>
             <div class="product-right">
-                <div class="product-details">
-                    <button class="btn-details">تفاصيل</button>
-                    <p class="product-name">كارت مساطر سنترتو</p>
-                    <p class="product-price">290 ج.م</p>
+                <div style="text-align:left">
+                    <span style="font-size:11px; background:#17a2b8; color:white; padding:2px 5px; border-radius:3px">تفاصيل</span>
+                    <div style="font-weight:bold; font-size:13px">كارت مساطر سنترتو</div>
+                    <div style="color:var(--success-green); font-size:12px">290 ج.م</div>
                 </div>
                 <img src="images/01 (1).jpg" class="product-img">
             </div>
         </div>
-
-        <div class="product-card">
-            <div class="product-left">
-                <button id="btn-p2" class="btn-add" onclick="toggleCart('p2', 'كارت خرج عشرة قناة', 1800)">أضف</button>
-                <div class="qty-box">
-                    <button class="qty-btn" onclick="updateQty('p2', 1)">+</button>
-                    <input type="text" class="qty-val" id="qty-p2" value="1" readonly>
-                    <button class="qty-btn" onclick="updateQty('p2', -1)">-</button>
-                </div>
-            </div>
-            <div class="product-right">
-                <div class="product-details">
-                    <button class="btn-details">تفاصيل</button>
-                    <p class="product-name">كارت خرج عشرة قناة</p>
-                    <p class="product-price">1800 ج.م</p>
-                </div>
-                <img src="images/01 (2).jpg" class="product-img">
-            </div>
         </div>
+
+    <div id="contentSection" class="hidden">
+        <div id="postContainer">
+            </div>
     </div>
 
-    <div id="postsPage" class="hidden post-container">
-        <div class="post-card">
-            <div class="post-header">
-                <div class="post-user-img"></div>
-                <div><b>DH Automation</b><br><small>منذ ساعة • <i class="fas fa-globe-americas"></i></small></div>
-            </div>
-            <div class="post-content">
-                تم تحديث قائمة المشاريع البرمجية لوحدات PLC.. تابعونا للمزيد.
-                <img src="images/01 (3).jpg" class="post-img-main" style="margin-top:10px; border-radius:8px;">
-            </div>
-            <div class="post-footer" onclick="doComment()">
-                <span><i class="far fa-thumbs-up"></i> إعجاب</span>
-                <span><i class="far fa-comment"></i> تعليق سريع</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="nav-bottom">
-        <div class="nav-item" onclick="showTab('posts')"><i class="fas fa-rss fa-lg"></i><div>المنشورات</div></div>
-        <div class="nav-item active" onclick="showTab('shop')"><i class="fas fa-store fa-lg"></i><div>المتجر</div></div>
-        <div class="nav-item" onclick="showTab('home')"><i class="fas fa-th-large fa-lg"></i><div>الرئيسية</div></div>
+    <div class="bottom-nav">
+        <div class="nav-link" onclick="openSection('home', 'الرئيسية')"><i class="fas fa-home fa-lg"></i><div>الرئيسية</div></div>
+        <div class="nav-link" onclick="openSection('shop', 'السوق')"><i class="fas fa-shopping-cart fa-lg"></i><div>المتجر</div></div>
+        <div class="nav-link" onclick="openSection('projects', 'مشاريعنا')"><i class="fas fa-briefcase fa-lg"></i><div>مشاريعنا</div></div>
     </div>
 
     <script>
-        let cart = JSON.parse(localStorage.getItem('dh_cart_v2')) || {};
+        let cart = JSON.parse(localStorage.getItem('dh_data')) || {};
 
-        window.onload = updateUI;
+        function openSection(id, title) {
+            document.getElementById('pageTitle').innerText = title;
+            document.getElementById('homeSection').classList.add('hidden');
+            document.getElementById('shopSection').classList.add('hidden');
+            document.getElementById('contentSection').classList.add('hidden');
 
-        function showTab(id) {
-            document.getElementById('shopPage').classList.add('hidden');
-            document.getElementById('postsPage').classList.add('hidden');
-            if(id === 'shop') document.getElementById('shopPage').classList.remove('hidden');
-            if(id === 'posts') document.getElementById('postsPage').classList.remove('hidden');
+            if(id === 'home') document.getElementById('homeSection').classList.remove('hidden');
+            else if(id === 'shop') document.getElementById('shopSection').classList.remove('hidden');
+            else {
+                document.getElementById('contentSection').classList.remove('hidden');
+                loadPosts(title);
+            }
+            updateActiveNav(id);
         }
 
-        function updateQty(id, change) {
-            let el = document.getElementById('qty-' + id);
-            let val = parseInt(el.value) + change;
-            if (val >= 1) {
-                el.value = val;
-                if (cart[id]) {
-                    cart[id].qty = val;
-                    saveCart();
-                }
+        function loadPosts(title) {
+            const container = document.getElementById('postContainer');
+            container.innerHTML = `
+                <div class="post-card">
+                    <div class="post-header"><b>DH Automation</b> • <small>قسم ${title}</small></div>
+                    <div class="post-body">أهلاً بكم في قسم ${title}. هنا نعرض أحدث التطورات والحلول التقنية.</div>
+                    <img src="images/placeholder.jpg" class="post-img">
+                    <div style="padding:10px; color:var(--secondary-blue); font-size:13px" onclick="doComment()">إضافة تعليق سريع...</div>
+                </div>`;
+        }
+
+        function changeQty(id, delta) {
+            let input = document.getElementById('qty-' + id);
+            let val = parseInt(input.value) + delta;
+            if(val >= 1) {
+                input.value = val;
+                if(cart[id]) { cart[id].qty = val; save(); }
             }
         }
 
         function toggleCart(id, name, price) {
             let btn = document.getElementById('btn-' + id);
-            let qty = parseInt(document.getElementById('qty-' + id).value);
-
-            if (cart[id]) {
+            if(cart[id]) {
                 delete cart[id];
-                btn.classList.remove('added');
-                btn.innerText = "أضف";
+                btn.classList.remove('added'); btn.innerText = "أضف";
             } else {
-                cart[id] = { name: name, price: price, qty: qty };
-                btn.classList.add('added');
-                btn.innerText = "إلغاء";
+                let qty = parseInt(document.getElementById('qty-' + id).value);
+                cart[id] = { name, price, qty };
+                btn.classList.add('added'); btn.innerText = "إلغاء";
             }
-            saveCart();
+            save();
         }
 
-        function saveCart() {
-            localStorage.setItem('dh_cart_v2', JSON.stringify(cart));
+        function save() {
+            localStorage.setItem('dh_data', JSON.stringify(cart));
             updateUI();
         }
 
         function updateUI() {
-            let count = 0; let total = 0;
-            for (let id in cart) {
-                count++;
-                total += (cart[id].price * cart[id].qty);
+            let count = 0, total = 0;
+            for(let id in cart) {
+                count++; total += (cart[id].price * cart[id].qty);
                 let btn = document.getElementById('btn-' + id);
-                if (btn) {
-                    btn.classList.add('added');
-                    btn.innerText = "إلغاء";
+                if(btn) { 
+                    btn.classList.add('added'); btn.innerText = "إلغاء"; 
                     document.getElementById('qty-' + id).value = cart[id].qty;
                 }
             }
@@ -244,21 +226,15 @@
         }
 
         function clearCart() {
-            if(confirm("تأكيد إفراغ السلة؟")) {
-                cart = {};
-                localStorage.removeItem('dh_cart_v2');
-                location.reload();
-            }
+            if(confirm("مسح السلة؟")) { cart = {}; localStorage.removeItem('dh_data'); location.reload(); }
         }
 
         function doComment() {
-            let user = localStorage.getItem('app_user');
-            if(!user) {
-                user = prompt("أدخل اسمك للتعليق مرة واحدة:");
-                if(user) localStorage.setItem('app_user', user);
-            }
-            if(user) alert("شكراً " + user + ".. تم استلام تعليقك.");
+            let name = localStorage.getItem('user_name') || prompt("اكتب اسمك للتعليق:");
+            if(name) { localStorage.setItem('user_name', name); alert("شكراً " + name); }
         }
+
+        window.onload = updateUI;
     </script>
 </body>
 </html>
