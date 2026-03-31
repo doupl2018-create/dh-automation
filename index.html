@@ -12,23 +12,33 @@
         header { background: var(--primary-color); color: white; padding: 15px; text-align: center; font-weight: bold; position: fixed; top: 0; width: 100%; z-index: 1000; }
         .container { padding: 75px 15px 230px 15px; } 
 
+        /* تنسيق التصنيفات في السوق */
+        .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px; scrollbar-width: none; }
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-family: 'Cairo'; font-size: 0.85rem; }
+        .cat-btn.active-cat { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        /* الكروت والمنتجات */
+        .home-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .category-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; }
+        
         .product-row { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
         .product-img { width: 60px; height: 60px; border-radius: 8px; margin-left: 15px; border: 1px solid #eee; }
         .product-info { flex: 1; }
-        .product-info h4 { margin: 0; font-size: 0.95rem; }
+        .product-info h4 { margin: 0; font-size: 0.9rem; }
         .product-info p { margin: 5px 0 0; color: var(--primary-color); font-weight: bold; }
 
         .controls { display: flex; gap: 8px; align-items: center; margin-top: 5px; }
         .qty-control { display: flex; align-items: center; gap: 5px; background: #f8f9fa; border-radius: 6px; padding: 4px 8px; border: 1px solid #ddd; }
-        .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; color: var(--primary-color); padding: 0 5px; }
-        .qty-val { min-width: 20px; text-align: center; font-weight: bold; }
+        .qty-control button { border: none; background: none; font-weight: bold; cursor: pointer; color: var(--primary-color); }
 
         .add-btn { background: var(--success-color); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
         .details-btn { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Cairo'; }
 
-        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; box-sizing: border-box; }
+        .floating-cart { position: fixed; bottom: 65px; left: 0; width: 100%; background: white; padding: 10px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 999; box-sizing: border-box; display: none; }
         .cart-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
         .whatsapp-btn { width: 100%; background: var(--success-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo'; }
+        
         nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-item { text-align: center; font-size: 0.85rem; color: #666; cursor: pointer; flex: 1; }
         .nav-item.active-nav { color: var(--primary-color); font-weight: bold; }
@@ -43,77 +53,79 @@
 </head>
 <body>
 
-    <header id="header-title">سوق مساعد المهندس</header>
+    <header id="header-title">DH Automation</header>
 
     <div class="container">
-        <div id="market" class="page active"></div>
-        <div id="projects" class="page">
-            <div style="background:white; padding:20px; border-radius:12px; text-align:center;">
-                <h3>⚙️ مشاريع DH Automation</h3>
-                <p>قريباً سيتم عرض لوحات التحكم والبرمجيات الخاصة بنا.</p>
+        <div id="home" class="page active">
+            <div class="home-grid">
+                <div class="category-card" onclick="showPage('market', 'سوق مساعد المهندس', document.getElementById('nav-market'))"><i>🛒</i><h3>سوق مساعد المهندس</h3></div>
+                <div class="category-card" onclick="showPage('solutions', 'الحلول الصناعية', document.getElementById('nav-home'))"><i>🏭</i><h3>الحلول الصناعية</h3></div>
+                <div class="category-card" onclick="showPage('automation', 'التحكم الآلي', document.getElementById('nav-home'))"><i>🤖</i><h3>التحكم الآلي</h3></div>
+                <div class="category-card" onclick="showPage('projects', 'مشاريعنا', document.getElementById('nav-projects'))"><i>⚙️</i><h3>مشاريعنا</h3></div>
             </div>
         </div>
+
+        <div id="market" class="page">
+            <div class="categories-bar">
+                <button class="cat-btn active-cat" onclick="filterMarket('الكل', this)">الكل</button>
+                <button class="cat-btn" onclick="filterMarket('كارتات إلكترونية', this)">كارتات إلكترونية</button>
+                <button class="cat-btn" onclick="filterMarket('كلاسيك كنترول', this)">كلاسيك كنترول</button>
+                <button class="cat-btn" onclick="filterMarket('أجهزة', this)">أجهزة</button>
+                <button class="cat-btn" onclick="filterMarket('معدات صناعية', this)">معدات صناعية</button>
+            </div>
+            <div id="market-products"></div>
+        </div>
+
+        <div id="solutions" class="page"><h3>قريباً الحلول الصناعية</h3></div>
+        <div id="automation" class="page"><h3>قريباً التحكم الآلي</h3></div>
+        <div id="projects" class="page"><h3>معرض أعمالنا</h3></div>
     </div>
 
-    <div class="floating-cart">
-        <div class="cart-info">
-            <span>الإجمالي: <b id="total-price">0</b> ج.م</span>
-            <span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color)">تفريغ 🗑️</span>
-        </div>
+    <div id="cart-bar" class="floating-cart">
+        <div class="cart-info"><span>الإجمالي: <b id="total-price">0</b> ج.م</span><span onclick="clearCart()" style="cursor:pointer; color:var(--danger-color)">تفريغ 🗑️</span></div>
         <button class="whatsapp-btn" onclick="checkoutWhatsApp()">إتمام الشراء (واتساب) ✅</button>
     </div>
 
     <nav>
-        <div class="nav-item active-nav" onclick="showPage('market', 'السوق', this)">🛒<br>السوق</div>
-        <div class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️<br>المشاريع</div>
+        <div id="nav-home" class="nav-item active-nav" onclick="showPage('home', 'DH Automation', this)">🏠<br>الرئيسية</div>
+        <div id="nav-market" class="nav-item" onclick="showPage('market', 'السوق', this)">🛒<br>السوق</div>
+        <div id="nav-projects" class="nav-item" onclick="showPage('projects', 'المشاريع', this)">⚙️<br>المشاريع</div>
     </nav>
 
-    <div id="detailsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <div id="modalBody"></div>
-        </div>
-    </div>
+    <div id="detailsModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModal()">&times;</span><div id="modalBody"></div></div></div>
 
     <script>
+        // داتا المنتجات مع إضافة "Category" لكل منتج
         const products = [
-            { id: '1', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق جداً لتحمل الحرارة العالية في ماكينات الحقن.' },
-            { id: '2', name: 'كارت تحكم LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت احترافي لمعايرة مشوار البلاطة بدقة عالية.' }
+            { id: '1', cat: 'أجهزة', name: 'حساس حرارة NTC', price: 150, img: 'images/01 (1).jpg', desc: 'حساس دقيق لماكينات الحقن.' },
+            { id: '2', cat: 'كارتات إلكترونية', name: 'كارت LVDT', price: 1200, img: 'images/01 (2).jpg', desc: 'كارت معايرة مشوار البلاطة.' },
+            { id: '3', cat: 'كلاسيك كنترول', name: 'كونتاكتور 9 أمبير', price: 450, img: 'images/01 (3).jpg', desc: 'كونتاكتور بجودة عالية للدوائر الصناعية.' },
+            { id: '4', cat: 'معدات صناعية', name: 'سخان ماكينة حقن', price: 800, img: 'images/01 (4).jpg', desc: 'سخان سيراميك شديد التحمل.' }
         ];
 
-        // محاولة تحميل السلة من الذاكرة المحلية
         let cart = JSON.parse(localStorage.getItem('dh_cart')) || [];
 
-        function renderMarket() {
-            const marketDiv = document.getElementById('market');
-            marketDiv.innerHTML = products.map(p => {
+        function renderMarket(filter = 'الكل') {
+            const container = document.getElementById('market-products');
+            const filtered = filter === 'الكل' ? products : products.filter(p => p.cat === filter);
+            
+            container.innerHTML = filtered.map(p => {
                 const cartItem = cart.find(i => i.id === p.id);
-                const inCart = !!cartItem;
-                const qty = inCart ? cartItem.qty : 1;
-
+                const qty = cartItem ? cartItem.qty : 1;
                 return `
                 <div class="product-row" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
-                    <div style="display:flex; align-items:center;">
-                        <img src="${p.img}" class="product-img">
-                        <div class="product-info">
-                            <h4>${p.name}</h4>
-                            <p>${p.price} ج.م</p>
-                        </div>
-                    </div>
-                    <div class="controls">
-                        <div class="qty-control">
-                            <button onclick="changeQty(this, 1)">+</button>
-                            <span class="qty-val">${qty}</span>
-                            <button onclick="changeQty(this, -1)">-</button>
-                        </div>
-                        <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button>
-                        <button class="add-btn" 
-                                style="background: ${inCart ? 'var(--danger-color)' : 'var(--success-color)'}"
-                                onclick="toggleCart(this)">${inCart ? 'إلغاء' : 'إضافة'}</button>
-                    </div>
-                </div>
-            `}).join('');
+                    <div style="display:flex; align-items:center;"><img src="${p.img}" class="product-img"><div class="product-info"><h4>${p.name}</h4><p>${p.price} ج.م</p></div></div>
+                    <div class="controls"><div class="qty-control"><button onclick="changeQty(this, 1)">+</button><span class="qty-val">${qty}</span><button onclick="changeQty(this, -1)">-</button></div>
+                    <button class="details-btn" onclick="showDetails('${p.id}')">تفاصيل</button><button class="add-btn" style="background: ${cartItem ? 'var(--danger-color)' : 'var(--success-color)'}" onclick="toggleCart(this)">${cartItem ? 'إلغاء' : 'إضافة'}</button></div>
+                </div>`;
+            }).join('');
             updateTotal();
+        }
+
+        function filterMarket(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active-cat'));
+            btn.classList.add('active-cat');
+            renderMarket(cat);
         }
 
         function showPage(pageId, title, element) {
@@ -121,26 +133,19 @@
             document.getElementById(pageId).classList.add('active');
             document.getElementById('header-title').innerText = title;
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active-nav'));
-            element.classList.add('active-nav');
+            if(element) element.classList.add('active-nav');
+            document.getElementById('cart-bar').style.display = (pageId === 'market') ? 'block' : 'none';
         }
 
-        function saveCart() {
-            localStorage.setItem('dh_cart', JSON.stringify(cart));
-        }
-
+        function saveCart() { localStorage.setItem('dh_cart', JSON.stringify(cart)); }
         function changeQty(btn, delta) {
             let row = btn.closest('.product-row');
             let qtySpan = row.querySelector('.qty-val');
             let currentQty = parseInt(qtySpan.innerText);
             if (currentQty + delta >= 1) {
                 qtySpan.innerText = currentQty + delta;
-                let id = row.getAttribute('data-id');
-                let item = cart.find(i => i.id === id);
-                if (item) { 
-                    item.qty = currentQty + delta; 
-                    saveCart();
-                    updateTotal(); 
-                }
+                let item = cart.find(i => i.id === row.getAttribute('data-id'));
+                if (item) { item.qty = currentQty + delta; saveCart(); updateTotal(); }
             }
         }
 
@@ -154,25 +159,16 @@
                 cart = cart.filter(i => i.id !== id);
                 btn.innerText = "إضافة"; btn.style.background = "var(--success-color)";
             }
-            saveCart();
-            updateTotal();
+            saveCart(); updateTotal();
         }
 
         function updateTotal() {
-            let total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            document.getElementById('total-price').innerText = total;
+            document.getElementById('total-price').innerText = cart.reduce((s, i) => s + (i.price * i.qty), 0);
         }
 
-        function clearCart() {
-            cart = [];
-            localStorage.removeItem('dh_cart');
-            updateTotal();
-            renderMarket(); // إعادة رسم الصفحة لتحديث أزرار الإضافة
-        }
-
+        function clearCart() { cart = []; localStorage.removeItem('dh_cart'); renderMarket(); }
         function checkoutWhatsApp() {
-            if (cart.length === 0) return alert("السلة فاضية يا هندسة!");
-            let msg = "*طلب جديد من DH Automation*%0A%0A" + cart.map(i => `• ${i.name} (عدد: ${i.qty})`).join("%0A");
+            let msg = "*طلب جديد من DH Automation*%0A%0A" + cart.map(i => `• ${i.name} (${i.qty})`).join("%0A");
             window.open(`https://wa.me/201227091465?text=${msg}%0A%0A*الإجمالي: ${document.getElementById('total-price').innerText} ج.م*`, '_blank');
         }
 
@@ -183,8 +179,6 @@
         }
 
         function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
-        window.onclick = function(e) { if (e.target.className === 'modal') closeModal(); }
-
         renderMarket();
     </script>
 </body>
