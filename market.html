@@ -2,28 +2,32 @@
 <html lang="ar" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DH Automation | السوق</title>
+    <title>DH Automation | المتجر الذكي</title>
     <style>
         :root {
             --dark-bg: #1a1a1a; --main-blue: #0056b3; --accent-orange: #e67e22;
             --light-bg: #f8f9fa; --header-height: 60px;
         }
         body { margin:0; background:var(--light-bg); font-family:'Segoe UI',Tahoma,sans-serif; text-align: right; }
+        
+        /* تعديل الشريط العلوي ليكون أسود ثابت */
         header {
-            background:var(--dark-bg); color:white; display:flex; justify-content:space-between; 
+            background: var(--dark-bg); color:white; display:flex; justify-content:space-between; 
             align-items:center; padding:0 15px; height:var(--header-height);
             position:fixed; top:0; left:0; width:100%; box-shadow:0 2px 10px rgba(0,0,0,0.5); z-index:1000;
         }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
         .logo { font-weight:bold; font-size:1.1rem; color:var(--accent-orange); text-decoration:none; }
-        nav a { color:white; text-decoration:none; font-size:0.9rem; font-weight: bold; }
         .cart { display:flex; align-items:center; gap:10px; background:var(--main-blue); padding:5px 10px; border-radius:8px; cursor:pointer; }
+        
         .page-wrapper { margin-top:var(--header-height); }
         .hero {
             background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.6)), url('01.jpg') center/cover;
             color:white; text-align:center; padding:60px 20px; border-bottom:6px solid var(--main-blue);
         }
         .tabs { display:flex; justify-content:center; gap:10px; background:#fff; border-bottom:2px solid var(--main-blue); padding:10px; margin-top:20px; flex-wrap: wrap; }
-        .tab-btn { padding:10px 20px; border:none; cursor:pointer; background:#eee; border-radius:6px; font-weight:bold; }
+        .tab-btn { padding:10px 20px; border:none; cursor:pointer; background:#eee; border-radius:6px; font-weight:bold; transition: 0.3s; }
         .tab-btn.active { background:var(--main-blue); color:white; }
         .products-grid { display:none; }
         .products-grid.active { display:grid; grid-template-columns:1fr; gap:20px; padding:20px; max-width:1200px; margin:20px auto; }
@@ -32,84 +36,53 @@
         .product-card img { width:100%; height:180px; object-fit:cover; cursor:pointer; }
         .product-card .info { padding:15px; flex-grow:1; }
         .product-card h3 { margin:0; font-size:1.1rem; color:var(--main-blue); }
-        .qty-control { display:flex; align-items:center; gap:5px; margin-top:10px; }
-        .qty-control input { width:45px; text-align:center; border:1px solid #ccc; border-radius:4px; }
+        .price { color: var(--accent-orange); font-weight: bold; margin: 10px 0; font-size: 1.2rem; }
+        .qty-control { display:flex; align-items:center; gap:5px; margin-top:10px; justify-content: center; }
+        .qty-control input { width:45px; text-align:center; border:1px solid #ccc; border-radius:4px; padding: 5px; }
         .qty-control button { width:30px; height:30px; border:none; background:var(--main-blue); color:white; border-radius:5px; cursor:pointer; }
-        .action-btn { margin:15px; padding:10px; border:none; border-radius:8px; background:var(--main-blue); color:white; cursor:pointer; font-weight:bold; }
+        .action-btn { margin:15px; padding:12px; border:none; border-radius:8px; background:var(--main-blue); color:white; cursor:pointer; font-weight:bold; transition: 0.3s; }
         .admin-section { background: #e9ecef; padding: 30px; margin: 40px auto; max-width: 1000px; border-radius: 15px; border: 2px dashed var(--main-blue); }
-        .admin-form { display: flex; flex-direction: column; gap: 10px; background: white; padding: 20px; border-radius: 10px; margin-top:10px;}
+        .admin-form { display: flex; flex-direction: column; gap: 10px; background: white; padding: 20px; border-radius: 10px; margin-top:10px; }
         .btn-admin { background: var(--accent-orange); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .admin-btns-group { display: flex; gap: 5px; margin-top: 10px; }
+        .edit-btn { background: #28a745; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; flex: 1; }
+        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; flex: 1; }
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:2000; }
-        .modal-content { background:white; padding:20px; border-radius:15px; max-width:600px; width:92%; text-align:center; position:relative; max-height: 90vh; overflow-y: auto; }
-        .btn-modal { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; }
+        .modal-content { background:white; padding:20px; border-radius:15px; max-width:600px; width:92%; text-align:center; position:relative; overflow-y: auto; max-height: 90vh; }
         table { width: 100%; border-collapse: collapse; margin: 15px 0; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-/* تنسيق محتوى النافذة المنبثقة */
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    max-width: 500px; /* عرض مناسب للموبايل والكمبيوتر */
-    width: 90%;
-    text-align: center;
-    position: relative;
-    max-height: 85vh; /* ما تعديش 85% من ارتفاع الشاشة */
-    overflow-y: auto; /* لو الكلام كتير يظهر سكرول */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-/* تنسيق الصورة داخل النافذة - التعديل السحري هنا */
-#modal-img {
-    width: 100%;
-    max-height: 300px; /* أقصى ارتفاع للصورة عشان ما تسدش الشاشة */
-    object-fit: contain; /* تحافظ على أبعادها من غير ما تتمط */
-    border-radius: 10px;
-    margin-bottom: 15px;
-    background: #f9f9f9;
-}
-
-/* تنسيق وصف المنتج */
-#modal-desc {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #444;
-    margin: 15px 0;
-    text-align: justify; /* تخلي شكل الكلام منمق */
-}
+        input, select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+        #details-img { width: 100%; max-height: 300px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
     </style>
-</head>
+<style>#admin-panel, .admin-only, .admin-btns-group { display: none !important; }</style></head>
 <body>
 
 <header>
-    <a href="index.html" class="logo">DH.Automation</a>
-    <nav><a href="index.html">الرئيسية</a></nav>
-    <div class="cart" onclick="openCartModal()">
-        🛒 <span id="cart-info">2 قطع - 10000 جنيه</span>
+    <div class="nav-links">
+        <a href="index.html" class="logo">DH.Automation</a>
+        <a href="index.html">الرئيسية</a>
+        <a href="market.html">السوق</a>
+        <a href="industrial-solutions.html">الحلول الصناعية</a>
     </div>
+    <div class="cart" onclick="openCartModal()">🛒 <span id="cart-info">0 قطع - 0 جنيه</span></div>
 </header>
 
 <div class="page-wrapper">
     <section class="hero">
         <h1>سوق مساعد المهندس</h1>
-        <p>إدارة احترافية وتحديث ذكي</p>
+        <p>إدارة احترافية وتحديث ذكي للمعدات والقطع</p>
     </section>
 
-    <div class="tabs" id="tabs-container">
-      
-      
-    <button class="tab-btn active" onclick="showTab('cat_1775055490673')">كارتات إلكترونية صناعية</button><button class="tab-btn" onclick="showTab('cat_1775055522032')">ماكينات حقن بلاستيك</button></div>
-
-    <div id="products-container">
-        
-        
-    <div id="cat_1775055490673" class="products-grid active">
-        <div class="product-card" data-name="كارت بروبوشنال 10 امبير" data-price="2000" data-img="image/pro10a.jpg">
+    <div class="tabs" id="tabs-container"><button class="tab-btn active" onclick="showTab('cat_1775057729050')">كارتات الكترونية صناعية</button><button class="tab-btn " onclick="showTab('cat_1775057744267')">ماكينات حقن بلاستيك</button><button class="tab-btn " onclick="showTab('cat_1775057798752')">قطع غيار جديدة</button><button class="tab-btn " onclick="showTab('cat_1775057806994')">قطع غيار مستعملة</button><button class="tab-btn " onclick="showTab('cat_1775059668559')">بلح</button></div>
+    <div id="products-container"><div id="cat_1775057729050" class="products-grid active">
+        <div class="product-card" data-name="كارت بروبوشنال 10 امبير 2 مخرج" data-price="2000" data-img="image/pro10a.jpg">
             <img src="image/pro10a.jpg" onclick="showDetails(this)">
             <div class="info">
-                <h3>كارت بروبوشنال 10 امبير</h3><p>كارت بروبوشنال 10 امبير 2 مخرج 
-مزود بمروحة تبريد للخدمة الشاقة يعمل على جميع الصمامات من 2 اوم الى 30 اوم </p><div class="price">2000 جنيه</div>
-                <button class="delete-btn admin-only" onclick="this.closest('.product-card').remove()" style="display: none;">حذف المنتج 🗑️</button>
+                <h3>كارت بروبوشنال 10 امبير 2 مخرج</h3><p>كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ...</p><div class="price">2000 جنيه</div>
+                <div class="admin-btns-group admin-only">
+                    <button class="edit-btn" onclick="editProduct(this)">تعديل ✏️</button>
+                    <button class="delete-btn" onclick="removeProduct(this)">حذف 🗑️</button>
+                </div>
                 <div class="qty-control">
                     <button onclick="changeQty(this,-1)">-</button>
                     <input type="number" value="1" min="1">
@@ -117,192 +90,85 @@
                 </div>
             </div>
             <button class="action-btn" onclick="toggleCart(this)" style="background: var(--main-blue);">إضافة للعربة</button>
-        </div></div><div id="cat_1775055522032" class="products-grid"></div></div>
+        </div></div><div id="cat_1775057744267" class="products-grid ">
+        <div class="product-card" data-name="صيبسب" data-price="20" data-img="">
+            <img src="" onclick="showDetails(this)">
+            <div class="info">
+                <h3>صيبسب</h3><p>سيؤيس</p><div class="price">20 جنيه</div>
+                <div class="admin-btns-group admin-only">
+                    <button class="edit-btn" onclick="editProduct(this)">تعديل ✏️</button>
+                    <button class="delete-btn" onclick="removeProduct(this)">حذف 🗑️</button>
+                </div>
+                <div class="qty-control">
+                    <button onclick="changeQty(this,-1)">-</button>
+                    <input type="number" value="1" min="1">
+                    <button onclick="changeQty(this,1)">+</button>
+                </div>
+            </div>
+            <button class="action-btn" onclick="toggleCart(this)" style="background: var(--main-blue);">إضافة للعربة</button>
+        </div></div><div id="cat_1775057798752" class="products-grid "></div><div id="cat_1775057806994" class="products-grid "></div><div id="cat_1775059668559" class="products-grid "></div></div>
 
-    <section class="admin-section" style="display: none;">
-        <h2 style="text-align:center;">لوحة التحكم</h2>
-        <div class="admin-form">
-            <h4>إدارة الأقسام</h4>
-            <input type="text" id="new-cat-name" placeholder="اسم القسم الجديد">
-            <button class="btn-admin" onclick="addNewCategory()">إضافة قسم</button>
-            <select id="delete-cat-select"><option value="">-- حذف قسم --</option><option value="cat_1775055490673">كارتات إلكترونية صناعية</option><option value="cat_1775055522032">ماكينات حقن بلاستيك</option></select>
-            <button class="btn-admin" style="background:#dc3545" onclick="deleteCategory()">حذف القسم المختار</button>
+    <section class="admin-section" id="admin-panel">
+        <h2 style="text-align:center;">لوحة تحكم المهندس مدبولي</h2>
+        
+        <div class="admin-form" style="background:#f0f0f0;">
+            <h4 style="margin:0">📦 النسخ الاحتياطي</h4>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-admin" style="flex:1; background:#007bff;" onclick="exportStoreData()">تصدير ملف الحفظ JSON</button>
+                <button class="btn-admin" style="flex:1; background:#28a745;" onclick="document.getElementById('importFile').click()">استيراد ملف الحفظ</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="importStoreFromFile(event)">
+            </div>
         </div>
-        <div class="admin-form">
-            <h4>إضافة منتج جديد</h4>
+
+        <div class="admin-form" id="product-editor">
+            <h4 id="form-title">إضافة منتج جديد</h4>
             <input type="text" id="new-prod-name" placeholder="اسم المنتج">
             <input type="number" id="new-prod-price" placeholder="السعر">
             <input type="text" id="new-prod-img" placeholder="رابط الصورة">
-            <textarea id="new-prod-desc" placeholder="الوصف"></textarea>
-            <select id="new-prod-category"><option value="">-- اختر القسم --</option><option value="cat_1775055490673">كارتات إلكترونية صناعية</option><option value="cat_1775055522032">ماكينات حقن بلاستيك</option></select>
-            <button class="btn-admin" onclick="addNewProduct()">إضافة للمتجر</button>
+            <textarea id="new-prod-desc" placeholder="وصف فني..."></textarea>
+            <select id="new-prod-category"><option value="cat_1775057729050">كارتات الكترونية صناعية</option><option value="cat_1775057744267">ماكينات حقن بلاستيك</option><option value="cat_1775057798752">قطع غيار جديدة</option><option value="cat_1775057806994">قطع غيار مستعملة</option><option value="cat_1775059668559">بلح</option></select>
+            <button class="btn-admin" id="submit-btn" onclick="addNewProduct()">إضافة للمتجر</button>
+            <button class="btn-admin" id="cancel-edit" style="display:none; background:#666;" onclick="resetForm()">إلغاء التعديل</button>
         </div>
-        <button class="btn-admin" style="width:100%; background:#28a745; margin-top:20px;" onclick="generateFullCode()">تنزيل الكود النهائي</button>
+
+        <button class="btn-admin" style="width:100%; background:#28a745; margin-top:20px;" onclick="generateFullCode()">تنزيل نسخة العميل 🚀</button>
     </section>
 </div>
+
 <script>
 let cart = [];
 
 function initApp() {
     const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-        updateCartInfo();
-    }
-    refreshCategoryMenus();
+    if (savedCart) { cart = JSON.parse(savedCart); updateCartInfo(); }
+    const savedStore = localStorage.getItem("store_config") || '{"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]}';
+    restoreStore(savedStore ? JSON.parse(savedStore) : { categories: [{ id: 'inverters', name: 'انفرترات', products: [] }] });
     syncCardsWithCart();
 }
 
-// دالة تحديث قوائم الاختيار (الإضافة والحذف)
-function refreshCategoryMenus() {
-    const catSelectAdd = document.getElementById('new-prod-category');
-    const catSelectDel = document.getElementById('delete-cat-select');
-    
-    if(!catSelectAdd || !catSelectDel) return;
-
-    catSelectAdd.innerHTML = '<option value="">-- اختر القسم --</option>';
-    catSelectDel.innerHTML = '<option value="">-- حذف قسم --</option>';
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        const onclickAttr = btn.getAttribute('onclick');
-        const match = onclickAttr.match(/'([^']+)'/);
-        if (match) {
-            const catId = match[1];
-            const catName = btn.innerText;
-            const opt = `<option value="${catId}">${catName}</option>`;
-            catSelectAdd.insertAdjacentHTML('beforeend', opt);
-            catSelectDel.insertAdjacentHTML('beforeend', opt);
-        }
+function restoreStore(data) {
+    const tabs = document.getElementById('tabs-container'), prods = document.getElementById('products-container');
+    tabs.innerHTML = ''; prods.innerHTML = '';
+    data.categories.forEach((cat, index) => {
+        const active = index === 0 ? 'active' : '';
+        tabs.insertAdjacentHTML('beforeend', `<button class="tab-btn ${active}" onclick="showTab('${cat.id}')">${cat.name}</button>`);
+        let html = `<div id="${cat.id}" class="products-grid ${active}">`;
+        cat.products.forEach(p => { html += generateProductHTML(p.name, p.price, p.img, p.desc); });
+        prods.insertAdjacentHTML('beforeend', html + '</div>');
     });
-}
-
-// --- الدالة المفقودة: حذف القسم ---
-function deleteCategory() {
-    const id = document.getElementById('delete-cat-select').value;
-    
-    if(!id) {
-        alert("اختار القسم اللي عايز تمسحه الأول يا هندسة");
-        return;
-    }
-
-    if(!confirm("تأكيد حذف القسم بكل منتجاته؟")) return;
-    
-    // 1. حذف زرار التاب (Tab Button)
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        if(btn.getAttribute('onclick').includes(`'${id}'`)) {
-            btn.remove();
-        }
-    });
-    
-    // 2. حذف شبكة المنتجات (Products Grid)
-    const grid = document.getElementById(id);
-    if(grid) grid.remove();
-    
-    // 3. تحديث القوائم المنسدلة فوراً
     refreshCategoryMenus();
-    
-    // 4. تفعيل أول قسم متبقي (عشان الصفحة ما تبقاش فاضية)
-    const firstTab = document.querySelector('.tab-btn');
-    if(firstTab) {
-        const firstId = firstTab.getAttribute('onclick').match(/'([^']+)'/)[1];
-        showTab(firstId);
-    }
 }
 
-function updateCartInfo() {
-    let totalQty = 0, totalPrice = 0;
-    cart.forEach(item => {
-        totalQty += item.qty;
-        totalPrice += item.qty * item.price;
-    });
-    document.getElementById("cart-info").innerText = totalQty + " قطع - " + totalPrice + " جنيه";
-    localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-function syncCardsWithCart() {
-    document.querySelectorAll('.product-card').forEach(card => {
-        const name = card.dataset.name;
-        const btn = card.querySelector('.action-btn');
-        const input = card.querySelector('input');
-        const item = cart.find(i => i.name === name);
-
-        if (item) {
-            btn.innerText = "إلغاء";
-            btn.style.background = "red";
-            input.value = item.qty;
-        } else {
-            btn.innerText = "إضافة للعربة";
-            btn.style.background = "var(--main-blue)";
-            input.value = 1;
-        }
-    });
-}
-
-function showTab(tabId) {
-    document.querySelectorAll('.products-grid').forEach(grid => grid.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    const targetGrid = document.getElementById(tabId);
-    if(targetGrid) {
-        targetGrid.classList.add('active');
-    }
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        if(btn.getAttribute('onclick').includes(`'${tabId}'`)) btn.classList.add('active');
-    });
-}
-
-function changeQty(btn, delta) {
-    const input = btn.parentElement.querySelector("input");
-    let val = parseInt(input.value) + delta;
-    if (val < 1) val = 1;
-    input.value = val;
-    const card = btn.closest(".product-card");
-    const name = card.dataset.name;
-    const index = cart.findIndex(item => item.name === name);
-    if (index !== -1) {
-        cart[index].qty = val;
-        updateCartInfo();
-    }
-}
-
-function toggleCart(btn) {
-    const card = btn.closest(".product-card");
-    const name = card.dataset.name;
-    const price = parseInt(card.dataset.price);
-    const qty = parseInt(card.querySelector("input").value);
-    const index = cart.findIndex(item => item.name === name);
-    if (index === -1) {
-        cart.push({name, price, qty});
-    } else {
-        cart.splice(index, 1);
-    }
-    updateCartInfo();
-    syncCardsWithCart();
-}
-
-function addNewCategory() {
-    const nameInput = document.getElementById('new-cat-name');
-    if(!nameInput.value) return;
-    const id = 'cat_' + Date.now();
-    document.getElementById('tabs-container').insertAdjacentHTML('beforeend', `<button class="tab-btn" onclick="showTab('${id}')">${nameInput.value}</button>`);
-    document.getElementById('products-container').insertAdjacentHTML('beforeend', `<div id="${id}" class="products-grid"></div>`);
-    nameInput.value = ''; 
-    refreshCategoryMenus(); 
-}
-
-function addNewProduct() {
-    const nameEl = document.getElementById('new-prod-name');
-    const priceEl = document.getElementById('new-prod-price');
-    const imgEl = document.getElementById('new-prod-img');
-    const descEl = document.getElementById('new-prod-desc');
-    const catId = document.getElementById('new-prod-category').value;
-    if(!nameEl.value || !priceEl.value || !catId) return;
-
-    const html = `
-        <div class="product-card" data-name="${nameEl.value}" data-price="${priceEl.value}" data-img="${imgEl.value}">
-            <img src="${imgEl.value}" onclick="showDetails(this)">
+function generateProductHTML(n, p, i, d) {
+    return `
+        <div class="product-card" data-name="${n}" data-price="${p}" data-img="${i}">
+            <img src="${i}" onclick="showDetails(this)">
             <div class="info">
-                <h3>${nameEl.value}</h3><p>${descEl.value}</p><div class="price">${priceEl.value} جنيه</div>
-                <button class="delete-btn admin-only" onclick="this.closest('.product-card').remove()">حذف المنتج 🗑️</button>
+                <h3>${n}</h3><p>${d}</p><div class="price">${p} جنيه</div>
+                <div class="admin-btns-group admin-only">
+                    <button class="edit-btn" onclick="editProduct(this)">تعديل ✏️</button>
+                    <button class="delete-btn" onclick="removeProduct(this)">حذف 🗑️</button>
+                </div>
                 <div class="qty-control">
                     <button onclick="changeQty(this,-1)">-</button>
                     <input type="number" value="1" min="1">
@@ -311,78 +177,193 @@ function addNewProduct() {
             </div>
             <button class="action-btn" onclick="toggleCart(this)">إضافة للعربة</button>
         </div>`;
-    document.getElementById(catId).insertAdjacentHTML('beforeend', html);
-    nameEl.value = ''; priceEl.value = ''; imgEl.value = ''; descEl.value = '';
-    syncCardsWithCart();
-}
-
-function generateFullCode() {
-    document.querySelector('.admin-section').style.display = 'none';
-    document.querySelectorAll('.admin-only').forEach(btn => btn.style.display = 'none');
-    const fullHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-    document.querySelector('.admin-section').style.display = 'block';
-    document.querySelectorAll('.admin-only').forEach(btn => btn.style.display = 'inline-block');
-    const blob = new Blob([fullHTML], {type: 'text/html'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'DH_Market_Updated.html';
-    a.click();
-}
-
-function sendWhatsApp() {
-    if(cart.length === 0) return alert("السلة فارغة!");
-    let totalAll = 0;
-    let msg = "🛒 *طلب شراء جديد من DH Automation* 🛒\n";
-    msg += "--------------------------------------\n";
-    cart.forEach((item, index) => {
-        let itemTotal = item.qty * item.price;
-        totalAll += itemTotal;
-        msg += `${index + 1}. *${item.name}*\n`;
-        msg += `   الكمية: ${item.qty} | السعر: ${item.price} ج.م\n`;
-        msg += `   الإجمالي: ${itemTotal} ج.م\n`;
-        msg += "--------------------------------------\n";
-    });
-    msg += `💰 *الإجمالي العام للطلب: ${totalAll} جنيه مصري*`;
-    window.open("https://wa.me/201114394767?text=" + encodeURIComponent(msg));
-}
-
-function openCartModal() {
-    const tbody = document.querySelector("#cart-table tbody");
-    tbody.innerHTML = ""; let total = 0;
-    cart.forEach(item => {
-        tbody.innerHTML += `<tr><td>${item.name}</td><td>${item.qty}</td><td>${item.price}</td><td>${item.qty*item.price}</td></tr>`;
-        total += item.qty * item.price;
-    });
-    document.getElementById("cart-total").innerText = "الإجمالي: " + total + " جنيه";
-    document.getElementById("cartModal").style.display = "flex";
-}
-
-function emptyCart() {
-    if(!confirm("إفراغ السلة؟")) return;
-    cart = []; updateCartInfo(); syncCardsWithCart(); openCartModal();
 }
 
 function showDetails(img) {
     const card = img.closest(".product-card");
-    document.getElementById("modal-title").innerText = card.dataset.name;
-    document.getElementById("modal-img").src = card.dataset.img;
-    document.getElementById("modal-desc").innerText = card.querySelector("p").innerText;
-    document.getElementById("productModal").style.display = "flex";
+    document.getElementById("details-img").src = card.dataset.img;
+    document.getElementById("details-title").innerText = card.dataset.name;
+    document.getElementById("details-desc").innerText = card.querySelector('p').innerText;
+    document.getElementById("details-price").innerText = "السعر الحالي: " + card.dataset.price + " جنيه";
+    document.getElementById("productDetailsModal").style.display = "flex";
 }
 
-window.onclick = function(e) {
-    if (e.target.className === 'modal') {
-        document.getElementById('cartModal').style.display = "none";
-        document.getElementById('productModal').style.display = "none";
-    }
+function exportStoreData() {
+    const data = localStorage.getItem("store_config");
+    if(!data) return alert("مفيش بيانات!");
+    const blob = new Blob([data], {type: "application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `DH_Backup_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+    a.click();
+}
+
+function importStoreFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            localStorage.setItem("store_config", JSON.stringify(data));
+            restoreStore(data);
+            alert("تم التحديث بنجاح!");
+        } catch(err) { alert("ملف تالف!"); }
+    };
+    reader.readAsText(file);
+}
+
+function emptyCart() {
+    if(confirm("مسح السلة؟")) { cart = []; updateCartInfo(); syncCardsWithCart(); document.getElementById('cartModal').style.display='none'; }
+}
+
+function changeQty(btn, delta) {
+    const input = btn.parentElement.querySelector('input');
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    input.value = val;
+    const card = btn.closest('.product-card');
+    const item = cart.find(i => i.name === card.dataset.name);
+    if (item) { item.qty = val; updateCartInfo(); }
+}
+
+function sendWhatsApp() {
+    if(cart.length === 0) return alert("السلة فاضية!");
+    let total = 0, msg = "🛒 *طلب جديد من DH Automation*\n\n";
+    cart.forEach((item, i) => { total += item.qty * item.price; msg += `*${i+1}. ${item.name}*\n📦 الكمية: ${item.qty} | 💰: ${item.qty * item.price} ج\n`; });
+    msg += `\n💵 *الإجمالي: ${total} جنيه*`;
+    window.open("https://wa.me/201114394767?text=" + encodeURIComponent(msg));
+}
+
+function addNewProduct() {
+    const n = document.getElementById('new-prod-name').value, p = document.getElementById('new-prod-price').value,
+          i = document.getElementById('new-prod-img').value, d = document.getElementById('new-prod-desc').value,
+          c = document.getElementById('new-prod-category').value;
+    if(!n || !p || !c) return alert("البيانات ناقصة!");
+    document.getElementById(c).insertAdjacentHTML('beforeend', generateProductHTML(n, p, i, d));
+    resetForm(); saveStoreData(); syncCardsWithCart();
+}
+
+function saveStoreData() {
+    const categories = [];
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        const id = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        const products = [];
+        const grid = document.getElementById(id);
+        if (grid) { grid.querySelectorAll('.product-card').forEach(card => { products.push({ name: card.dataset.name, price: card.dataset.price, img: card.dataset.img, desc: card.querySelector('p').innerText }); }); }
+        categories.push({ id, name: btn.innerText, products });
+    });
+    localStorage.setItem("store_config", JSON.stringify({ categories }));
+}
+
+function toggleCart(btn) {
+    const card = btn.closest(".product-card"), name = card.dataset.name, price = parseInt(card.dataset.price), qty = parseInt(card.querySelector("input").value);
+    const idx = cart.findIndex(i => i.name === name);
+    if (idx === -1) cart.push({name, price, qty}); else cart.splice(idx, 1);
+    updateCartInfo(); syncCardsWithCart();
+}
+
+function updateCartInfo() {
+    let q = 0, t = 0; cart.forEach(i => { q += i.qty; t += i.qty * i.price; });
+    document.getElementById("cart-info").innerText = q + " قطع - " + t + " جنيه";
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function syncCardsWithCart() {
+    document.querySelectorAll('.product-card').forEach(card => {
+        const btn = card.querySelector('.action-btn'), item = cart.find(i => i.name === card.dataset.name);
+        btn.innerText = item ? "إلغاء" : "إضافة للعربة"; btn.style.background = item ? "red" : "var(--main-blue)";
+    });
+}
+
+function openCartModal() {
+    const tbody = document.querySelector("#cart-table tbody"); tbody.innerHTML = ""; let total = 0;
+    cart.forEach(item => { tbody.innerHTML += `<tr><td>${item.name}</td><td>${item.qty}</td><td>${item.price}</td><td>${item.qty*item.price}</td></tr>`; total += item.qty * item.price; });
+    document.getElementById("cart-total").innerText = "الإجمالي: " + total + " جنيه";
+    document.getElementById("cartModal").style.display = "flex";
+}
+
+function showTab(id) { 
+    document.querySelectorAll('.products-grid, .tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelector(`[onclick="showTab('${id}')"]`).classList.add('active');
+}
+
+function refreshCategoryMenus() {
+    const sel = document.getElementById('new-prod-category'); if(!sel) return; sel.innerHTML = '';
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        const id = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        sel.insertAdjacentHTML('beforeend', `<option value="${id}">${btn.innerText}</option>`);
+    });
+}
+
+function removeProduct(btn) { if(confirm("حذف؟")) { btn.closest('.product-card').remove(); saveStoreData(); } }
+
+function resetForm() {
+    document.getElementById('form-title').innerText = "إضافة منتج جديد";
+    document.getElementById('submit-btn').innerText = "إضافة للمتجر";
+    document.getElementById('submit-btn').onclick = addNewProduct;
+    document.getElementById('cancel-edit').style.display = "none";
+    ['new-prod-name','new-prod-price','new-prod-img','new-prod-desc'].forEach(id => document.getElementById(id).value = '');
+}
+
+function editProduct(btn) {
+    const card = btn.closest('.product-card');
+    document.getElementById('new-prod-name').value = card.dataset.name;
+    document.getElementById('new-prod-price').value = card.dataset.price;
+    document.getElementById('new-prod-img').value = card.dataset.img;
+    document.getElementById('new-prod-desc').value = card.querySelector('p').innerText;
+    document.getElementById('new-prod-category').value = card.parentElement.id;
+    document.getElementById('form-title').innerText = "تعديل: " + card.dataset.name;
+    document.getElementById('submit-btn').innerText = "حفظ التعديلات ✅";
+    document.getElementById('submit-btn').onclick = function() { card.remove(); addNewProduct(); resetForm(); };
+    document.getElementById('cancel-edit').style.display = "block";
+}
+
+function generateFullCode() {
+    try {
+        const currentData = localStorage.getItem("store_config");
+        let fullHtml = document.documentElement.outerHTML;
+        const adminHideCSS = `<style>#admin-panel, .admin-only, .admin-btns-group { display: none !important; }</style>`;
+        fullHtml = fullHtml.replace('</head>', adminHideCSS + '</head>');
+        const safeData = currentData ? currentData.replace(/\\/g, "\\\\").replace(/'/g, "\\'") : "";
+        fullHtml = fullHtml.replace('const savedStore = localStorage.getItem("store_config");', `const savedStore = localStorage.getItem("store_config") || '${safeData}';`);
+        const blob = new Blob(["<!DOCTYPE html>\n" + fullHtml], { type: 'text/html' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'DH_Automation_Final.html'; a.click();
+    } catch (err) { alert("خطأ: " + err.message); }
+}
+
+window.onclick = function(event) {
+    const detailsModal = document.getElementById('productDetailsModal');
+    const cartModal = document.getElementById('cartModal');
+    if (event.target == detailsModal) detailsModal.style.display = "none";
+    if (event.target == cartModal) cartModal.style.display = "none";
 }
 
 window.onload = initApp;
 </script>
 
-<div class="modal" id="productModal"><div class="modal-content"><h2 id="modal-title"></h2><img id="modal-img"><p id="modal-desc"></p><div class="modal-footer"><button class="btn-modal" style="background:#666" onclick="document.getElementById('productModal').style.display='none'">إغلاق</button></div></div></div>
-<div class="modal" id="cartModal"><div class="modal-content"><h2>سلة المشتريات</h2><table id="cart-table"><thead><tr><th>المنتج</th><th>كمية</th><th>سعر</th><th>إجمالي</th></tr></thead><tbody></tbody></table><div id="cart-total" style="font-weight:bold; margin:10px;"></div><div class="modal-footer"><button class="btn-modal" style="background:#25D366" onclick="sendWhatsApp()">إرسال واتساب</button><button class="btn-modal" style="background:#dc3545" onclick="emptyCart()">إفراغ</button><button class="btn-modal" style="background:#666" onclick="document.getElementById('cartModal').style.display='none'">إغلاق</button></div></div></div>
-<footer>© 2026 DH Automation - المهندس مدبولي</footer>
+<div class="modal" id="productDetailsModal">
+    <div class="modal-content">
+        <h2 id="details-title" style="color:var(--main-blue);"></h2>
+        <img id="details-img" src="">
+        <p id="details-desc" style="text-align:justify; line-height:1.6; color:#444; padding:0 10px;"></p>
+        <div id="details-price" style="font-weight:bold; font-size:1.3rem; color:var(--accent-orange); margin:15px 0;"></div>
+        <button class="btn-admin" style="background:#666; width:100%;" onclick="document.getElementById('productDetailsModal').style.display='none'">إغلاق النافذة</button>
+    </div>
+</div>
 
+<div class="modal" id="cartModal">
+    <div class="modal-content">
+        <h2>سلة المشتريات</h2>
+        <table id="cart-table"><thead><tr><th>المنتج</th><th>كمية</th><th>سعر</th><th>إجمالي</th></tr></thead><tbody></tbody></table>
+        <div id="cart-total" style="font-weight:bold; margin:15px;"></div>
+        <button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">طلب عبر واتساب ✅</button>
+        <button class="btn-admin" style="background:#ff4d4d; width:100%; margin-bottom:5px;" onclick="emptyCart()">إفراغ السلة 🗑️</button>
+        <button class="btn-admin" style="background:#666; width:100%;" onclick="document.getElementById('cartModal').style.display='none'">إغلاق</button>
+    </div>
+</div>
+
+<footer style="text-align:center; padding:20px; background:#1a1a1a; color:white;">© 2026 DH Automation - المهندس مدبولي</footer>
 
 </body></html>

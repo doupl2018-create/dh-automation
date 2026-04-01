@@ -1,100 +1,251 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DH Automation | الخدمات</title>
-<style>
-:root {
-    --dark-bg: #1a1a1a; --main-blue: #0056b3; --accent-orange: #e67e22;
-    --light-bg: #f8f9fa; --header-height: 60px;
-}
-body { margin:0; background:var(--light-bg); font-family:'Segoe UI',Tahoma,sans-serif; }
-header { background:var(--dark-bg); color:white; display:flex; justify-content:space-between; align-items:center;
-    padding:0 15px; height:var(--header-height); position:fixed; top:0; left:0; width:100%; box-shadow:0 2px 10px rgba(0,0,0,0.5); z-index:1000; }
-.logo { font-weight:bold; font-size:1.1rem; color:var(--accent-orange); text-decoration:none; }
-nav { display:flex; gap:15px; align-items:center; }
-nav a { color:white; text-decoration:none; font-size:0.9rem; }
-nav a:hover { color:var(--accent-orange); }
-.page-wrapper { margin-top:var(--header-height); }
-.hero { background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.6)), url('01.jpg') center/cover; color:white; text-align:center; padding:60px 20px; border-bottom:6px solid var(--main-blue); }
-.posts { max-width:700px; margin:30px auto; padding:0 15px; }
-.post { background:white; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:20px; padding:15px; }
-.post h3 { margin:0; color:var(--main-blue); }
-.post img, .post video { width:100%; border-radius:8px; margin:10px 0; }
-.post p { font-size:0.9rem; color:#333; }
-.more-text { display:none; }
-.more-btn { background:var(--accent-orange); color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; }
-footer { background:var(--dark-bg); color:white; text-align:center; padding:15px; margin-top:40px; }
-</style>
-</head>
-<body>
+<html lang="ar" dir="rtl"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DH Automation | الخدمات</title>
+    <style>
+        :root {
+            --dark-bg: #1a1a1a; --main-blue: #0056b3; --accent-orange: #e67e22;
+            --light-bg: #f8f9fa; --header-height: 60px;
+        }
+        body { margin:0; background:var(--light-bg); font-family:'Segoe UI',Tahoma,sans-serif; text-align: right; }
+        
+        header {
+            background:var(--dark-bg); color:white; display:flex; justify-content:space-between; 
+            align-items:center; padding:0 15px; height:var(--header-height);
+            position:fixed; top:0; left:0; width:100%; box-shadow:0 2px 10px rgba(0,0,0,0.5); z-index:1000;
+        }
+        .logo { font-weight:bold; font-size:1.1rem; color:var(--accent-orange); text-decoration:none; }
+        nav { display:flex; gap:15px; align-items:center; }
+        nav a { color:white; text-decoration:none; font-size:0.9rem; font-weight: bold; }
+
+        .page-wrapper { margin-top:var(--header-height); }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('01.jpg') center/cover;
+            color: white; text-align: center; padding: 60px 20px; border-bottom: 6px solid var(--main-blue);
+        }
+
+        /* لوحة التحكم */
+        .admin-section {
+            background: #fff; max-width: 800px; margin: 30px auto;
+            padding: 25px; border: 2px dashed var(--main-blue); border-radius: 15px;
+        }
+        .admin-section input, .admin-section textarea {
+            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;
+        }
+        .btn-add { background: var(--main-blue); color: white; border: none; padding: 12px; cursor: pointer; width: 100%; border-radius: 8px; font-weight: bold; }
+
+        /* شبكة الخدمات */
+        .services-grid {
+            display: grid; grid-template-columns: 1fr; gap: 25px; max-width: 1200px; margin: 40px auto; padding: 0 20px;
+        }
+        @media(min-width: 768px) { .services-grid { grid-template-columns: 1fr 1fr; } }
+        @media(min-width: 1024px) { .services-grid { grid-template-columns: 1fr 1fr 1fr; } }
+        
+        .post-card {
+            background: white; border-radius: 15px; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; border: 1px solid #eee;
+        }
+        .post-card img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; }
+        .post-content { padding: 20px; }
+        .post-content h3 { margin: 0 0 10px 0; color: var(--main-blue); }
+        .more-btn { background: var(--accent-orange); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+
+        /* المودال (المربع الكبير) */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000; padding: 20px;
+        }
+        .modal-content { 
+            background: white; border-radius: 20px; max-width: 800px; width: 100%; 
+            max-height: 90vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-body { padding: 30px; }
+        .close-modal { 
+            position: absolute; top: 15px; right: 15px; background: #eee; border-radius: 50%; 
+            width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10;
+        }
+
+        .admin-btns { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 5; }
+        .delete-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .edit-btn { background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+        footer { background:var(--dark-bg); color:white; text-align:center; padding:25px; margin-top:50px; }
+        .admin-only { display: block; } 
+    </style>
+<style>.admin-only, .admin-section, .admin-btns { display: none !important; }</style></head>
+<body><script>const clientData = [{"id":1775077972886,"title":"اي خدمة ","img":"","brief":"تمام ","details":"حلوة ","video":""}];</script>
 
 <header>
     <a href="index.html" class="logo">DH.Automation</a>
     <nav>
         <a href="index.html">الرئيسية</a>
-        <a href="market.html">السوق</a>
-        <a href="industrial-solutions.html">الحلول الصناعية</a>
+        <a href="industrial-solutions.html">الحلول</a>
         <a href="projects.html">المشاريع</a>
         <a href="services.html">الخدمات</a>
-        <a href="https://wa.me/201114394767">اتصل بنا</a>
     </nav>
 </header>
 
 <div class="page-wrapper">
     <section class="hero">
-        <h1>الخدمات</h1>
-        <p>خدماتنا البرمجية والتحكم الصناعي</p>
+        <h1>خدماتنا الهندسية</h1>
+        <p>تفقد حلولنا البرمجية المتكاملة</p>
     </section>
 
-    <div class="posts">
-        <div class="post">
-            <h3>برمجة وحدات PLC</h3>
-            <img src="plc-service.jpg" alt="PLC Service">
-            <p>
-                نقدم خدمة برمجة وحدات PLC لمختلف خطوط الإنتاج...
-                <span class="more-text">
-                    التفاصيل: تصميم برامج تحكم مخصصة، مع تدريب للمهندسين على الاستخدام.
-                    <img src="plc-extra.jpg" alt="PLC Extra">
-                </span>
-            </p>
-            <button class="more-btn" onclick="toggleMore(this)">المزيد</button>
-        </div>
+    <div class="admin-section admin-only">
+        <h3 id="form-title">تعديل ✏️</h3>
+        <input type="text" id="s-title" placeholder="اسم الخدمة">
+        <input type="text" id="s-img" placeholder="رابط الصورة">
+        <textarea id="s-brief" rows="2" placeholder="وصف خارجي"></textarea>
+        <textarea id="s-details" rows="5" placeholder="التفاصيل الكاملة"></textarea>
+        <input type="text" id="s-video" placeholder="رابط الفيديو (MP4)">
+        <button class="btn-add" id="main-btn" onclick="addService()">حفظ التغييرات</button>
+        <button class="btn-add" id="cancel-edit" style="display: block; background: rgb(102, 102, 102);" onclick="resetForm()">إلغاء</button>
+        <hr>
+        <button onclick="generateClientFile()" style="background:#28a745; color:white; border:none; padding:10px; cursor:pointer; width:100%; border-radius:8px;">تصدير نسخة العميل 🚀</button>
+    </div>
 
-        <div class="post">
-            <h3>تطوير أنظمة Microcontrollers</h3>
-            <img src="microcontroller.jpg" alt="Microcontroller">
-            <p>
-                حلول متقدمة باستخدام المتحكمات الدقيقة...
-                <span class="more-text">
-                    التفاصيل: تصميم دوائر إلكترونية وبرمجة Firmware للتحكم في العمليات الصناعية.
-                    <video controls>
-                        <source src="micro-demo.mp4" type="video/mp4">
-                    </video>
-                </span>
-            </p>
-            <button class="more-btn" onclick="toggleMore(this)">المزيد</button>
+    <div class="services-grid" id="services-list">
+            <div class="post-card">
+                <div class="admin-btns admin-only">
+                    <button class="edit-btn" onclick="editService(1775077972886)">✏️</button>
+                    <button class="delete-btn" onclick="deleteService(1775077972886)">🗑️</button>
+                </div>
+                <img src="01.jpg" onclick="openModal(1775077972886)">
+                <div class="post-content">
+                    <h3>اي خدمة </h3>
+                    <p>تمام </p>
+                    <button class="more-btn" onclick="openModal(1775077972886)">المزيد من التفاصيل</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+<div class="modal" id="serviceModal" onclick="if(event.target==this) closeModal()">
+    <div class="modal-content">
+        <div class="close-modal" onclick="closeModal()">✕</div>
+        <img id="m-img" src="" style="width:100%; max-height:350px; object-fit:cover;">
+        <div class="modal-body">
+            <h2 id="m-title" style="color:var(--main-blue);"></h2>
+            <p id="m-text" style="white-space: pre-wrap; line-height:1.6; color:#333;"></p>
+            <div id="m-video-container" style="display:none; margin-top:20px;">
+                <video id="m-video" controls="" style="width:100%; border-radius:10px; background:#000;"><source src="" type="video/mp4"></video>
+            </div>
         </div>
     </div>
 </div>
 
-<footer>
-    © 2026 DH Automation - جميع الحقوق محفوظة
-</footer>
+<footer>© 2026 DH Automation - المهندس مدبولي</footer>
 
 <script>
-function toggleMore(btn) {
-    const moreText = btn.parentElement.querySelector(".more-text");
-    if (moreText.style.display === "none" || moreText.style.display === "") {
-        moreText.style.display = "inline";
-        btn.innerText = "إخفاء";
-    } else {
-        moreText.style.display = "none";
-        btn.innerText = "المزيد";
-    }
+let servicesData = [];
+
+function init() {
+    const saved = localStorage.getItem("services_db");
+    if (typeof clientData !== 'undefined') { servicesData = clientData; } 
+    else if (saved) { servicesData = JSON.parse(saved); }
+    renderServices();
 }
+
+function renderServices() {
+    const list = document.getElementById('services-list');
+    list.innerHTML = '';
+    servicesData.forEach(s => {
+        list.insertAdjacentHTML('beforeend', `
+            <div class="post-card">
+                <div class="admin-btns admin-only">
+                    <button class="edit-btn" onclick="editService(${s.id})">✏️</button>
+                    <button class="delete-btn" onclick="deleteService(${s.id})">🗑️</button>
+                </div>
+                <img src="${s.img || '01.jpg'}" onclick="openModal(${s.id})">
+                <div class="post-content">
+                    <h3>${s.title}</h3>
+                    <p>${s.brief}</p>
+                    <button class="more-btn" onclick="openModal(${s.id})">المزيد من التفاصيل</button>
+                </div>
+            </div>
+        `);
+    });
+}
+
+function openModal(id) {
+    const s = servicesData.find(item => item.id == id);
+    if(!s) return;
+    document.getElementById('m-title').innerText = s.title;
+    document.getElementById('m-img').src = s.img || '01.jpg';
+    document.getElementById('m-text').innerText = s.details || s.brief;
+    const vContainer = document.getElementById('m-video-container');
+    const v = document.getElementById('m-video');
+    if(s.video) { vContainer.style.display='block'; v.src=s.video; }
+    else { vContainer.style.display='none'; v.src=''; }
+    document.getElementById('serviceModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // منع السكرول خلف المودال
+}
+
+function closeModal() { 
+    document.getElementById('serviceModal').style.display='none'; 
+    document.getElementById('m-video').pause();
+    document.body.style.overflow = 'auto';
+}
+
+// باقي دوال الإدارة (إضافة، تعديل، حذف) كما هي..
+function addService() {
+    const title = document.getElementById('s-title').value;
+    const img = document.getElementById('s-img').value;
+    const brief = document.getElementById('s-brief').value;
+    const details = document.getElementById('s-details').value;
+    const video = document.getElementById('s-video').value;
+    if(!title || !brief) return alert("اكمل البيانات!");
+    servicesData.unshift({ id: Date.now(), title, img, brief, details, video });
+    saveAndRefresh();
+    resetForm();
+}
+
+function editService(id) {
+    const s = servicesData.find(item => item.id == id);
+    document.getElementById('s-title').value = s.title;
+    document.getElementById('s-img').value = s.img;
+    document.getElementById('s-brief').value = s.brief;
+    document.getElementById('s-details').value = s.details;
+    document.getElementById('s-video').value = s.video;
+    document.getElementById('form-title').innerText = "تعديل ✏️";
+    const btn = document.getElementById('main-btn');
+    btn.innerText = "حفظ التغييرات";
+    btn.onclick = () => {
+        servicesData = servicesData.filter(i => i.id != id);
+        servicesData.unshift({ id, title: document.getElementById('s-title').value, img: document.getElementById('s-img').value, brief: document.getElementById('s-brief').value, details: document.getElementById('s-details').value, video: document.getElementById('s-video').value });
+        saveAndRefresh();
+        resetForm();
+    };
+    document.getElementById('cancel-edit').style.display = 'block';
+    window.scrollTo(0,0);
+}
+
+function resetForm() {
+    document.getElementById('form-title').innerText = "إضافة خدمة جديدة 🛠️";
+    const btn = document.getElementById('main-btn');
+    btn.innerText = "نشر الخدمة";
+    btn.onclick = addService;
+    document.getElementById('cancel-edit').style.display = 'none';
+    document.querySelectorAll('.admin-section input, .admin-section textarea').forEach(i => i.value = '');
+}
+
+function deleteService(id) { if(confirm("حذف؟")) { servicesData = servicesData.filter(s => s.id != id); saveAndRefresh(); } }
+function saveAndRefresh() { localStorage.setItem("services_db", JSON.stringify(servicesData)); renderServices(); }
+
+function generateClientFile() {
+    let html = document.documentElement.outerHTML;
+    const config = `<style>.admin-only, .admin-section, .admin-btns { display: none !important; }</style>`;
+    const data = `<script>const clientData = ${JSON.stringify(servicesData)};<\/script>`;
+    let final = html.replace('</head>', config + '</head>').replace('<body>', '<body>' + data);
+    const blob = new Blob(["<!DOCTYPE html>\n" + final], {type: 'text/html'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'DH_Services.html'; a.click();
+}
+
+window.onload = init;
 </script>
 
-</body>
-</html>
+</body></html>
