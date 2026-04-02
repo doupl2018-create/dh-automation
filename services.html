@@ -95,7 +95,7 @@
         <button onclick="smartSearch()">🔍 بحث</button>
         <button class="clear-btn" onclick="clearSearch()">✖️ إلغاء</button>
     </div>
-    <div id="resultsCount" class="results-count" style="display: none;">2 نتيجة</div>
+    <div id="resultsCount" class="results-count" style="display: none;"></div>
     
     <div class="admin-section admin-only">
         <h3 id="form-title" style="color:var(--main-blue);">🛠️ إضافة خدمة جديدة</h3>
@@ -104,7 +104,7 @@
         <hr style="margin: 15px 0;"><button onclick="generateClientFile()" style="background:#28a745; color:white; border:none; padding:12px; cursor:pointer; width:100%; border-radius:30px; font-weight:bold;">🚀 تنزيل نسخة العميل</button>
     </div>
     
-    <div id="originalContainer" style="display: block;">
+    <div id="originalContainer">
         <div class="services-grid" id="services-list">
             <div class="post-card" data-id="1775133077001">
                 <div class="admin-btns admin-only"><button class="edit-btn" onclick="editService(1775133077001)">✏️</button><button class="delete-btn" onclick="deleteService(1775133077001)">🗑️</button></div>
@@ -130,40 +130,14 @@
         </div>
     </div>
     
-    <div id="searchResultsContainer" class="search-results-grid" style="display: none;">
-                    <div class="post-card" data-id="1775133077001">
-                        <img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
-                        <div class="post-content">
-                            <h3>الصيانة الفورية</h3>
-                            <p>صيانة فورية لجميع ماكينات حقن البلاستيك والنفخ</p>
-                            <div class="details-area" id="details-1775133077001">
-                                <p style="white-space: pre-wrap;">صيانة فورية لجميع ماكينات حقن البلاستيك والنفخ والفيلم</p>
-                                
-                            </div>
-                            <button class="more-btn" onclick="toggleDetails(1775133077001, this)">📖 المزيد</button>
-                        </div>
-                    </div>
-                
-                    <div class="post-card" data-id="1775077972886">
-                        <img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
-                        <div class="post-content">
-                            <h3>اي خدمة </h3>
-                            <p>تمام </p>
-                            <div class="details-area" id="details-1775077972886">
-                                <p style="white-space: pre-wrap;">حلوة </p>
-                                
-                            </div>
-                            <button class="more-btn" onclick="toggleDetails(1775077972886, this)">📖 المزيد</button>
-                        </div>
-                    </div>
-                </div>
+    <div id="searchResultsContainer" class="search-results-grid"></div>
 </div>
 
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()"><img id="zoomImage" src=""></div>
 <footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
 
 <script>
-let servicesData = [];
+let servicesData = [{"id":1775133077001,"title":"الصيانة الفورية","img":"","brief":"صيانة فورية لجميع ماكينات حقن البلاستيك والنفخ","details":"صيانة فورية لجميع ماكينات حقن البلاستيك والنفخ والفيلم","video":""},{"id":1775077972886,"title":"اي خدمة ","img":"","brief":"تمام ","details":"حلوة ","video":""}];
 
 function safeLocalStorage() { try { return localStorage; } catch(e) { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; } }
 function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
@@ -309,7 +283,39 @@ function resetForm() {
 
 function deleteService(id) { if (confirm("⚠️ هل تريد حذف هذه الخدمة؟")) { servicesData = servicesData.filter(s => s.id != id); saveAndRefresh(); } }
 function saveAndRefresh() { const storage = safeLocalStorage(); storage.setItem("services_db", JSON.stringify(servicesData)); renderServices(); }
-function generateClientFile() { try { let html = document.documentElement.outerHTML; const hide = `<style>.admin-only, .admin-section, .admin-btns { display: none !important; }</style>`; html = html.replace('</head>', hide + '</head>'); const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'DH_Services_Client.html'; a.click(); alert("✅ تم التصدير!"); } catch(e) { alert("خطأ: " + e.message); } }
+
+// ========== دالة تصدير نسخة العميل المعدلة (بنفس طريقة المشاريع) ==========
+function generateClientFile() {
+    try {
+        // 1. تحويل البيانات الحالية إلى نص JSON
+        const jsonData = JSON.stringify(servicesData);
+        
+        // 2. الحصول على كود الصفحة بالكامل
+        let html = document.documentElement.outerHTML;
+        
+        // 3. إخفاء أدوات الإدارة للعميل
+        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns { display: none !important; }</style>`;
+        
+        // 4. السحر هنا: استبدال مصفوفة البيانات الفارغة بالبيانات الحقيقية
+        const dataInjection = `let servicesData = ${jsonData};`;
+        html = html.replace(/let servicesData\s*=\s*\[\]\s*;/, dataInjection);
+        
+        // 5. إضافة ستايل إخفاء الإدارة في الهيد
+        html = html.replace('</head>', adminStyles + '</head>');
+        
+        // 6. تحويل النص إلى ملف للتحميل
+        const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'DH_Services_Client.html';
+        a.click();
+        
+        alert("✅ تم توليد نسخة العميل بنجاح! الآن ستظهر الخدمات لأي شخص يفتح الملف.");
+    } catch(e) {
+        alert("خطأ أثناء التصدير: " + e.message);
+    }
+}
+
 window.onload = init;
 </script>
 
