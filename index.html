@@ -64,10 +64,6 @@
         footer { background: var(--dark-bg); color: white; text-align: center; padding: 20px; margin-top: 40px; }
         .footer-content p { margin: 5px 0; }
         
-        /* زر تنزيل نسخة العميل */
-        .btn-client { background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; margin: 20px auto; display: block; width: fit-content; }
-        .btn-client:hover { background: #218838; }
-        
         @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } .result-card { flex-direction: column; text-align: center; } .result-link { width: 100%; text-align: center; } }
     </style>
 </head>
@@ -113,9 +109,6 @@
             <a href="services.html" class="nav-card"><span class="icon">⚙️</span><h2>خدماتنا البرمجية</h2><p>PLC و Microcontrollers وبرمجة</p></a>
         </div>
     </div>
-    
-    <!-- زر تنزيل نسخة العميل -->
-    <button class="btn-client" onclick="generateClientFile()">🚀 تنزيل نسخة العميل (البحث الشامل)</button>
 </div>
 
 <footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
@@ -123,22 +116,21 @@
 <script>
 let allData = { market: [], projects: [], industrial: [], services: [] };
 
-function safeLocalStorage() { try { return localStorage; } catch(e) { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; } }
 function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
 
 function toggleMenu() { const nav = document.getElementById('mainNav'); if (nav) nav.classList.toggle('active'); }
 document.addEventListener('click', function(event) { const nav = document.getElementById('mainNav'); const toggle = document.querySelector('.menu-toggle'); if (nav && toggle && !nav.contains(event.target) && !toggle.contains(event.target)) nav.classList.remove('active'); });
 
-function loadAllData() {
-    const storage = safeLocalStorage();
-    
-    const marketData = storage.getItem('store_config');
-    if (marketData) {
-        try {
-            const parsed = JSON.parse(marketData);
-            if (parsed.categories) {
+async function loadAllData() {
+    try {
+        const response = await fetch('dh_automation_data.json');
+        if (response.ok) {
+            const data = await response.json();
+            
+            // منتجات السوق
+            if (data.store_config && data.store_config.categories) {
                 allData.market = [];
-                parsed.categories.forEach(cat => {
+                data.store_config.categories.forEach(cat => {
                     cat.products.forEach(product => {
                         allData.market.push({
                             name: product.name, desc: product.desc || '', price: product.price,
@@ -148,40 +140,40 @@ function loadAllData() {
                     });
                 });
             }
-        } catch(e) {}
-    }
-    
-    const projectsData = storage.getItem('projects_db');
-    if (projectsData) {
-        try {
-            const parsed = JSON.parse(projectsData);
-            allData.projects = parsed.map(p => ({
-                name: p.title, desc: p.brief, details: p.details, img: p.img,
-                type: 'projects', typeName: '🏗️ مشروع', link: 'projects.html'
-            }));
-        } catch(e) {}
-    }
-    
-    const industrialData = storage.getItem('industrial_data');
-    if (industrialData) {
-        try {
-            const parsed = JSON.parse(industrialData);
-            allData.industrial = parsed.map(p => ({
-                name: p.title, desc: p.brief, details: p.details, img: p.img,
-                type: 'industrial', typeName: '🏭 حل صناعي', link: 'industrial-solutions.html'
-            }));
-        } catch(e) {}
-    }
-    
-    const servicesData = storage.getItem('services_db');
-    if (servicesData) {
-        try {
-            const parsed = JSON.parse(servicesData);
-            allData.services = parsed.map(p => ({
-                name: p.title, desc: p.brief, details: p.details, img: p.img,
-                type: 'services', typeName: '⚙️ خدمة', link: 'services.html'
-            }));
-        } catch(e) {}
+            
+            // المشاريع
+            if (data.projects_db && data.projects_db.length) {
+                allData.projects = data.projects_db.map(p => ({
+                    name: p.title, desc: p.brief, details: p.details, img: p.img,
+                    type: 'projects', typeName: '🏗️ مشروع', link: 'projects.html'
+                }));
+            }
+            
+            // الحلول الصناعية
+            if (data.industrial_data && data.industrial_data.length) {
+                allData.industrial = data.industrial_data.map(p => ({
+                    name: p.title, desc: p.brief, details: p.details, img: p.img,
+                    type: 'industrial', typeName: '🏭 حل صناعي', link: 'industrial-solutions.html'
+                }));
+            }
+            
+            // الخدمات
+            if (data.services_db && data.services_db.length) {
+                allData.services = data.services_db.map(p => ({
+                    name: p.title, desc: p.brief, details: p.details, img: p.img,
+                    type: 'services', typeName: '⚙️ خدمة', link: 'services.html'
+                }));
+            }
+            
+            // اسم المهندس
+            if (data.engineerName) {
+                updateName(data.engineerName);
+            }
+        } else {
+            console.log('⚠️ ملف البيانات غير موجود');
+        }
+    } catch(e) {
+        console.log('⚠️ خطأ في تحميل البيانات');
     }
 }
 
@@ -204,7 +196,7 @@ function smartSearch() {
     if (allItems.length === 0) {
         if (resultsContainer) {
             resultsContainer.style.display = 'block';
-            resultsContainer.innerHTML = '<div class="no-results">📭 لا توجد بيانات للبحث فيها حالياً<br>💡 أضف منتجات أو مشاريع أولاً</div>';
+            resultsContainer.innerHTML = '<div class="no-results">📭 لا توجد بيانات للبحث فيها حالياً</div>';
         }
         if (originalContainer) originalContainer.style.display = 'none';
         if (resultsCount) resultsCount.style.display = 'none';
@@ -214,8 +206,7 @@ function smartSearch() {
     const results = allItems.filter(item => {
         const nameMatch = item.name && item.name.toLowerCase().includes(searchTerm);
         const descMatch = item.desc && item.desc.toLowerCase().includes(searchTerm);
-        const detailsMatch = item.details && item.details.toLowerCase().includes(searchTerm);
-        return nameMatch || descMatch || detailsMatch;
+        return nameMatch || descMatch;
     });
     
     if (resultsContainer && originalContainer) {
@@ -234,7 +225,7 @@ function smartSearch() {
                         <img src="${item.img || '01.jpg'}" onerror="this.src='01.jpg'">
                         <div class="result-info">
                             <h3>${escapeHtml(item.name)}</h3>
-                            <p>${escapeHtml(item.desc ? item.desc.substring(0, 100) : '')}${item.desc && item.desc.length > 100 ? '...' : ''}</p>
+                            <p>${escapeHtml(item.desc ? item.desc.substring(0, 100) : '')}</p>
                             <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                                 <span class="result-badge">${item.typeName}</span>
                                 ${item.price ? `<span class="result-badge" style="background: #28a745;">💰 ${item.price} ج</span>` : ''}
@@ -259,17 +250,6 @@ function clearSearch() {
     if (resultsCount) resultsCount.style.display = 'none';
 }
 
-function askName() {
-    const storage = safeLocalStorage();
-    let savedName = storage.getItem('engineerName');
-    if (!savedName || savedName === 'null') {
-        savedName = prompt("من فضلك أدخل اسمك المهندس:");
-        if (savedName && savedName.trim()) storage.setItem('engineerName', savedName.trim());
-        else savedName = "المهندس";
-    }
-    updateName(savedName);
-}
-
 function updateName(name) {
     if (name && name !== 'null') {
         const userNameSpan = document.getElementById('header-user-name');
@@ -283,81 +263,13 @@ function changeName() {
     const newNameInput = document.getElementById('newName');
     const newName = newNameInput ? newNameInput.value.trim() : '';
     if (newName) {
-        const storage = safeLocalStorage();
-        storage.setItem('engineerName', newName);
         updateName(newName);
         if (newNameInput) newNameInput.value = "";
     } else { alert("الرجاء إدخال اسم صحيح"); }
 }
 
-// ========== دالة تصدير نسخة العميل (تعتمد على البيانات اللي في allData) ==========
-function generateClientFile() {
-    try {
-        // نجمع كل البيانات في مصفوفة واحدة
-        const allSearchData = [];
-        
-        // منتجات السوق
-        for (let key in allData) {
-            allData[key].forEach(item => {
-                allSearchData.push(item);
-            });
-        }
-        
-        // نحول البيانات إلى نص JSON
-        const jsonData = JSON.stringify(allSearchData);
-        
-        // ناخذ كود الصفحة
-        let html = document.documentElement.outerHTML;
-        
-        // نخفي عناصر الإدارة
-        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls, #admin-panel, .btn-client { display: none !important; }</style>`;
-        
-        // نحقن البيانات في متغير داخل الصفحة
-        const dataInjection = `
-        <script>
-            // البيانات المحقونة للبحث الشامل
-            window.__searchData = ${jsonData};
-            
-            // تعديل دالة loadAllData عشان تستخدم البيانات المحقونة
-            window.loadAllData = function() {
-                if (window.__searchData && window.__searchData.length) {
-                    // تجميع البيانات حسب النوع
-                    allData = { market: [], projects: [], industrial: [], services: [] };
-                    window.__searchData.forEach(item => {
-                        if (item.type === 'market') allData.market.push(item);
-                        else if (item.type === 'projects') allData.projects.push(item);
-                        else if (item.type === 'industrial') allData.industrial.push(item);
-                        else if (item.type === 'services') allData.services.push(item);
-                    });
-                } else {
-                    // لو مفيش بيانات محقونة، نحاول من localStorage
-                    const storage = (function() { try { return localStorage; } catch(e) { return { getItem: () => null }; } })();
-                    // ... باقي الكود ...
-                }
-            };
-        <\/script>
-        `;
-        
-        // نضيف البيانات قبل نهاية الـ body
-        html = html.replace('</body>', dataInjection + '</body>');
-        html = html.replace('</head>', adminStyles + '</head>');
-        
-        // ننزل الملف
-        const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'DH_Index_Client.html';
-        a.click();
-        
-        alert("✅ تم توليد نسخة العميل بنجاح! البحث الشامل سيعمل على النت.");
-    } catch(e) {
-        alert("خطأ: " + e.message);
-    }
-}
-
 window.onload = function() {
     loadAllData();
-    askName();
 };
 </script>
 </body>
