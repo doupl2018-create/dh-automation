@@ -111,7 +111,7 @@
         <a href="services.html">⚙️ الخدمات</a>
         <a href="https://wa.me/201114394767">📞 اتصل بنا</a>
     </nav>
-    <div class="cart-btn" onclick="openCartModal()"><span>🛒</span><span id="cart-info">5 قطع - 10000 جنيه</span></div>
+    <div class="cart-btn" onclick="openCartModal()"><span>🛒</span><span id="cart-info">0 قطع - 0 جنيه</span></div>
 </header>
 
 <div class="page-wrapper">
@@ -127,13 +127,13 @@
     <div class="tabs" id="tabs-container"><button class="tab-btn active" onclick="switchCategory('cat_1775057729050')">كارتات الكترونية صناعية</button><button class="tab-btn" onclick="switchCategory('cat_1775057744267')">ماكينات حقن بلاستيك</button><button class="tab-btn" onclick="switchCategory('cat_1775057798752')">قطع غيار جديدة</button><button class="tab-btn" onclick="switchCategory('cat_1775057806994')">قطع غيار مستعملة</button><button class="tab-btn" onclick="switchCategory('cat_1775059668559')">بلح</button></div>
     
     <div class="market-layout">
-        <div class="expanded-product active" id="expandedProduct">
+        <div class="expanded-product" id="expandedProduct">
             <div class="expanded-product-inner">
-                <div class="expanded-product-img"><img id="expandedImg" src="image/pro10a.jpg" onclick="openZoomFromExpanded()"></div>
+                <div class="expanded-product-img"><img id="expandedImg" src="" onclick="openZoomFromExpanded()"></div>
                 <div class="expanded-product-info">
-                    <h2 id="expandedTitle">كارت بروبوشنال 10 امبير 2 مخرج</h2><div class="price" id="expandedPrice">2000 جنيه</div><div class="desc" id="expandedDesc">كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ...</div>
+                    <h2 id="expandedTitle"></h2><div class="price" id="expandedPrice"></div><div class="desc" id="expandedDesc"></div>
                     <div class="qty-control"><button onclick="changeExpandedQty(-1)">-</button><input type="number" id="expandedQty" value="1" min="1"><button onclick="changeExpandedQty(1)">+</button></div>
-                    <button class="action-btn cancel" id="expandedActionBtn" onclick="toggleExpandedCart()">❌ إلغاء من العربة</button>
+                    <button class="action-btn" id="expandedActionBtn" onclick="toggleExpandedCart()">➕ إضافة للعربة</button>
                 </div>
             </div>
         </div>
@@ -178,14 +178,14 @@
 </div>
 
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()"><img id="zoomImage" src=""></div>
-<div class="modal" id="cartModal" onclick="if(event.target===this) closeCartModal()" style="display: none;"><div class="modal-content"><h3 style="color:var(--main-blue);">🛒 سلة المشتريات</h3><div id="cart-total" style="font-weight:bold; margin:15px;">💰 الإجمالي: 10000 جنيه</div><button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">✅ طلب عبر واتساب</button><button class="btn-admin" style="background:#dc3545; width:100%; margin-bottom:5px;" onclick="emptyCart()">🗑️ إفراغ السلة</button><button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeCartModal()">إغلاق</button><footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer><table id="cart-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody><tr><td style="text-align:right;">كارت بروبوشنال 10 امبير 2 مخرج</td><td>5</td><td>2000</td><td>10000</td></tr></tbody><tbody><tr>
+<div class="modal" id="cartModal" onclick="if(event.target===this) closeCartModal()"><div class="modal-content"><h3 style="color:var(--main-blue);">🛒 سلة المشتريات</h3><div id="cart-total" style="font-weight:bold; margin:15px;"></div><button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">✅ طلب عبر واتساب</button><button class="btn-admin" style="background:#dc3545; width:100%; margin-bottom:5px;" onclick="emptyCart()">🗑️ إفراغ السلة</button><button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeCartModal()">إغلاق</button><footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer><table id="cart-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody></tbody><tbody><tr>
 
 
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
 <script>
 // ========== المتغيرات العامة ==========
 let cart = [];
-let storeData = { categories: [] };
+let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
 let currentExpandedProduct = null;
 let currentCategoryId = '';
 
@@ -714,20 +714,36 @@ function importStoreFromFile(event) {
     reader.readAsText(file); 
 }
 
-// ========== تصدير نسخة العميل ==========
+// ========== تصدير نسخة العميل (المعدلة للحقن المباشر) ==========
 function generateFullCode() {
     try {
-        let currentContent = document.documentElement.outerHTML;
-        const hideAdminCSS = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
-        let finalHtml = currentContent
-            .replace('</head>', hideAdminCSS + '</head>');
+        // 1. تحويل بيانات الأقسام والمنتجات الحالية لنص
+        const jsonData = JSON.stringify(storeData);
         
-        const blob = new Blob(["<!DOCTYPE html>\n" + finalHtml], { type: 'text/html' });
+        // 2. الحصول على كود الصفحة
+        let html = document.documentElement.outerHTML;
+
+        // 3. ستايل إخفاء أدوات الإدارة
+        const hideAdminCSS = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
+        
+        // 4. السحر: حقن البيانات مكان التعريف الفارغ
+        // بنبحث عن التعريف الأصلي لـ storeData ونستبدله بالبيانات الحقيقية
+        const dataInjection = `storeData = ${jsonData};`;
+        
+        // ملاحظة: هنا بنستبدل السطر اللي بيعرف المتجر بالبيانات
+        html = html.replace(/storeData\s*=\s*\{.*\}\s*;/, dataInjection);
+
+        // 5. إضافة ستايل الإخفاء في الهيد
+        html = html.replace('</head>', hideAdminCSS + '</head>');
+
+        // 6. التحميل
+        const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'DH_Market_Client.html';
         a.click();
-        alert("✅ تم استخراج نسخة العميل بنجاح!");
+        
+        alert("✅ تم استخراج نسخة العميل بنجاح! الآن المنتجات محقونة جوه الملف.");
     } catch (e) { 
         alert("❌ خطأ: " + e.message); 
     }
