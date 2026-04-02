@@ -6,19 +6,10 @@
     <title>DH Automation | الرئيسية</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --dark-bg: #1a1a1a;
-            --main-blue: #0056b3;
-            --accent-orange: #e67e22;
-            --light-bg: #f8f9fa;
-            --header-height: 60px;
-        }
+        :root { --dark-bg: #1a1a1a; --main-blue: #0056b3; --accent-orange: #e67e22; --light-bg: #f8f9fa; --header-height: 60px; }
         body { margin: 0; padding: 0; background: var(--light-bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: right; overflow-x: hidden; }
-        header {
-            background: var(--dark-bg); color: white; display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; height: var(--header-height); position: fixed; top: 0; right: 0; left: 0;
-            width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 1000; box-sizing: border-box;
-        }
+        
+        header { background: var(--dark-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; height: var(--header-height); position: fixed; top: 0; right: 0; left: 0; width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 1000; box-sizing: border-box; }
         .logo { font-weight: bold; font-size: 1.2rem; color: var(--accent-orange); text-decoration: none; }
         .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: white; background: none; border: none; }
         nav { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
@@ -27,40 +18,53 @@
         .user-area { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; }
         .user-area span:first-child { font-size: 18px; }
         .user-area span:last-child { font-weight: bold; font-size: 0.85rem; }
+        
         @media (max-width: 768px) {
             .menu-toggle { display: block; order: 2; }
             .user-area { order: 3; }
             .logo { order: 1; }
-            nav {
-                display: none; position: absolute; top: var(--header-height); right: 0;
-                background: var(--dark-bg); flex-direction: column; width: 220px; padding: 20px;
-                gap: 15px; border-radius: 0 0 10px 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 999;
-            }
+            nav { display: none; position: absolute; top: var(--header-height); right: 0; background: var(--dark-bg); flex-direction: column; width: 220px; padding: 20px; gap: 15px; border-radius: 0 0 10px 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 999; }
             nav.active { display: flex; }
             nav a { width: 100%; text-align: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
             nav a:last-child { border-bottom: none; }
         }
+        
         .page-wrapper { margin-top: var(--header-height); min-height: calc(100vh - var(--header-height) - 80px); }
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('01.jpg');
-            background-size: cover; background-position: center; color: white; text-align: center;
-            padding: 60px 20px; border-bottom: 6px solid var(--main-blue);
-        }
+        .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('01.jpg'); background-size: cover; background-position: center; color: white; text-align: center; padding: 60px 20px; border-bottom: 6px solid var(--main-blue); }
         .hero h1 { font-size: 2rem; margin-bottom: 10px; }
-        .name-change-section { margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .name-change-section input { padding: 8px 15px; border-radius: 25px; border: none; width: 180px; font-size: 14px; }
-        .name-change-section button { padding: 8px 20px; border-radius: 25px; border: none; background: var(--accent-orange); color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .name-change-section button:hover { background: #d35400; }
+        
+        .search-bar { display: flex; justify-content: center; gap: 10px; max-width: 700px; margin: 20px auto; padding: 0 20px; flex-wrap: wrap; }
+        .search-bar input { flex: 2; padding: 12px 20px; border: 2px solid var(--main-blue); border-radius: 30px; font-size: 1rem; font-family: inherit; text-align: right; }
+        .search-bar input:focus { outline: none; border-color: var(--accent-orange); }
+        .search-bar button { padding: 12px 25px; border: none; border-radius: 30px; background: var(--main-blue); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .search-bar button:hover { background: var(--accent-orange); }
+        .search-bar .clear-btn { background: #6c757d; }
+        .search-bar .clear-btn:hover { background: #5a6268; }
+        .results-count { text-align: center; color: var(--main-blue); font-weight: bold; margin: 5px 0; font-size: 0.9rem; }
+        .no-results { text-align: center; padding: 50px; color: #888; font-size: 1.2rem; }
+        
+        .search-results-container { display: none; margin: 20px auto; max-width: 900px; padding: 0 20px; }
+        .result-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .result-card img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; }
+        .result-info { flex: 1; }
+        .result-info h3 { color: var(--main-blue); margin-bottom: 5px; }
+        .result-info p { color: #666; font-size: 0.85rem; }
+        .result-badge { background: var(--accent-orange); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; }
+        .result-link { background: var(--main-blue); color: white; border: none; padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
+        .result-link:hover { background: var(--accent-orange); }
+        
         .nav-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 30px 20px; max-width: 600px; margin: -30px auto 40px; }
         @media (min-width: 768px) { .nav-grid { grid-template-columns: 1fr 1fr; max-width: 900px; } }
-        .nav-card { background: white; padding: 25px; border-radius: 15px; text-align: center; text-decoration: none; color: inherit; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; display: block; }
-        .nav-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .nav-card { background: white; padding: 25px; border-radius: 15px; text-align: center; text-decoration: none; color: inherit; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s; display: block; }
+        .nav-card:hover { transform: translateY(-5px); }
         .nav-card .icon { font-size: 45px; margin-bottom: 10px; display: block; }
         .nav-card h2 { color: var(--main-blue); font-size: 1.2rem; margin: 10px 0; }
         .nav-card p { color: #666; font-size: 0.85rem; }
+        
         footer { background: var(--dark-bg); color: white; text-align: center; padding: 20px; margin-top: 40px; }
         .footer-content p { margin: 5px 0; }
-        @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } }
+        
+        @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } .result-card { flex-direction: column; text-align: center; } .result-link { width: 100%; text-align: center; } }
     </style>
 </head>
 <body>
@@ -77,28 +81,256 @@
     </nav>
     <div class="user-area"><span>👷</span><span id="header-user-name">مهندس...</span></div>
 </header>
+
 <div class="page-wrapper">
     <section class="hero">
         <h1>DH Automation</h1>
         <p id="hero-welcome">أهلاً بك يا باشمهندس</p>
-        <div class="name-change-section"><input type="text" id="newName" placeholder="أدخل اسمك"><button onclick="changeName()">تغيير الاسم</button></div>
+        <div class="name-change-section" style="margin-top:15px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+            <input type="text" id="newName" placeholder="أدخل اسمك" style="padding:8px 15px; border-radius:25px; border:none; width:180px;">
+            <button onclick="changeName()" style="padding:8px 20px; border-radius:25px; border:none; background:var(--accent-orange); color:white; cursor:pointer;">تغيير الاسم</button>
+        </div>
     </section>
-    <div class="nav-grid">
-        <a href="market.html" class="nav-card"><span class="icon">🛒</span><h2>سوق مساعد المهندس</h2><p>انفرترات وقطع غيار - أحدث المنتجات</p></a>
-        <a href="industrial-solutions.html" class="nav-card"><span class="icon">🏭</span><h2>الحلول الصناعية</h2><p>تطوير خطوط الإنتاج والأتمتة</p></a>
-        <a href="projects.html" class="nav-card"><span class="icon">🏗️</span><h2>أعمالنا المنفذة</h2><p>معرض المشاريع السابقة والإنجازات</p></a>
-        <a href="services.html" class="nav-card"><span class="icon">⚙️</span><h2>خدماتنا البرمجية</h2><p>PLC و Microcontrollers وبرمجة</p></a>
+    
+    <!-- شريط البحث الشامل -->
+    <div class="search-bar">
+        <input type="text" id="smartSearch" placeholder="🔍 بحث شامل في كل الأقسام..." onkeyup="smartSearch()">
+        <button onclick="smartSearch()">🔍 بحث</button>
+        <button class="clear-btn" onclick="clearSearch()">✖️ إلغاء</button>
+    </div>
+    <div id="resultsCount" class="results-count" style="display: none;"></div>
+    
+    <!-- حاوية نتائج البحث -->
+    <div id="searchResultsContainer" class="search-results-container"></div>
+    
+    <!-- المحتوى الأصلي -->
+    <div id="originalContainer">
+        <div class="nav-grid">
+            <a href="market.html" class="nav-card"><span class="icon">🛒</span><h2>سوق مساعد المهندس</h2><p>انفرترات وقطع غيار - أحدث المنتجات</p></a>
+            <a href="industrial-solutions.html" class="nav-card"><span class="icon">🏭</span><h2>الحلول الصناعية</h2><p>تطوير خطوط الإنتاج والأتمتة</p></a>
+            <a href="projects.html" class="nav-card"><span class="icon">🏗️</span><h2>أعمالنا المنفذة</h2><p>معرض المشاريع السابقة والإنجازات</p></a>
+            <a href="services.html" class="nav-card"><span class="icon">⚙️</span><h2>خدماتنا البرمجية</h2><p>PLC و Microcontrollers وبرمجة</p></a>
+        </div>
     </div>
 </div>
+
 <footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
+
 <script>
-    function safeLocalStorage(){ try{ return localStorage; } catch(e){ return { getItem:()=>null, setItem:()=>{}, removeItem:()=>{} }; } }
-    function toggleMenu(){ document.getElementById('mainNav').classList.toggle('active'); }
-    function askName(){ const storage=safeLocalStorage(); let savedName=storage.getItem('engineerName'); if(!savedName||savedName==='null'){ savedName=prompt("من فضلك أدخل اسمك المهندس:"); if(savedName&&savedName.trim()) storage.setItem('engineerName',savedName.trim()); else savedName="المهندس"; } updateName(savedName); }
-    function updateName(name){ if(name&&name!=='null'){ const userNameSpan=document.getElementById('header-user-name'); const welcomeP=document.getElementById('hero-welcome'); if(userNameSpan) userNameSpan.innerText="مهندس "+name; if(welcomeP) welcomeP.innerText="أهلاً مهندس "+name; } }
-    function changeName(){ const newNameInput=document.getElementById('newName'); const newName=newNameInput?newNameInput.value.trim():''; if(newName){ const storage=safeLocalStorage(); storage.setItem('engineerName',newName); updateName(newName); if(newNameInput) newNameInput.value=""; } else alert("الرجاء إدخال اسم صحيح"); }
-    document.addEventListener('click',function(event){ const nav=document.getElementById('mainNav'); const toggle=document.querySelector('.menu-toggle'); if(nav&&toggle&&!nav.contains(event.target)&&!toggle.contains(event.target)) nav.classList.remove('active'); });
-    window.onload=askName;
+// ========== البيانات ==========
+let allData = {
+    market: [],      // منتجات السوق
+    projects: [],    // المشاريع
+    industrial: [],  // الحلول الصناعية
+    services: []     // الخدمات
+};
+
+// ========== دوال مساعدة ==========
+function safeLocalStorage() { try { return localStorage; } catch(e) { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; } }
+
+function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+
+// ========== الهامبرغر ==========
+function toggleMenu() { const nav = document.getElementById('mainNav'); if (nav) nav.classList.toggle('active'); }
+document.addEventListener('click', function(event) { const nav = document.getElementById('mainNav'); const toggle = document.querySelector('.menu-toggle'); if (nav && toggle && !nav.contains(event.target) && !toggle.contains(event.target)) nav.classList.remove('active'); });
+
+// ========== تحميل البيانات من localStorage ==========
+function loadAllData() {
+    const storage = safeLocalStorage();
+    
+    // تحميل منتجات السوق
+    const marketData = storage.getItem('store_config');
+    if (marketData) {
+        try {
+            const parsed = JSON.parse(marketData);
+            if (parsed.categories) {
+                allData.market = [];
+                parsed.categories.forEach(cat => {
+                    cat.products.forEach(product => {
+                        allData.market.push({
+                            name: product.name,
+                            desc: product.desc || '',
+                            price: product.price,
+                            img: product.img,
+                            category: cat.name,
+                            type: 'market',
+                            typeName: '🛒 منتج',
+                            link: 'market.html'
+                        });
+                    });
+                });
+            }
+        } catch(e) {}
+    }
+    
+    // تحميل المشاريع
+    const projectsData = storage.getItem('projects_db');
+    if (projectsData) {
+        try {
+            const parsed = JSON.parse(projectsData);
+            allData.projects = parsed.map(p => ({
+                name: p.title,
+                desc: p.brief,
+                details: p.details,
+                img: p.img,
+                type: 'projects',
+                typeName: '🏗️ مشروع',
+                link: 'projects.html'
+            }));
+        } catch(e) {}
+    }
+    
+    // تحميل الحلول الصناعية
+    const industrialData = storage.getItem('industrial_data');
+    if (industrialData) {
+        try {
+            const parsed = JSON.parse(industrialData);
+            allData.industrial = parsed.map(p => ({
+                name: p.title,
+                desc: p.brief,
+                details: p.details,
+                img: p.img,
+                type: 'industrial',
+                typeName: '🏭 حل صناعي',
+                link: 'industrial-solutions.html'
+            }));
+        } catch(e) {}
+    }
+    
+    // تحميل الخدمات
+    const servicesData = storage.getItem('services_db');
+    if (servicesData) {
+        try {
+            const parsed = JSON.parse(servicesData);
+            allData.services = parsed.map(p => ({
+                name: p.title,
+                desc: p.brief,
+                details: p.details,
+                img: p.img,
+                type: 'services',
+                typeName: '⚙️ خدمة',
+                link: 'services.html'
+            }));
+        } catch(e) {}
+    }
+}
+
+// ========== البحث الشامل ==========
+function smartSearch() {
+    const searchTerm = document.getElementById('smartSearch').value.trim().toLowerCase();
+    const resultsContainer = document.getElementById('searchResultsContainer');
+    const originalContainer = document.getElementById('originalContainer');
+    const resultsCount = document.getElementById('resultsCount');
+    
+    if (searchTerm === '') {
+        if (resultsContainer) resultsContainer.style.display = 'none';
+        if (originalContainer) originalContainer.style.display = 'block';
+        if (resultsCount) resultsCount.style.display = 'none';
+        return;
+    }
+    
+    // تجميع كل العناصر
+    let allItems = [];
+    for (let key in allData) {
+        allItems = allItems.concat(allData[key]);
+    }
+    
+    if (allItems.length === 0) {
+        if (resultsContainer) {
+            resultsContainer.style.display = 'block';
+            resultsContainer.innerHTML = '<div class="no-results">📭 لا توجد بيانات للبحث فيها حالياً<br>💡 أضف منتجات أو مشاريع أولاً</div>';
+        }
+        if (originalContainer) originalContainer.style.display = 'none';
+        if (resultsCount) resultsCount.style.display = 'none';
+        return;
+    }
+    
+    // البحث
+    const results = allItems.filter(item => {
+        const nameMatch = item.name && item.name.toLowerCase().includes(searchTerm);
+        const descMatch = item.desc && item.desc.toLowerCase().includes(searchTerm);
+        const detailsMatch = item.details && item.details.toLowerCase().includes(searchTerm);
+        return nameMatch || descMatch || detailsMatch;
+    });
+    
+    if (resultsContainer && originalContainer) {
+        originalContainer.style.display = 'none';
+        resultsContainer.style.display = 'block';
+        resultsContainer.innerHTML = '';
+        
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '<div class="no-results">❌ لا توجد نتائج مطابقة لبحثك<br>🔍 جرب كلمات مختلفة</div>';
+            if (resultsCount) resultsCount.innerText = '0 نتيجة';
+        } else {
+            if (resultsCount) resultsCount.innerText = `${results.length} نتيجة`;
+            results.forEach(item => {
+                resultsContainer.insertAdjacentHTML('beforeend', `
+                    <div class="result-card">
+                        <img src="${item.img || '01.jpg'}" onerror="this.src='01.jpg'">
+                        <div class="result-info">
+                            <h3>${escapeHtml(item.name)}</h3>
+                            <p>${escapeHtml(item.desc ? item.desc.substring(0, 100) : '')}${item.desc && item.desc.length > 100 ? '...' : ''}</p>
+                            <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                                <span class="result-badge">${item.typeName}</span>
+                                ${item.price ? `<span class="result-badge" style="background: #28a745;">💰 ${item.price} ج</span>` : ''}
+                            </div>
+                        </div>
+                        <a href="${item.link}" class="result-link">عرض التفاصيل →</a>
+                    </div>
+                `);
+            });
+        }
+        if (resultsCount) resultsCount.style.display = 'block';
+    }
+}
+
+function clearSearch() {
+    document.getElementById('smartSearch').value = '';
+    const resultsContainer = document.getElementById('searchResultsContainer');
+    const originalContainer = document.getElementById('originalContainer');
+    const resultsCount = document.getElementById('resultsCount');
+    if (resultsContainer) resultsContainer.style.display = 'none';
+    if (originalContainer) originalContainer.style.display = 'block';
+    if (resultsCount) resultsCount.style.display = 'none';
+}
+
+// ========== تغيير الاسم ==========
+function askName() {
+    const storage = safeLocalStorage();
+    let savedName = storage.getItem('engineerName');
+    if (!savedName || savedName === 'null') {
+        savedName = prompt("من فضلك أدخل اسمك المهندس:");
+        if (savedName && savedName.trim()) storage.setItem('engineerName', savedName.trim());
+        else savedName = "المهندس";
+    }
+    updateName(savedName);
+}
+
+function updateName(name) {
+    if (name && name !== 'null') {
+        const userNameSpan = document.getElementById('header-user-name');
+        const welcomeP = document.getElementById('hero-welcome');
+        if (userNameSpan) userNameSpan.innerText = "مهندس " + name;
+        if (welcomeP) welcomeP.innerText = "أهلاً مهندس " + name;
+    }
+}
+
+function changeName() {
+    const newNameInput = document.getElementById('newName');
+    const newName = newNameInput ? newNameInput.value.trim() : '';
+    if (newName) {
+        const storage = safeLocalStorage();
+        storage.setItem('engineerName', newName);
+        updateName(newName);
+        if (newNameInput) newNameInput.value = "";
+    } else { alert("الرجاء إدخال اسم صحيح"); }
+}
+
+// ========== بدء التشغيل ==========
+window.onload = function() {
+    loadAllData();
+    askName();
+};
 </script>
 </body>
 </html>

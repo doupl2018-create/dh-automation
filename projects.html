@@ -7,12 +7,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --dark-bg: #1a1a1a; --main-blue: #0056b3; --accent-orange: #e67e22; --light-bg: #f8f9fa; --header-height: 60px; }
         body { margin: 0; padding: 0; background: var(--light-bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: right; overflow-x: hidden; }
+        
         header { background: var(--dark-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; height: var(--header-height); position: fixed; top: 0; right: 0; left: 0; width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 1000; box-sizing: border-box; }
         .logo { font-weight: bold; font-size: 1.2rem; color: var(--accent-orange); text-decoration: none; }
         .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: white; background: none; border: none; }
         nav { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         nav a { color: white; text-decoration: none; font-size: 0.85rem; transition: color 0.3s; white-space: nowrap; padding: 5px 0; }
         nav a:hover { color: var(--accent-orange); }
+        
         @media (max-width: 768px) {
             .menu-toggle { display: block; order: 2; }
             .logo { order: 1; }
@@ -21,9 +23,21 @@
             nav a { width: 100%; text-align: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
             nav a:last-child { border-bottom: none; }
         }
+        
         .page-wrapper { margin-top: var(--header-height); min-height: calc(100vh - var(--header-height) - 80px); }
         .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('01.jpg'); background-size: cover; background-position: center; color: white; text-align: center; padding: 60px 20px; border-bottom: 6px solid var(--main-blue); }
         .hero h1 { font-size: 2rem; margin-bottom: 10px; }
+        
+        .search-bar { display: flex; justify-content: center; gap: 10px; max-width: 700px; margin: 20px auto; padding: 0 20px; flex-wrap: wrap; }
+        .search-bar input { flex: 2; padding: 12px 20px; border: 2px solid var(--main-blue); border-radius: 30px; font-size: 1rem; font-family: inherit; text-align: right; }
+        .search-bar input:focus { outline: none; border-color: var(--accent-orange); }
+        .search-bar button { padding: 12px 25px; border: none; border-radius: 30px; background: var(--main-blue); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .search-bar button:hover { background: var(--accent-orange); }
+        .search-bar .clear-btn { background: #6c757d; }
+        .search-bar .clear-btn:hover { background: #5a6268; }
+        .results-count { text-align: center; color: var(--main-blue); font-weight: bold; margin: 5px 0; font-size: 0.9rem; }
+        .no-results { grid-column: 1/-1; text-align: center; padding: 50px; color: #888; font-size: 1.2rem; }
+        
         .admin-section { background: #fff; max-width: 800px; margin: 30px auto; padding: 25px; border: 2px dashed var(--main-blue); border-radius: 15px; }
         .admin-section input, .admin-section textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
         .btn-add { background: var(--main-blue); color: white; border: none; padding: 12px; cursor: pointer; width: 100%; border-radius: 30px; font-weight: bold; transition: 0.3s; }
@@ -32,9 +46,11 @@
         .btn-backup { flex: 1; padding: 10px; border-radius: 30px; cursor: pointer; font-weight: bold; border: none; transition: 0.3s; }
         .export-btn { background: #6c757d; color: white; }
         .import-btn { background: #28a745; color: white; }
-        .posts-grid { display: grid; grid-template-columns: 1fr; gap: 25px; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        @media(min-width: 768px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media(min-width: 1024px) { .posts-grid { grid-template-columns: repeat(3, 1fr); } }
+        
+        .posts-grid, .search-results-grid { display: grid; grid-template-columns: 1fr; gap: 25px; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        @media(min-width: 768px) { .posts-grid, .search-results-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media(min-width: 1024px) { .posts-grid, .search-results-grid { grid-template-columns: repeat(3, 1fr); } }
+        
         .post-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; transition: transform 0.3s; }
         .post-card:hover { transform: translateY(-5px); }
         .post-card img { width: 100%; height: 220px; object-fit: cover; cursor: zoom-in; }
@@ -49,15 +65,19 @@
         .admin-btns { position: absolute; top: 10px; left: 10px; display: flex; gap: 8px; z-index: 5; }
         .delete-btn { background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; }
         .edit-btn { background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        
         .zoom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; }
         .zoom-modal img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 10px; }
+        
         footer { background: var(--dark-bg); color: white; text-align: center; padding: 20px; margin-top: 40px; }
         .footer-content p { margin: 5px 0; }
         .admin-only { display: block; }
+        .search-results-grid { display: none; }
+        
         @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } }
     </style>
 <style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style></head>
-<body><script>const clientData=[{"id":1775135395687,"title":"صيانة فورية","img":"pro10a.jpg","brief":"صيانة فورية","details":"صيانة","video":""}];</script>
+<body>
 <header>
     <a href="index.html" class="logo">DH.Automation</a>
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
@@ -70,8 +90,17 @@
         <a href="https://wa.me/201114394767">📞 اتصل بنا</a>
     </nav>
 </header>
+
 <div class="page-wrapper">
     <section class="hero"><h1>🏗️ معرض المشاريع</h1><p>توثيق لإنجازاتنا في التطوير والأتمتة الصناعية</p></section>
+    
+    <div class="search-bar">
+        <input type="text" id="smartSearch" placeholder="🔍 ابحث في المشاريع..." onkeyup="smartSearch()">
+        <button onclick="smartSearch()">🔍 بحث</button>
+        <button class="clear-btn" onclick="clearSearch()">✖️ إلغاء</button>
+    </div>
+    <div id="resultsCount" class="results-count" style="display: none;">0 نتيجة</div>
+    
     <div class="admin-section admin-only" id="admin-panel">
         <h3 id="form-title" style="color:var(--main-blue);">📁 إضافة مشروع جديد</h3>
         <input type="text" id="p-title" placeholder="عنوان المشروع">
@@ -85,30 +114,179 @@
         <button onclick="generateClientFile()" style="background:#28a745; color:white; border:none; padding:12px; cursor:pointer; width:100%; border-radius:30px; font-weight:bold;">🚀 تنزيل نسخة العميل</button>
         <div class="backup-controls"><button class="btn-backup export-btn" onclick="exportProjects()">📤 تصدير ملف الحفظ</button><button class="btn-backup import-btn" onclick="document.getElementById('importFile').click()">📥 استيراد ملف حفظ</button><input type="file" id="importFile" style="display:none" accept=".json" onchange="importProjects(event)"></div>
     </div>
-    <div class="posts-grid" id="projects-list"><div class="post-card" data-id="1775135395687"><div class="admin-btns admin-only"><button class="edit-btn" onclick="editProject(1775135395687)">✏️ تعديل</button><button class="delete-btn" onclick="deleteProject(1775135395687)">🗑️ حذف</button></div><img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)"><div class="post-content"><h3>صيانة فورية</h3><p>صيانة فورية</p><div class="details-area" id="details-1775135395687"><p style="white-space: pre-wrap; line-height:1.6;">صيانة</p></div><button class="more-btn" onclick="toggleDetails(1775135395687, this)">📖 المزيد</button></div></div></div>
+    
+    <div id="originalContainer" style="display: block;">
+        <div class="posts-grid" id="projects-list">
+            <div class="post-card" data-id="1775135395687">
+                <div class="admin-btns admin-only"><button class="edit-btn" onclick="editProject(1775135395687)">✏️</button><button class="delete-btn" onclick="deleteProject(1775135395687)">🗑️</button></div>
+                <img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
+                <div class="post-content">
+                    <h3>صيانة فورية</h3>
+                    <p>صيانة فورية</p>
+                    <div class="details-area" id="details-1775135395687"><p>صيانة</p></div>
+                    <button class="more-btn" onclick="toggleDetails(1775135395687, this)">📖 المزيد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="searchResultsContainer" class="search-results-grid" style="display: none;"><div class="no-results">❌ لا توجد نتائج مطابقة لبحثك</div></div>
 </div>
+
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()"><img id="zoomImage" src=""></div>
 <footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
+
 <script>
-let projectsData=[];
-function safeLocalStorage(){ try{ return localStorage; } catch(e){ return { getItem:()=>null, setItem:()=>{}, removeItem:()=>{} }; } }
-function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g,function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-function toggleMenu(){ document.getElementById('mainNav').classList.toggle('active'); }
-document.addEventListener('click',function(event){ const nav=document.getElementById('mainNav'); const toggle=document.querySelector('.menu-toggle'); if(nav&&toggle&&!nav.contains(event.target)&&!toggle.contains(event.target)) nav.classList.remove('active'); });
-function init(){ const storage=safeLocalStorage(); const saved=storage.getItem("projects_db"); if(typeof clientData!=='undefined'&&clientData&&Array.isArray(clientData)){ projectsData=clientData; } else if(saved){ try{ projectsData=JSON.parse(saved); } catch(e){ projectsData=[]; } } if(!projectsData||!Array.isArray(projectsData)) projectsData=[]; renderProjects(); }
-function addProject(){ const title=document.getElementById('p-title').value.trim(); const img=document.getElementById('p-img').value.trim(); const brief=document.getElementById('p-brief').value.trim(); const details=document.getElementById('p-details').value.trim(); const video=document.getElementById('p-video').value.trim(); if(!title||!brief) return alert("⚠️ يرجى كتابة العنوان والوصف المختصر!"); projectsData.unshift({id:Date.now(),title:title,img:img,brief:brief,details:details,video:video}); saveAndRefresh(); resetForm(); }
-function renderProjects(){ const list=document.getElementById('projects-list'); if(!list) return; list.innerHTML=''; if(projectsData.length===0){ list.innerHTML='<div style="text-align:center; padding:50px; color:#888;">📭 لا توجد مشاريع مضافة بعد</div>'; return; } projectsData.forEach(p=>{ list.insertAdjacentHTML('beforeend',`<div class="post-card" data-id="${p.id}"><div class="admin-btns admin-only"><button class="edit-btn" onclick="editProject(${p.id})">✏️ تعديل</button><button class="delete-btn" onclick="deleteProject(${p.id})">🗑️ حذف</button></div><img src="${p.img||'01.jpg'}" onerror="this.src='01.jpg'" onclick="openZoom(this.src)"><div class="post-content"><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.brief)}</p><div class="details-area" id="details-${p.id}"><p style="white-space: pre-wrap; line-height:1.6;">${escapeHtml(p.details||'')}</p>${p.video?`<video controls><source src="${p.video}" type="video/mp4">متصفحك لا يدعم الفيديو</video>`:''}</div><button class="more-btn" onclick="toggleDetails(${p.id}, this)">📖 المزيد</button></div></div>`); }); }
-function toggleDetails(id,btn){ const area=document.getElementById(`details-${id}`); if(!area) return; if(area.style.display==="block"){ area.style.display="none"; btn.innerText="📖 المزيد"; } else { area.style.display="block"; btn.innerText="📖 إخفاء"; } }
-function openZoom(imgSrc){ const modal=document.getElementById('zoomModal'); const zoomImg=document.getElementById('zoomImage'); if(modal&&zoomImg){ zoomImg.src=imgSrc; modal.style.display='flex'; document.body.style.overflow='hidden'; } }
-function closeZoom(){ const modal=document.getElementById('zoomModal'); if(modal){ modal.style.display='none'; document.body.style.overflow='auto'; } }
-function editProject(id){ const p=projectsData.find(item=>item.id==id); if(!p) return; document.getElementById('p-title').value=p.title; document.getElementById('p-img').value=p.img||''; document.getElementById('p-brief').value=p.brief; document.getElementById('p-details').value=p.details||''; document.getElementById('p-video').value=p.video||''; document.getElementById('form-title').innerHTML="✏️ تعديل المشروع"; const btn=document.getElementById('main-btn'); btn.innerText="💾 حفظ التعديلات"; btn.onclick=()=>{ projectsData=projectsData.filter(item=>item.id!=id); const updated={id:id,title:document.getElementById('p-title').value,img:document.getElementById('p-img').value,brief:document.getElementById('p-brief').value,details:document.getElementById('p-details').value,video:document.getElementById('p-video').value}; projectsData.unshift(updated); saveAndRefresh(); resetForm(); }; document.getElementById('cancel-edit').style.display='block'; window.scrollTo({top:0,behavior:'smooth'}); }
-function resetForm(){ document.getElementById('form-title').innerHTML="📁 إضافة مشروع جديد"; const btn=document.getElementById('main-btn'); btn.innerText="📤 نشر المشروع الآن"; btn.onclick=addProject; document.getElementById('cancel-edit').style.display='none'; const inputs=document.querySelectorAll('.admin-section input, .admin-section textarea'); inputs.forEach(i=>i.value=''); }
-function deleteProject(id){ if(confirm("⚠️ هل تريد حذف هذا المشروع نهائياً؟")){ projectsData=projectsData.filter(p=>p.id!=id); saveAndRefresh(); } }
-function saveAndRefresh(){ const storage=safeLocalStorage(); storage.setItem("projects_db",JSON.stringify(projectsData)); renderProjects(); }
-function exportProjects(){ if(projectsData.length===0){ alert("⚠️ لا توجد بيانات لتصديرها!"); return; } const dataStr=JSON.stringify(projectsData,null,4); const blob=new Blob([dataStr],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`DH_Projects_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); }
-function importProjects(event){ const file=event.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=function(e){ try{ const imported=JSON.parse(e.target.result); if(Array.isArray(imported)){ if(confirm("⚠️ سيتم استبدال معرض المشاريع الحالي بالبيانات المستوردة. هل أنت متأكد؟")){ projectsData=imported; saveAndRefresh(); alert("✅ تم استيراد المشاريع بنجاح!"); } } else { alert("❌ الملف غير صالح!"); } } catch(err){ alert("❌ خطأ في قراءة الملف!"); } }; reader.readAsText(file); }
-function generateClientFile(){ try{ let currentContent=document.documentElement.outerHTML; const hideAdminCSS=`<style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style>`; let finalHtml=currentContent.replace('</head>',hideAdminCSS+'</head>'); const dataInject=`<script>const clientData=${JSON.stringify(projectsData)};<\/script>`; finalHtml=finalHtml.replace('<body>','<body>'+dataInject); const blob=new Blob(["<!DOCTYPE html>\n"+finalHtml],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='DH_Projects_Showcase.html'; a.click(); alert("✅ تم استخراج نسخة العميل بنجاح!"); } catch(e){ alert("❌ خطأ: "+e.message); } }
-window.onload=init;
+let projectsData = [];
+
+function safeLocalStorage() { try { return localStorage; } catch(e) { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; } }
+function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+
+function toggleMenu() { const nav = document.getElementById('mainNav'); if (nav) nav.classList.toggle('active'); }
+document.addEventListener('click', function(event) { const nav = document.getElementById('mainNav'); const toggle = document.querySelector('.menu-toggle'); if (nav && toggle && !nav.contains(event.target) && !toggle.contains(event.target)) nav.classList.remove('active'); });
+
+function smartSearch() {
+    const searchTerm = document.getElementById('smartSearch').value.trim().toLowerCase();
+    const resultsContainer = document.getElementById('searchResultsContainer');
+    const originalContainer = document.getElementById('originalContainer');
+    const resultsCount = document.getElementById('resultsCount');
+    
+    if (searchTerm === '') {
+        if (resultsContainer) resultsContainer.style.display = 'none';
+        if (originalContainer) originalContainer.style.display = 'block';
+        if (resultsCount) resultsCount.style.display = 'none';
+        return;
+    }
+    
+    const results = projectsData.filter(p => {
+        return p.title.toLowerCase().includes(searchTerm) || 
+               (p.brief && p.brief.toLowerCase().includes(searchTerm)) ||
+               (p.details && p.details.toLowerCase().includes(searchTerm));
+    });
+    
+    if (resultsContainer && originalContainer) {
+        originalContainer.style.display = 'none';
+        resultsContainer.style.display = 'grid';
+        resultsContainer.innerHTML = '';
+        
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '<div class="no-results">❌ لا توجد نتائج مطابقة لبحثك</div>';
+            if (resultsCount) resultsCount.innerText = '0 نتيجة';
+        } else {
+            if (resultsCount) resultsCount.innerText = `${results.length} نتيجة`;
+            results.forEach(p => {
+                resultsContainer.insertAdjacentHTML('beforeend', `
+                    <div class="post-card" data-id="${p.id}">
+                        <img src="${p.img || '01.jpg'}" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
+                        <div class="post-content">
+                            <h3>${escapeHtml(p.title)}</h3>
+                            <p>${escapeHtml(p.brief)}</p>
+                            <div class="details-area" id="details-${p.id}">
+                                <p style="white-space: pre-wrap;">${escapeHtml(p.details || '')}</p>
+                                ${p.video ? `<video controls><source src="${p.video}" type="video/mp4"></video>` : ''}
+                            </div>
+                            <button class="more-btn" onclick="toggleDetails(${p.id}, this)">📖 المزيد</button>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+        if (resultsCount) resultsCount.style.display = 'block';
+    }
+}
+
+function clearSearch() {
+    document.getElementById('smartSearch').value = '';
+    const resultsContainer = document.getElementById('searchResultsContainer');
+    const originalContainer = document.getElementById('originalContainer');
+    const resultsCount = document.getElementById('resultsCount');
+    if (resultsContainer) resultsContainer.style.display = 'none';
+    if (originalContainer) originalContainer.style.display = 'block';
+    if (resultsCount) resultsCount.style.display = 'none';
+}
+
+function toggleDetails(id, btn) {
+    const area = document.getElementById(`details-${id}`);
+    if (!area) return;
+    if (area.style.display === "block") { area.style.display = "none"; btn.innerText = "📖 المزيد"; }
+    else { area.style.display = "block"; btn.innerText = "📖 إخفاء"; }
+}
+
+function openZoom(imgSrc) { const modal = document.getElementById('zoomModal'); const zoomImg = document.getElementById('zoomImage'); if (modal && zoomImg) { zoomImg.src = imgSrc; modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; } }
+function closeZoom() { const modal = document.getElementById('zoomModal'); if (modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; } }
+
+function init() {
+    const storage = safeLocalStorage();
+    const saved = storage.getItem("projects_db");
+    if (saved) { try { projectsData = JSON.parse(saved); } catch(e) { projectsData = []; } }
+    if (!projectsData || !Array.isArray(projectsData)) projectsData = [];
+    renderProjects();
+}
+
+function addProject() {
+    const title = document.getElementById('p-title').value.trim();
+    const img = document.getElementById('p-img').value.trim();
+    const brief = document.getElementById('p-brief').value.trim();
+    const details = document.getElementById('p-details').value.trim();
+    const video = document.getElementById('p-video').value.trim();
+    if (!title || !brief) return alert("⚠️ يرجى كتابة العنوان والوصف!");
+    projectsData.unshift({ id: Date.now(), title, img, brief, details, video });
+    saveAndRefresh();
+    resetForm();
+}
+
+function renderProjects() {
+    const list = document.getElementById('projects-list');
+    if (!list) return;
+    list.innerHTML = '';
+    if (projectsData.length === 0) { list.innerHTML = '<div style="text-align:center; padding:50px; color:#888;">📭 لا توجد مشاريع مضافة بعد</div>'; return; }
+    projectsData.forEach(p => {
+        list.insertAdjacentHTML('beforeend', `
+            <div class="post-card" data-id="${p.id}">
+                <div class="admin-btns admin-only"><button class="edit-btn" onclick="editProject(${p.id})">✏️</button><button class="delete-btn" onclick="deleteProject(${p.id})">🗑️</button></div>
+                <img src="${p.img || '01.jpg'}" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
+                <div class="post-content">
+                    <h3>${escapeHtml(p.title)}</h3>
+                    <p>${escapeHtml(p.brief)}</p>
+                    <div class="details-area" id="details-${p.id}"><p>${escapeHtml(p.details || '')}</p>${p.video ? `<video controls><source src="${p.video}" type="video/mp4"></video>` : ''}</div>
+                    <button class="more-btn" onclick="toggleDetails(${p.id}, this)">📖 المزيد</button>
+                </div>
+            </div>
+        `);
+    });
+}
+
+function editProject(id) {
+    const p = projectsData.find(item => item.id == id);
+    if (!p) return;
+    document.getElementById('p-title').value = p.title;
+    document.getElementById('p-img').value = p.img || '';
+    document.getElementById('p-brief').value = p.brief;
+    document.getElementById('p-details').value = p.details || '';
+    document.getElementById('p-video').value = p.video || '';
+    document.getElementById('form-title').innerHTML = "✏️ تعديل المشروع";
+    const btn = document.getElementById('main-btn');
+    btn.innerText = "💾 حفظ التعديلات";
+    btn.onclick = () => { projectsData = projectsData.filter(item => item.id != id); projectsData.unshift({ id: id, title: document.getElementById('p-title').value, img: document.getElementById('p-img').value, brief: document.getElementById('p-brief').value, details: document.getElementById('p-details').value, video: document.getElementById('p-video').value }); saveAndRefresh(); resetForm(); };
+    document.getElementById('cancel-edit').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+    document.getElementById('form-title').innerHTML = "📁 إضافة مشروع جديد";
+    const btn = document.getElementById('main-btn');
+    btn.innerText = "📤 نشر المشروع الآن";
+    btn.onclick = addProject;
+    document.getElementById('cancel-edit').style.display = 'none';
+    document.querySelectorAll('.admin-section input, .admin-section textarea').forEach(i => i.value = '');
+}
+
+function deleteProject(id) { if (confirm("⚠️ هل تريد حذف هذا المشروع؟")) { projectsData = projectsData.filter(p => p.id != id); saveAndRefresh(); } }
+function saveAndRefresh() { const storage = safeLocalStorage(); storage.setItem("projects_db", JSON.stringify(projectsData)); renderProjects(); }
+function exportProjects() { if (projectsData.length === 0) return alert("لا توجد بيانات!"); const blob = new Blob([JSON.stringify(projectsData)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `DH_Projects_Backup.json`; a.click(); }
+function importProjects(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const imported = JSON.parse(e.target.result); if (Array.isArray(imported)) { if (confirm("سيتم استبدال البيانات الحالية؟")) { projectsData = imported; saveAndRefresh(); alert("✅ تم الاستيراد!"); } } else alert("ملف غير صالح!"); } catch(err) { alert("خطأ!"); } }; reader.readAsText(file); }
+function generateClientFile() { try { let html = document.documentElement.outerHTML; const hide = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style>`; html = html.replace('</head>', hide + '</head>'); const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'DH_Projects_Client.html'; a.click(); alert("✅ تم التصدير!"); } catch(e) { alert("خطأ: " + e.message); } }
+window.onload = init;
 </script>
 
 </body></html>
