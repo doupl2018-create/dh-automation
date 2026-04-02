@@ -92,7 +92,6 @@
         </div>
     </section>
     
-    <!-- شريط البحث الشامل -->
     <div class="search-bar">
         <input type="text" id="smartSearch" placeholder="🔍 بحث شامل في كل الأقسام..." onkeyup="smartSearch()">
         <button onclick="smartSearch()">🔍 بحث</button>
@@ -100,10 +99,8 @@
     </div>
     <div id="resultsCount" class="results-count" style="display: none;"></div>
     
-    <!-- حاوية نتائج البحث -->
     <div id="searchResultsContainer" class="search-results-container"></div>
     
-    <!-- المحتوى الأصلي -->
     <div id="originalContainer">
         <div class="nav-grid">
             <a href="market.html" class="nav-card"><span class="icon">🛒</span><h2>سوق مساعد المهندس</h2><p>انفرترات وقطع غيار - أحدث المنتجات</p></a>
@@ -117,28 +114,17 @@
 <footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
 
 <script>
-// ========== البيانات ==========
-let allData = {
-    market: [],      // منتجات السوق
-    projects: [],    // المشاريع
-    industrial: [],  // الحلول الصناعية
-    services: []     // الخدمات
-};
+let allData = { market: [], projects: [], industrial: [], services: [] };
 
-// ========== دوال مساعدة ==========
 function safeLocalStorage() { try { return localStorage; } catch(e) { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; } }
-
 function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
 
-// ========== الهامبرغر ==========
 function toggleMenu() { const nav = document.getElementById('mainNav'); if (nav) nav.classList.toggle('active'); }
 document.addEventListener('click', function(event) { const nav = document.getElementById('mainNav'); const toggle = document.querySelector('.menu-toggle'); if (nav && toggle && !nav.contains(event.target) && !toggle.contains(event.target)) nav.classList.remove('active'); });
 
-// ========== تحميل البيانات من localStorage ==========
 function loadAllData() {
     const storage = safeLocalStorage();
     
-    // تحميل منتجات السوق
     const marketData = storage.getItem('store_config');
     if (marketData) {
         try {
@@ -148,14 +134,9 @@ function loadAllData() {
                 parsed.categories.forEach(cat => {
                     cat.products.forEach(product => {
                         allData.market.push({
-                            name: product.name,
-                            desc: product.desc || '',
-                            price: product.price,
-                            img: product.img,
-                            category: cat.name,
-                            type: 'market',
-                            typeName: '🛒 منتج',
-                            link: 'market.html'
+                            name: product.name, desc: product.desc || '', price: product.price,
+                            img: product.img, category: cat.name, type: 'market',
+                            typeName: '🛒 منتج', link: 'market.html'
                         });
                     });
                 });
@@ -163,59 +144,40 @@ function loadAllData() {
         } catch(e) {}
     }
     
-    // تحميل المشاريع
     const projectsData = storage.getItem('projects_db');
     if (projectsData) {
         try {
             const parsed = JSON.parse(projectsData);
             allData.projects = parsed.map(p => ({
-                name: p.title,
-                desc: p.brief,
-                details: p.details,
-                img: p.img,
-                type: 'projects',
-                typeName: '🏗️ مشروع',
-                link: 'projects.html'
+                name: p.title, desc: p.brief, details: p.details, img: p.img,
+                type: 'projects', typeName: '🏗️ مشروع', link: 'projects.html'
             }));
         } catch(e) {}
     }
     
-    // تحميل الحلول الصناعية
     const industrialData = storage.getItem('industrial_data');
     if (industrialData) {
         try {
             const parsed = JSON.parse(industrialData);
             allData.industrial = parsed.map(p => ({
-                name: p.title,
-                desc: p.brief,
-                details: p.details,
-                img: p.img,
-                type: 'industrial',
-                typeName: '🏭 حل صناعي',
-                link: 'industrial-solutions.html'
+                name: p.title, desc: p.brief, details: p.details, img: p.img,
+                type: 'industrial', typeName: '🏭 حل صناعي', link: 'industrial-solutions.html'
             }));
         } catch(e) {}
     }
     
-    // تحميل الخدمات
     const servicesData = storage.getItem('services_db');
     if (servicesData) {
         try {
             const parsed = JSON.parse(servicesData);
             allData.services = parsed.map(p => ({
-                name: p.title,
-                desc: p.brief,
-                details: p.details,
-                img: p.img,
-                type: 'services',
-                typeName: '⚙️ خدمة',
-                link: 'services.html'
+                name: p.title, desc: p.brief, details: p.details, img: p.img,
+                type: 'services', typeName: '⚙️ خدمة', link: 'services.html'
             }));
         } catch(e) {}
     }
 }
 
-// ========== البحث الشامل ==========
 function smartSearch() {
     const searchTerm = document.getElementById('smartSearch').value.trim().toLowerCase();
     const resultsContainer = document.getElementById('searchResultsContainer');
@@ -229,11 +191,8 @@ function smartSearch() {
         return;
     }
     
-    // تجميع كل العناصر
     let allItems = [];
-    for (let key in allData) {
-        allItems = allItems.concat(allData[key]);
-    }
+    for (let key in allData) { allItems = allItems.concat(allData[key]); }
     
     if (allItems.length === 0) {
         if (resultsContainer) {
@@ -245,7 +204,6 @@ function smartSearch() {
         return;
     }
     
-    // البحث
     const results = allItems.filter(item => {
         const nameMatch = item.name && item.name.toLowerCase().includes(searchTerm);
         const descMatch = item.desc && item.desc.toLowerCase().includes(searchTerm);
@@ -294,7 +252,6 @@ function clearSearch() {
     if (resultsCount) resultsCount.style.display = 'none';
 }
 
-// ========== تغيير الاسم ==========
 function askName() {
     const storage = safeLocalStorage();
     let savedName = storage.getItem('engineerName');
@@ -326,7 +283,67 @@ function changeName() {
     } else { alert("الرجاء إدخال اسم صحيح"); }
 }
 
-// ========== بدء التشغيل ==========
+// ========== دالة تصدير نسخة العميل (المعدلة) ==========
+function generateClientFile() {
+    try {
+        const storage = safeLocalStorage();
+        
+        // جلب جميع البيانات
+        const marketData = storage.getItem('store_config') || '{"categories":[]}';
+        const projectsData = storage.getItem('projects_db') || '[]';
+        const industrialData = storage.getItem('industrial_data') || '[]';
+        const servicesData = storage.getItem('services_db') || '[]';
+        
+        // الحصول على كود الصفحة
+        let html = document.documentElement.outerHTML;
+        
+        // إخفاء أدوات الإدارة
+        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls, #admin-panel { display: none !important; }</style>`;
+        
+        // حقن البيانات في الصفحة
+        const dataInjection = `
+        <script>
+            // البيانات المحقونة من المدير
+            (function() {
+                const storage = (function() { try { return localStorage; } catch(e) { return { getItem: function() { return null; }, setItem: function() {}, removeItem: function() {} }; } })();
+                
+                const marketData = ${marketData};
+                const projectsData = ${projectsData};
+                const industrialData = ${industrialData};
+                const servicesData = ${servicesData};
+                
+                if (marketData && marketData.categories) {
+                    storage.setItem('store_config', JSON.stringify(marketData));
+                }
+                if (projectsData && projectsData.length) {
+                    storage.setItem('projects_db', JSON.stringify(projectsData));
+                }
+                if (industrialData && industrialData.length) {
+                    storage.setItem('industrial_data', JSON.stringify(industrialData));
+                }
+                if (servicesData && servicesData.length) {
+                    storage.setItem('services_db', JSON.stringify(servicesData));
+                }
+            })();
+        <\/script>
+        `;
+        
+        // إضافة البيانات قبل نهاية الـ body
+        html = html.replace('</body>', dataInjection + '</body>');
+        html = html.replace('</head>', adminStyles + '</head>');
+        
+        const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'DH_Index_Client.html';
+        a.click();
+        
+        alert("✅ تم توليد نسخة العميل بنجاح! الآن البحث الشامل سيعمل على النت.");
+    } catch(e) {
+        alert("خطأ أثناء التصدير: " + e.message);
+    }
+}
+
 window.onload = function() {
     loadAllData();
     askName();
