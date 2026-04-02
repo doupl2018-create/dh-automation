@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DH Automation | الرئيسية</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --dark-bg: #1a1a1a;
             --main-blue: #0056b3;
@@ -18,223 +13,61 @@
             --light-bg: #f8f9fa;
             --header-height: 60px;
         }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: right;
-            overflow-x: hidden;
-        }
-
-        /* ========== HEADER الموحد ========== */
+        body { margin: 0; padding: 0; background: var(--light-bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: right; overflow-x: hidden; }
         header {
-            background: var(--dark-bg);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            height: var(--header-height);
-            position: fixed;
-            top: 0;
-            right: 0;
-            left: 0;
-            width: 100%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            z-index: 1000;
-            box-sizing: border-box;
+            background: var(--dark-bg); color: white; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; height: var(--header-height); position: fixed; top: 0; right: 0; left: 0;
+            width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 1000; box-sizing: border-box;
         }
-
-        .logo {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: var(--accent-orange);
-            text-decoration: none;
+        .logo { font-weight: bold; font-size: 1.2rem; color: var(--accent-orange); text-decoration: none; }
+        .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: white; background: none; border: none; }
+        nav { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; font-size: 0.85rem; transition: color 0.3s; white-space: nowrap; padding: 5px 0; }
+        nav a:hover { color: var(--accent-orange); }
+        .user-area { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; }
+        .user-area span:first-child { font-size: 18px; }
+        .user-area span:last-child { font-weight: bold; font-size: 0.85rem; }
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; order: 2; }
+            .user-area { order: 3; }
+            .logo { order: 1; }
+            nav {
+                display: none; position: absolute; top: var(--header-height); right: 0;
+                background: var(--dark-bg); flex-direction: column; width: 220px; padding: 20px;
+                gap: 15px; border-radius: 0 0 10px 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 999;
+            }
+            nav.active { display: flex; }
+            nav a { width: 100%; text-align: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+            nav a:last-child { border-bottom: none; }
         }
-
-        nav {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.3s;
-            white-space: nowrap;
-        }
-
-        nav a:hover {
-            color: var(--accent-orange);
-        }
-
-        .user-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.1);
-            padding: 5px 12px;
-            border-radius: 20px;
-        }
-
-        .user-area span:first-child {
-            font-size: 18px;
-        }
-
-        .user-area span:last-child {
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-
-        /* ========== MAIN CONTENT ========== */
-        .page-wrapper {
-            margin-top: var(--header-height);
-            min-height: calc(100vh - var(--header-height) - 80px);
-        }
-
+        .page-wrapper { margin-top: var(--header-height); min-height: calc(100vh - var(--header-height) - 80px); }
         .hero {
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('01.jpg');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 60px 20px;
-            border-bottom: 6px solid var(--main-blue);
+            background-size: cover; background-position: center; color: white; text-align: center;
+            padding: 60px 20px; border-bottom: 6px solid var(--main-blue);
         }
-
-        .hero h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .name-change-section {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .name-change-section input {
-            padding: 8px 15px;
-            border-radius: 25px;
-            border: none;
-            width: 180px;
-            font-size: 14px;
-        }
-
-        .name-change-section button {
-            padding: 8px 20px;
-            border-radius: 25px;
-            border: none;
-            background: var(--accent-orange);
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .name-change-section button:hover {
-            background: #d35400;
-        }
-
-        /* ========== NAV GRID ========== */
-        .nav-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            padding: 30px 20px;
-            max-width: 600px;
-            margin: -30px auto 40px;
-        }
-
-        @media (min-width: 768px) {
-            .nav-grid {
-                grid-template-columns: 1fr 1fr;
-                max-width: 900px;
-            }
-        }
-
-        .nav-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: block;
-        }
-
-        .nav-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .nav-card .icon {
-            font-size: 45px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .nav-card h2 {
-            color: var(--main-blue);
-            font-size: 1.2rem;
-            margin: 10px 0;
-        }
-
-        .nav-card p {
-            color: #666;
-            font-size: 0.85rem;
-        }
-
-        /* ========== FOOTER الموحد ========== */
-        footer {
-            background: var(--dark-bg);
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-        }
-
-        .footer-content p {
-            margin: 5px 0;
-        }
-
-        /* ========== تحسينات WebView ========== */
-        @media (max-width: 600px) {
-            nav {
-                gap: 8px;
-            }
-            nav a {
-                font-size: 0.7rem;
-            }
-            .logo {
-                font-size: 0.9rem;
-            }
-            .user-area {
-                padding: 3px 8px;
-            }
-            .user-area span:last-child {
-                font-size: 0.7rem;
-            }
-            .hero h1 {
-                font-size: 1.5rem;
-            }
-        }
+        .hero h1 { font-size: 2rem; margin-bottom: 10px; }
+        .name-change-section { margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .name-change-section input { padding: 8px 15px; border-radius: 25px; border: none; width: 180px; font-size: 14px; }
+        .name-change-section button { padding: 8px 20px; border-radius: 25px; border: none; background: var(--accent-orange); color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .name-change-section button:hover { background: #d35400; }
+        .nav-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 30px 20px; max-width: 600px; margin: -30px auto 40px; }
+        @media (min-width: 768px) { .nav-grid { grid-template-columns: 1fr 1fr; max-width: 900px; } }
+        .nav-card { background: white; padding: 25px; border-radius: 15px; text-align: center; text-decoration: none; color: inherit; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; display: block; }
+        .nav-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .nav-card .icon { font-size: 45px; margin-bottom: 10px; display: block; }
+        .nav-card h2 { color: var(--main-blue); font-size: 1.2rem; margin: 10px 0; }
+        .nav-card p { color: #666; font-size: 0.85rem; }
+        footer { background: var(--dark-bg); color: white; text-align: center; padding: 20px; margin-top: 40px; }
+        .footer-content p { margin: 5px 0; }
+        @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } }
     </style>
 </head>
 <body>
-
 <header>
     <a href="index.html" class="logo">DH.Automation</a>
-    <nav>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <nav id="mainNav">
         <a href="index.html">🏠 الرئيسية</a>
         <a href="market.html">🛒 السوق</a>
         <a href="industrial-solutions.html">🏭 الحلول الصناعية</a>
@@ -242,109 +75,30 @@
         <a href="services.html">⚙️ الخدمات</a>
         <a href="https://wa.me/201114394767">📞 اتصل بنا</a>
     </nav>
-    <div class="user-area">
-        <span>👷</span>
-        <span id="header-user-name">مهندس...</span>
-    </div>
+    <div class="user-area"><span>👷</span><span id="header-user-name">مهندس...</span></div>
 </header>
-
 <div class="page-wrapper">
     <section class="hero">
         <h1>DH Automation</h1>
         <p id="hero-welcome">أهلاً بك يا باشمهندس</p>
-        <div class="name-change-section">
-            <input type="text" id="newName" placeholder="أدخل اسمك">
-            <button onclick="changeName()">تغيير الاسم</button>
-        </div>
+        <div class="name-change-section"><input type="text" id="newName" placeholder="أدخل اسمك"><button onclick="changeName()">تغيير الاسم</button></div>
     </section>
-
     <div class="nav-grid">
-        <a href="market.html" class="nav-card">
-            <span class="icon">🛒</span>
-            <h2>سوق مساعد المهندس</h2>
-            <p>انفرترات وقطع غيار - أحدث المنتجات</p>
-        </a>
-        <a href="industrial-solutions.html" class="nav-card">
-            <span class="icon">🏭</span>
-            <h2>الحلول الصناعية</h2>
-            <p>تطوير خطوط الإنتاج والأتمتة</p>
-        </a>
-        <a href="projects.html" class="nav-card">
-            <span class="icon">🏗️</span>
-            <h2>أعمالنا المنفذة</h2>
-            <p>معرض المشاريع السابقة والإنجازات</p>
-        </a>
-        <a href="services.html" class="nav-card">
-            <span class="icon">⚙️</span>
-            <h2>خدماتنا البرمجية</h2>
-            <p>PLC و Microcontrollers وبرمجة</p>
-        </a>
+        <a href="market.html" class="nav-card"><span class="icon">🛒</span><h2>سوق مساعد المهندس</h2><p>انفرترات وقطع غيار - أحدث المنتجات</p></a>
+        <a href="industrial-solutions.html" class="nav-card"><span class="icon">🏭</span><h2>الحلول الصناعية</h2><p>تطوير خطوط الإنتاج والأتمتة</p></a>
+        <a href="projects.html" class="nav-card"><span class="icon">🏗️</span><h2>أعمالنا المنفذة</h2><p>معرض المشاريع السابقة والإنجازات</p></a>
+        <a href="services.html" class="nav-card"><span class="icon">⚙️</span><h2>خدماتنا البرمجية</h2><p>PLC و Microcontrollers وبرمجة</p></a>
     </div>
 </div>
-
-<footer>
-    <div class="footer-content">
-        <p>© 2026 DH Automation - جميع الحقوق محفوظة</p>
-        <p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p>
-    </div>
-</footer>
-
+<footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
 <script>
-    // دالة آمنة للتعامل مع localStorage في WebView
-    function safeLocalStorage() {
-        try {
-            return localStorage;
-        } catch(e) {
-            console.warn('localStorage غير متاح:', e);
-            return {
-                getItem: function() { return null; },
-                setItem: function() {},
-                removeItem: function() {}
-            };
-        }
-    }
-
-    function askName() {
-        const storage = safeLocalStorage();
-        let savedName = storage.getItem('engineerName');
-        if (!savedName || savedName === 'null') {
-            savedName = prompt("من فضلك أدخل اسمك المهندس:");
-            if (savedName && savedName.trim()) {
-                storage.setItem('engineerName', savedName.trim());
-            } else {
-                savedName = "المهندس";
-            }
-        }
-        updateName(savedName);
-    }
-
-    function updateName(name) {
-        if (name && name !== 'null') {
-            const userNameSpan = document.getElementById('header-user-name');
-            const welcomeP = document.getElementById('hero-welcome');
-            if (userNameSpan) userNameSpan.innerText = "مهندس " + name;
-            if (welcomeP) welcomeP.innerText = "أهلاً مهندس " + name;
-        }
-    }
-
-    function changeName() {
-        const newNameInput = document.getElementById('newName');
-        const newName = newNameInput ? newNameInput.value.trim() : '';
-        if (newName) {
-            const storage = safeLocalStorage();
-            storage.setItem('engineerName', newName);
-            updateName(newName);
-            if (newNameInput) newNameInput.value = "";
-        } else {
-            alert("الرجاء إدخال اسم صحيح");
-        }
-    }
-
-    // تشغيل الدالة عند تحميل الصفحة
-    window.onload = function() {
-        askName();
-    };
+    function safeLocalStorage(){ try{ return localStorage; } catch(e){ return { getItem:()=>null, setItem:()=>{}, removeItem:()=>{} }; } }
+    function toggleMenu(){ document.getElementById('mainNav').classList.toggle('active'); }
+    function askName(){ const storage=safeLocalStorage(); let savedName=storage.getItem('engineerName'); if(!savedName||savedName==='null'){ savedName=prompt("من فضلك أدخل اسمك المهندس:"); if(savedName&&savedName.trim()) storage.setItem('engineerName',savedName.trim()); else savedName="المهندس"; } updateName(savedName); }
+    function updateName(name){ if(name&&name!=='null'){ const userNameSpan=document.getElementById('header-user-name'); const welcomeP=document.getElementById('hero-welcome'); if(userNameSpan) userNameSpan.innerText="مهندس "+name; if(welcomeP) welcomeP.innerText="أهلاً مهندس "+name; } }
+    function changeName(){ const newNameInput=document.getElementById('newName'); const newName=newNameInput?newNameInput.value.trim():''; if(newName){ const storage=safeLocalStorage(); storage.setItem('engineerName',newName); updateName(newName); if(newNameInput) newNameInput.value=""; } else alert("الرجاء إدخال اسم صحيح"); }
+    document.addEventListener('click',function(event){ const nav=document.getElementById('mainNav'); const toggle=document.querySelector('.menu-toggle'); if(nav&&toggle&&!nav.contains(event.target)&&!toggle.contains(event.target)) nav.classList.remove('active'); });
+    window.onload=askName;
 </script>
-
 </body>
 </html>
