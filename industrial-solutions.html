@@ -1,253 +1,608 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DH Automation | الحلول الصناعية</title>
     <style>
-        :root {
-            --dark-bg: #1a1a1a; --main-blue: #0056b3; --accent-orange: #e67e22;
-            --light-bg: #f4f7f6; --header-height: 60px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        body { margin:0; background:var(--light-bg); font-family:'Segoe UI',Tahoma,sans-serif; text-align: right; }
-        
-        header {
-            background:var(--dark-bg); color:white; display:flex; justify-content:space-between; 
-            align-items:center; padding:0 15px; height:var(--header-height);
-            position:fixed; top:0; left:0; width:100%; box-shadow:0 2px 10px rgba(0,0,0,0.5); z-index:1000;
-        }
-        .logo { font-weight:bold; font-size:1.1rem; color:var(--accent-orange); text-decoration:none; }
-        nav { display:flex; gap:15px; align-items:center; }
-        nav a { color:white; text-decoration:none; font-size:0.9rem; font-weight: bold; }
 
-        .page-wrapper { margin-top:var(--header-height); }
+        :root {
+            --dark-bg: #1a1a1a;
+            --main-blue: #0056b3;
+            --accent-orange: #e67e22;
+            --light-bg: #f4f7f6;
+            --header-height: 60px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: right;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: var(--dark-bg);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            color: var(--accent-orange);
+        }
+
+        .page-wrapper {
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height) - 80px);
+        }
 
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('01.jpg') center/cover;
-            color: white; 
-            text-align: center; 
-            padding: 80px 20px; 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('01.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
             border-bottom: 6px solid var(--main-blue);
         }
 
-        /* لوحة التحكم */
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
         .admin-section {
-            background: #fff; max-width: 800px; margin: 30px auto;
-            padding: 25px; border: 2px dashed var(--main-blue); border-radius: 15px;
+            background: #fff;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 25px;
+            border: 2px dashed var(--main-blue);
+            border-radius: 15px;
         }
-        .admin-section input, .admin-section textarea {
-            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;
-        }
-        .btn-add { background: var(--main-blue); color: white; border: none; padding: 12px; cursor: pointer; width: 100%; border-radius: 8px; font-weight: bold; }
 
-        /* أزرار النسخ الاحتياطي */
+        .admin-section input, 
+        .admin-section textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .btn-add {
+            background: var(--main-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #004080;
+        }
+
         .backup-controls {
-            display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
         }
-        .btn-backup { flex: 1; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; border: 1px solid #ddd; }
-        .export-btn { background: #6c757d; color: white; }
-        .import-btn { background: #f8f9fa; color: #333; }
 
-        /* شبكة المشاريع */
-        .posts-grid {
-            display: grid; grid-template-columns: 1fr; gap: 25px;
-            max-width: 1200px; margin: 40px auto; padding: 0 20px;
+        .btn-backup {
+            flex: 1;
+            padding: 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            transition: 0.3s;
         }
-        @media(min-width: 768px) { .posts-grid { grid-template-columns: 1fr 1fr; } }
+
+        .export-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .import-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        /* ========== POSTS GRID - RESPONSIVE ========== */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        @media(min-width: 768px) {
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(min-width: 1024px) {
+            .posts-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
 
         .post-card {
-            background: white; border-radius: 15px; overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08); position: relative; border: 1px solid #eee;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            transition: transform 0.3s;
         }
-        .post-card img { width: 100%; height: 220px; object-fit: cover; cursor: pointer; }
-        .post-content { padding: 20px; }
-        .post-content h3 { margin: 0 0 10px 0; color: var(--main-blue); }
-        
-        .view-btn { background: var(--accent-orange); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
 
-        /* أزرار الأدمن */
-        .admin-btns { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 5; }
-        .delete-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-        .edit-btn { background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-
-        /* المودال */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 2000; padding: 20px;
+        .post-card:hover {
+            transform: translateY(-5px);
         }
-        .modal-content { background: white; border-radius: 20px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-body { padding: 30px; }
-        .close-modal { position: absolute; top: 15px; right: 15px; background: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 
-        footer { background:var(--dark-bg); color:white; text-align:center; padding:25px; margin-top:50px; }
+        .post-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            cursor: zoom-in;
+        }
+
+        .post-content {
+            padding: 20px;
+        }
+
+        .post-content h3 {
+            margin: 0 0 10px 0;
+            color: var(--main-blue);
+            font-size: 1.2rem;
+        }
+
+        .post-content p {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .details-area {
+            display: none;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .details-area p {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .details-area video {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            background: #000;
+        }
+
+        .more-btn {
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        .more-btn:hover {
+            background: #d35400;
+        }
+
+        .admin-btns {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            cursor: zoom-out;
+        }
+
+        .zoom-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content p {
+            margin: 5px 0;
+        }
+
+        .admin-only {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                gap: 8px;
+            }
+            nav a {
+                font-size: 0.7rem;
+            }
+            .logo {
+                font-size: 0.9rem;
+            }
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
-
-        <style>
-            .admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }
-        </style></head>
-<body><script>const clientData = [{"id":1775074592875,"title":"مشروع او مش مشروع ","img":"","brief":"حلو ","details":"","video":""},{"id":1775074431507,"title":"تعديل خروف","img":"","brief":"قصينا شعره ","details":"بالمكنة ","video":""},{"id":1775060292627,"title":"تعديل كنترول ماشين","img":"pro10a.jpg","brief":"رؤى دي زي البلح","details":"رؤى مدبولي","video":""}];</script>
+<style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style></head>
+<body><script>
+            // تأكد من وجود clientData قبل تحميل الصفحة
+            window.clientData = [{"id":1775060292627,"title":"الدكتورة رؤى مدبولي كرم","img":"pro10a.jpg","brief":"دكتورة متميزة في الطب البطري","details":"رؤى مدبولي زي العسل الابيض ","video":""},{"id":1775074592875,"title":"مشروع او مش مشروع ","img":"","brief":"حلو ","details":"","video":""},{"id":1775074431507,"title":"تعديل خروف","img":"","brief":"قصينا شعره ","details":"بالمكنة ","video":""}];
+            // إعادة تعريف الدوال اللي ممكن تختفي في WebView
+            window.toggleDetails = function(id, btn) {
+                const area = document.getElementById('details-' + id);
+                if (!area) return;
+                if (area.style.display === "block") {
+                    area.style.display = "none";
+                    btn.innerText = "📖 المزيد";
+                } else {
+                    area.style.display = "block";
+                    btn.innerText = "📖 إخفاء";
+                }
+            };
+            window.openZoom = function(imgSrc) {
+                const modal = document.getElementById('zoomModal');
+                const zoomImg = document.getElementById('zoomImage');
+                if (modal && zoomImg) {
+                    zoomImg.src = imgSrc;
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            };
+            window.closeZoom = function() {
+                const modal = document.getElementById('zoomModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            };
+        </script>
 
 <header>
-    <a href="#" class="logo">DH.Automation</a>
+    <a href="index.html" class="logo">DH.Automation</a>
     <nav>
-        <a href="index.html">الرئيسية</a>
-        <a href="market.html">السوق</a>
-        <a href="industrial-solutions.html">الحلول الصناعية</a>
+        <a href="index.html">🏠 الرئيسية</a>
+        <a href="market.html">🛒 السوق</a>
+        <a href="industrial-solutions.html">🏭 الحلول الصناعية</a>
+        <a href="projects.html">🏗️ المشاريع</a>
+        <a href="services.html">⚙️ الخدمات</a>
+        <a href="https://wa.me/201114394767">📞 اتصل بنا</a>
     </nav>
 </header>
 
 <div class="page-wrapper">
     <section class="hero">
-        <h1>معرض الحلول الصناعية</h1>
+        <h1>🏭 الحلول الصناعية</h1>
         <p>تطوير الأنظمة البرمجية والميكانيكية بأعلى كفاءة</p>
     </section>
 
     <div class="admin-section admin-only" id="admin-panel">
-        <h3 id="form-title">إضافة حل صناعي جديد 🛠️</h3>
+        <h3 id="form-title" style="color:var(--main-blue);">🛠️ إضافة حل صناعي جديد</h3>
         <input type="text" id="post-title" placeholder="العنوان">
         <input type="text" id="post-img" placeholder="رابط الصورة">
-        <textarea id="post-brief" rows="2" placeholder="وصف الكارت الخارجي"></textarea>
+        <textarea id="post-brief" rows="2" placeholder="وصف مختصر"></textarea>
         <textarea id="post-details" rows="5" placeholder="التفاصيل الكاملة"></textarea>
-        <input type="text" id="post-video" placeholder="رابط فيديو MP4">
-        <button class="btn-add" id="main-btn" onclick="addNewPost()">نشر المشروع</button>
-        <button class="btn-add" id="cancel-edit" style="display:none; background:#666; margin-top:5px;" onclick="resetForm()">إلغاء التعديل</button>
-        <hr>
-        <button onclick="generateClientFile()" style="background:#28a745; color:white; border:none; padding:12px; cursor:pointer; width:100%; border-radius:8px;">تنزيل نسخة العميل 🚀</button>
+        <input type="text" id="post-video" placeholder="رابط فيديو MP4 (اختياري)">
+        <button class="btn-add" id="main-btn" onclick="addNewPost()">📤 نشر الحل</button>
+        <button class="btn-add" id="cancel-edit" style="display: none; background: rgb(108, 117, 125); margin-top: 5px;" onclick="resetForm()">إلغاء التعديل</button>
+        <hr style="margin: 15px 0;">
+        <button onclick="generateClientFile()" style="background:#28a745; color:white; border:none; padding:12px; cursor:pointer; width:100%; border-radius:30px; font-weight:bold;">🚀 تنزيل نسخة العميل</button>
         
         <div class="backup-controls">
-            <button class="btn-backup export-btn" onclick="exportData()">تصدير ملف الحفظ 💾</button>
-            <button class="btn-backup import-btn" onclick="document.getElementById('importFile').click()">استيراد ملف حفظ 📂</button>
+            <button class="btn-backup export-btn" onclick="exportData()">📤 تصدير ملف الحفظ</button>
+            <button class="btn-backup import-btn" onclick="document.getElementById('importFile').click()">📥 استيراد ملف حفظ</button>
             <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
         </div>
     </div>
 
     <div class="posts-grid" id="posts-container">
-            <div class="post-card">
+            <div class="post-card" data-id="1775060292627">
                 <div class="admin-btns admin-only">
-                    <button class="edit-btn" onclick="editPost(1775074592875)">تعديل ✏️</button>
-                    <button class="delete-btn" onclick="deletePost(1775074592875)">حذف 🗑️</button>
+                    <button class="edit-btn" onclick="editPost(1775060292627)">✏️ تعديل</button>
+                    <button class="delete-btn" onclick="deletePost(1775060292627)">🗑️ حذف</button>
                 </div>
-                <img src="" onclick="openDetails(1775074592875)">
+                <img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
+                <div class="post-content">
+                    <h3>الدكتورة رؤى مدبولي كرم</h3>
+                    <p>دكتورة متميزة في الطب البطري</p>
+                    
+                    <div class="details-area" id="details-1775060292627">
+                        <p style="white-space: pre-wrap; line-height:1.6;">رؤى مدبولي زي العسل الابيض </p>
+                        
+                    </div>
+                    
+                    <button class="more-btn" onclick="toggleDetails(1775060292627, this)">📖 المزيد</button>
+                </div>
+            </div>
+        
+            <div class="post-card" data-id="1775074592875">
+                <div class="admin-btns admin-only">
+                    <button class="edit-btn" onclick="editPost(1775074592875)">✏️ تعديل</button>
+                    <button class="delete-btn" onclick="deletePost(1775074592875)">🗑️ حذف</button>
+                </div>
+                <img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
                 <div class="post-content">
                     <h3>مشروع او مش مشروع </h3>
                     <p>حلو </p>
-                    <button class="view-btn" onclick="openDetails(1775074592875)">التفاصيل</button>
+                    
+                    <div class="details-area" id="details-1775074592875">
+                        <p style="white-space: pre-wrap; line-height:1.6;"></p>
+                        
+                    </div>
+                    
+                    <button class="more-btn" onclick="toggleDetails(1775074592875, this)">📖 المزيد</button>
                 </div>
             </div>
         
-            <div class="post-card">
+            <div class="post-card" data-id="1775074431507">
                 <div class="admin-btns admin-only">
-                    <button class="edit-btn" onclick="editPost(1775074431507)">تعديل ✏️</button>
-                    <button class="delete-btn" onclick="deletePost(1775074431507)">حذف 🗑️</button>
+                    <button class="edit-btn" onclick="editPost(1775074431507)">✏️ تعديل</button>
+                    <button class="delete-btn" onclick="deletePost(1775074431507)">🗑️ حذف</button>
                 </div>
-                <img src="" onclick="openDetails(1775074431507)">
+                <img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
                 <div class="post-content">
                     <h3>تعديل خروف</h3>
                     <p>قصينا شعره </p>
-                    <button class="view-btn" onclick="openDetails(1775074431507)">التفاصيل</button>
-                </div>
-            </div>
-        
-            <div class="post-card">
-                <div class="admin-btns admin-only">
-                    <button class="edit-btn" onclick="editPost(1775060292627)">تعديل ✏️</button>
-                    <button class="delete-btn" onclick="deletePost(1775060292627)">حذف 🗑️</button>
-                </div>
-                <img src="pro10a.jpg" onclick="openDetails(1775060292627)">
-                <div class="post-content">
-                    <h3>تعديل كنترول ماشين</h3>
-                    <p>رؤى دي زي البلح</p>
-                    <button class="view-btn" onclick="openDetails(1775060292627)">التفاصيل</button>
+                    
+                    <div class="details-area" id="details-1775074431507">
+                        <p style="white-space: pre-wrap; line-height:1.6;">بالمكنة </p>
+                        
+                    </div>
+                    
+                    <button class="more-btn" onclick="toggleDetails(1775074431507, this)">📖 المزيد</button>
                 </div>
             </div>
         </div>
 </div>
 
-<div class="modal" id="detailsModal" onclick="if(event.target==this) closeModal()">
-    <div class="modal-content">
-        <div class="close-modal" onclick="closeModal()">✕</div>
-        <img id="m-img" src="" style="width:100%; max-height:350px; object-fit:cover;">
-        <div class="modal-body">
-            <h2 id="m-title"></h2>
-            <p id="m-text" style="white-space: pre-wrap;"></p>
-            <div id="m-video-container" style="display:none; margin-top:15px;">
-                <video id="m-video" controls="" style="width:100%; border-radius:10px;"><source src="" type="video/mp4"></video>
-            </div>
-        </div>
+<div class="zoom-modal" id="zoomModal" onclick="closeZoom()">
+    <img id="zoomImage" src="">
+</div>
+
+<footer>
+    <div class="footer-content">
+        <p>© 2026 DH Automation - جميع الحقوق محفوظة</p>
+        <p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p>
     </div>
-</div>
-
-<footer>© 2026 DH Automation - المهندس مدبولي</footer>
+</footer>
 
 <script>
 let industrialPosts = [];
 
+function safeLocalStorage() {
+    try { return localStorage; } catch(e) { 
+        return { getItem:()=>null, setItem:()=>{}, removeItem:()=>{} };
+    }
+}
+
 function init() {
-    const saved = localStorage.getItem("industrial_data");
-    if (typeof clientData !== 'undefined') {
+    const storage = safeLocalStorage();
+    const saved = storage.getItem("industrial_data");
+    
+    if (typeof clientData !== 'undefined' && clientData && Array.isArray(clientData)) {
         industrialPosts = clientData;
     } else if (saved) {
-        industrialPosts = JSON.parse(saved);
+        try {
+            industrialPosts = JSON.parse(saved);
+        } catch(e) { industrialPosts = []; }
     }
+    
+    if (!industrialPosts || !Array.isArray(industrialPosts)) industrialPosts = [];
     renderPosts();
 }
 
 function addNewPost() {
-    const title = document.getElementById('post-title').value;
-    const img = document.getElementById('post-img').value;
-    const brief = document.getElementById('post-brief').value;
-    const details = document.getElementById('post-details').value;
-    const video = document.getElementById('post-video').value;
-    if(!title || !brief) return alert("اكمل البيانات!");
-    industrialPosts.unshift({ id: Date.now(), title, img, brief, details, video });
+    const title = document.getElementById('post-title').value.trim();
+    const img = document.getElementById('post-img').value.trim();
+    const brief = document.getElementById('post-brief').value.trim();
+    const details = document.getElementById('post-details').value.trim();
+    const video = document.getElementById('post-video').value.trim();
+    
+    if(!title || !brief) return alert("⚠️ يرجى إكمال البيانات الأساسية!");
+    
+    industrialPosts.unshift({ 
+        id: Date.now(), 
+        title: title, 
+        img: img, 
+        brief: brief, 
+        details: details, 
+        video: video 
+    });
     saveAndRefresh();
     resetForm();
 }
 
 function renderPosts() {
     const container = document.getElementById('posts-container');
+    if (!container) return;
     container.innerHTML = '';
+    
+    if (industrialPosts.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:50px; color:#888;">📭 لا توجد حلول صناعية مضافة بعد</div>';
+        return;
+    }
+    
     industrialPosts.forEach(post => {
         container.insertAdjacentHTML('beforeend', `
-            <div class="post-card">
+            <div class="post-card" data-id="${post.id}">
                 <div class="admin-btns admin-only">
-                    <button class="edit-btn" onclick="editPost(${post.id})">تعديل ✏️</button>
-                    <button class="delete-btn" onclick="deletePost(${post.id})">حذف 🗑️</button>
+                    <button class="edit-btn" onclick="editPost(${post.id})">✏️ تعديل</button>
+                    <button class="delete-btn" onclick="deletePost(${post.id})">🗑️ حذف</button>
                 </div>
-                <img src="${post.img || ''}" onclick="openDetails(${post.id})">
+                <img src="${post.img || '01.jpg'}" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
                 <div class="post-content">
-                    <h3>${post.title}</h3>
-                    <p>${post.brief}</p>
-                    <button class="view-btn" onclick="openDetails(${post.id})">التفاصيل</button>
+                    <h3>${escapeHtml(post.title)}</h3>
+                    <p>${escapeHtml(post.brief)}</p>
+                    
+                    <div class="details-area" id="details-${post.id}">
+                        <p style="white-space: pre-wrap; line-height:1.6;">${escapeHtml(post.details || '')}</p>
+                        ${post.video ? `<video controls><source src="${post.video}" type="video/mp4">متصفحك لا يدعم الفيديو</video>` : ''}
+                    </div>
+                    
+                    <button class="more-btn" onclick="toggleDetails(${post.id}, this)">📖 المزيد</button>
                 </div>
             </div>
         `);
     });
 }
 
-function openDetails(id) {
-    const post = industrialPosts.find(p => p.id == id);
-    if(!post) return;
-    document.getElementById('m-title').innerText = post.title;
-    document.getElementById('m-img').src = post.img || '';
-    document.getElementById('m-text').innerText = post.brief + "\n\n" + post.details;
-    const v = document.getElementById('m-video');
-    if(post.video) { document.getElementById('m-video-container').style.display='block'; v.src=post.video; }
-    else { document.getElementById('m-video-container').style.display='none'; }
-    document.getElementById('detailsModal').style.display = 'flex';
+function toggleDetails(id, btn) {
+    const area = document.getElementById(`details-${id}`);
+    if (!area) return;
+    if (area.style.display === "block") {
+        area.style.display = "none";
+        btn.innerText = "📖 المزيد";
+    } else {
+        area.style.display = "block";
+        btn.innerText = "📖 إخفاء";
+    }
 }
 
-function closeModal() { document.getElementById('detailsModal').style.display='none'; document.getElementById('m-video').pause(); }
+function openZoom(imgSrc) {
+    const modal = document.getElementById('zoomModal');
+    const zoomImg = document.getElementById('zoomImage');
+    zoomImg.src = imgSrc;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeZoom() {
+    const modal = document.getElementById('zoomModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
 
 function editPost(id) {
     const post = industrialPosts.find(p => p.id == id);
+    if(!post) return;
+    
     document.getElementById('post-title').value = post.title;
-    document.getElementById('post-img').value = post.img;
+    document.getElementById('post-img').value = post.img || '';
     document.getElementById('post-brief').value = post.brief;
-    document.getElementById('post-details').value = post.details;
-    document.getElementById('post-video').value = post.video;
-    document.getElementById('form-title').innerText = "تعديل المشروع ✏️";
+    document.getElementById('post-details').value = post.details || '';
+    document.getElementById('post-video').value = post.video || '';
+    
+    document.getElementById('form-title').innerHTML = "✏️ تعديل الحل";
     const btn = document.getElementById('main-btn');
-    btn.innerText = "حفظ التغييرات ✅";
+    btn.innerText = "💾 حفظ التغييرات";
     btn.onclick = () => { 
         industrialPosts = industrialPosts.filter(p => p.id != id); 
         const updatedPost = {
@@ -263,29 +618,42 @@ function editPost(id) {
         resetForm();
     };
     document.getElementById('cancel-edit').style.display = 'block';
-    window.scrollTo(0,0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function resetForm() {
-    document.getElementById('form-title').innerText = "إضافة حل صناعي جديد 🛠️";
+    document.getElementById('form-title').innerHTML = "🛠️ إضافة حل صناعي جديد";
     const btn = document.getElementById('main-btn');
-    btn.innerText = "نشر المشروع";
+    btn.innerText = "📤 نشر الحل";
     btn.onclick = addNewPost;
     document.getElementById('cancel-edit').style.display = 'none';
-    document.querySelectorAll('.admin-section input, .admin-section textarea').forEach(i => i.value = '');
+    const inputs = document.querySelectorAll('.admin-section input, .admin-section textarea');
+    inputs.forEach(i => i.value = '');
 }
 
-function deletePost(id) { if(confirm("حذف؟")) { industrialPosts = industrialPosts.filter(p => p.id != id); saveAndRefresh(); } }
+function deletePost(id) { 
+    if(confirm("⚠️ هل تريد حذف هذا الحل نهائياً؟")) { 
+        industrialPosts = industrialPosts.filter(p => p.id != id); 
+        saveAndRefresh(); 
+    } 
+}
 
-function saveAndRefresh() { localStorage.setItem("industrial_data", JSON.stringify(industrialPosts)); renderPosts(); }
+function saveAndRefresh() { 
+    const storage = safeLocalStorage();
+    storage.setItem("industrial_data", JSON.stringify(industrialPosts)); 
+    renderPosts(); 
+}
 
-// دوال النسخ الاحتياطي الجديدة
 function exportData() {
+    if (industrialPosts.length === 0) {
+        alert("⚠️ لا توجد بيانات لتصديرها!");
+        return;
+    }
     const dataStr = JSON.stringify(industrialPosts, null, 4);
     const blob = new Blob([dataStr], {type: 'application/json'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'DH_Automation_Backup.json';
+    a.download = `DH_Industrial_Backup_${new Date().toISOString().slice(0,10)}.json`;
     a.click();
 }
 
@@ -297,16 +665,16 @@ function importData(event) {
         try {
             const imported = JSON.parse(e.target.result);
             if (Array.isArray(imported)) {
-                if (confirm("سيتم استبدال البيانات الحالية بالبيانات المستوردة، هل أنت متأكد؟")) {
+                if (confirm("⚠️ سيتم استبدال البيانات الحالية بالبيانات المستوردة. هل أنت متأكد؟")) {
                     industrialPosts = imported;
                     saveAndRefresh();
-                    alert("تم استيراد البيانات بنجاح!");
+                    alert("✅ تم استيراد البيانات بنجاح!");
                 }
             } else {
-                alert("الملف غير صالح!");
+                alert("❌ الملف غير صالح!");
             }
         } catch (err) {
-            alert("خطأ في قراءة الملف!");
+            alert("❌ خطأ في قراءة الملف!");
         }
     };
     reader.readAsText(file);
@@ -314,23 +682,61 @@ function importData(event) {
 
 function generateClientFile() {
     try {
+        // الحصول على محتوى الصفحة الحالي
         let currentContent = document.documentElement.outerHTML;
-        const hideAdminCSS = `
-        <style>
-            .admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }
-        </style>`;
-        let finalHtml = currentContent.replace('</head>', hideAdminCSS + '</head>');
-        const dataInject = `<script>const clientData = ${JSON.stringify(industrialPosts)};<\/script>`;
-        finalHtml = finalHtml.replace('<body>', '<body>' + dataInject);
-
+        
+        // إخفاء عناصر الأدمن
+        const hideAdminCSS = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style>`;
+        
+        // حقن البيانات بشكل آمن
+        const safeData = JSON.stringify(industrialPosts);
+        const dataInject = `<script>
+            // تأكد من وجود clientData قبل تحميل الصفحة
+            window.clientData = ${safeData};
+            // إعادة تعريف الدوال اللي ممكن تختفي في WebView
+            window.toggleDetails = function(id, btn) {
+                const area = document.getElementById('details-' + id);
+                if (!area) return;
+                if (area.style.display === "block") {
+                    area.style.display = "none";
+                    btn.innerText = "📖 المزيد";
+                } else {
+                    area.style.display = "block";
+                    btn.innerText = "📖 إخفاء";
+                }
+            };
+            window.openZoom = function(imgSrc) {
+                const modal = document.getElementById('zoomModal');
+                const zoomImg = document.getElementById('zoomImage');
+                if (modal && zoomImg) {
+                    zoomImg.src = imgSrc;
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            };
+            window.closeZoom = function() {
+                const modal = document.getElementById('zoomModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            };
+        <\/script>`;
+        
+        // دمج كل شيء
+        let finalHtml = currentContent
+            .replace('</head>', hideAdminCSS + '</head>')
+            .replace('<body>', '<body>' + dataInject);
+        
+        // تنزيل الملف
         const blob = new Blob(["<!DOCTYPE html>\n" + finalHtml], {type: 'text/html'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'DH_Solutions_Client.html';
+        a.download = 'DH_Industrial_Client.html';
         a.click();
-        alert("تم استخراج نسخة العميل بنجاح!");
-    } catch (e) {
-        alert("حصلت مشكلة: " + e.message);
+        alert("✅ تم استخراج نسخة العميل بنجاح!");
+    } catch (e) { 
+        alert("❌ خطأ: " + e.message); 
     }
 }
 
