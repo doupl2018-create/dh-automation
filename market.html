@@ -185,7 +185,7 @@
 <script>
 // ========== المتغيرات العامة ==========
 let cart = [];
-let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
+let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]}; // DATA_PLACEHOLDER
 let currentExpandedProduct = null;
 let currentCategoryId = '';
 
@@ -714,38 +714,41 @@ function importStoreFromFile(event) {
     reader.readAsText(file); 
 }
 
-// ========== تصدير نسخة العميل (المعدلة للحقن المباشر) ==========
 function generateFullCode() {
     try {
-        // 1. تحويل بيانات الأقسام والمنتجات الحالية لنص
+        // 1. تجهيز البيانات الحالية
         const jsonData = JSON.stringify(storeData);
         
-        // 2. الحصول على كود الصفحة
+        // 2. سحب كود الصفحة بالكامل
         let html = document.documentElement.outerHTML;
 
-        // 3. ستايل إخفاء أدوات الإدارة
+        // 3. ستايل إخفاء الإدارة
         const hideAdminCSS = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
         
-        // 4. السحر: حقن البيانات مكان التعريف الفارغ
-        // بنبحث عن التعريف الأصلي لـ storeData ونستبدله بالبيانات الحقيقية
-        const dataInjection = `storeData = ${jsonData};`;
+        // 4. السحر هنا: هنستبدل السطر اللي فيه الكومنت بالبيانات الحقيقية
+        // الطريقة دي أدق بكتير من البحث العشوائي
+        const dataInjection = `let storeData = ${jsonData}; // DATA_PLACEHOLDER`;
         
-        // ملاحظة: هنا بنستبدل السطر اللي بيعرف المتجر بالبيانات
-        html = html.replace(/storeData\s*=\s*\{.*\}\s*;/, dataInjection);
+        if (html.includes('// DATA_PLACEHOLDER')) {
+            html = html.replace(/let storeData\s*=\s*[\s\S]*?;\s*\/\/\s*DATA_PLACEHOLDER/, dataInjection);
+        } else {
+            // حل احتياطي لو ملقاش الكومنت
+            html = html.replace(/let storeData\s*=\s*\{[\s\S]*?\};/, `let storeData = ${jsonData};`);
+        }
 
-        // 5. إضافة ستايل الإخفاء في الهيد
+        // 5. إضافة ستايل الإخفاء
         html = html.replace('</head>', hideAdminCSS + '</head>');
 
-        // 6. التحميل
+        // 6. التصدير
         const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'DH_Market_Client.html';
         a.click();
         
-        alert("✅ تم استخراج نسخة العميل بنجاح! الآن المنتجات محقونة جوه الملف.");
+        alert("✅ تم التحديث! نسخة العميل الآن تحتوي على كل الأقسام والمنتجات.");
     } catch (e) { 
-        alert("❌ خطأ: " + e.message); 
+        alert("❌ خطأ تقني: " + e.message); 
     }
 }
 
