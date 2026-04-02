@@ -99,7 +99,7 @@
         <button onclick="smartSearch()">🔍 بحث</button>
         <button class="clear-btn" onclick="clearSearch()">✖️ إلغاء</button>
     </div>
-    <div id="resultsCount" class="results-count" style="display: none;">1 نتيجة</div>
+    <div id="resultsCount" class="results-count" style="display: none;"></div>
     
     <div class="admin-section admin-only" id="admin-panel">
         <h3 id="form-title" style="color:var(--main-blue);">🛠️ إضافة حل صناعي جديد</h3>
@@ -109,7 +109,7 @@
         <div class="backup-controls"><button class="btn-backup export-btn" onclick="exportData()">📤 تصدير ملف الحفظ</button><button class="btn-backup import-btn" onclick="document.getElementById('importFile').click()">📥 استيراد ملف حفظ</button><input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)"></div>
     </div>
     
-    <div id="originalContainer" style="display: block;">
+    <div id="originalContainer">
         <div class="posts-grid" id="posts-container">
             <div class="post-card" data-id="1775074592875">
                 <div class="admin-btns admin-only"><button class="edit-btn" onclick="editPost(1775074592875)">✏️</button><button class="delete-btn" onclick="deletePost(1775074592875)">🗑️</button></div>
@@ -146,27 +146,14 @@
         </div>
     </div>
     
-    <div id="searchResultsContainer" class="search-results-grid" style="display: none;">
-                    <div class="post-card" data-id="1775074592875">
-                        <img src="01.jpg" onerror="this.src='01.jpg'" onclick="openZoom(this.src)">
-                        <div class="post-content">
-                            <h3>المهندس العلامة : أنس مدبولي</h3>
-                            <p>مهندس إلكترونيات محترف</p>
-                            <div class="details-area" id="details-1775074592875">
-                                <p style="white-space: pre-wrap;">مهندس إلكترونيات زي العسل</p>
-                                
-                            </div>
-                            <button class="more-btn" onclick="toggleDetails(1775074592875, this)">📖 المزيد</button>
-                        </div>
-                    </div>
-                </div>
+    <div id="searchResultsContainer" class="search-results-grid"></div>
 </div>
 
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()"><img id="zoomImage" src=""></div>
 <footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
 
 <script>
-let industrialPosts = [];
+let industrialPosts = [{"id":1775074592875,"title":"المهندس العلامة : أنس مدبولي","img":"","brief":"مهندس إلكترونيات محترف","details":"مهندس إلكترونيات زي العسل","video":""},{"id":1775060292627,"title":"الدكتورة رؤى مدبولي كرم","img":"pro10a.jpg","brief":"دكتورة متميزة في الطب البطري","details":"رؤى مدبولي زي العسل الابيض ","video":""},{"id":1775074431507,"title":"تعديل خروف","img":"","brief":"قصينا شعره ","details":"بالمكنة ","video":""}];
 
 function safeLocalStorage() { try { return localStorage; } catch(e) { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; } }
 function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
@@ -314,7 +301,39 @@ function deletePost(id) { if (confirm("⚠️ هل تريد حذف هذا الح
 function saveAndRefresh() { const storage = safeLocalStorage(); storage.setItem("industrial_data", JSON.stringify(industrialPosts)); renderPosts(); }
 function exportData() { if (industrialPosts.length === 0) return alert("لا توجد بيانات!"); const blob = new Blob([JSON.stringify(industrialPosts)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `DH_Industrial_Backup.json`; a.click(); }
 function importData(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const imported = JSON.parse(e.target.result); if (Array.isArray(imported)) { if (confirm("سيتم استبدال البيانات الحالية؟")) { industrialPosts = imported; saveAndRefresh(); alert("✅ تم الاستيراد!"); } } else alert("ملف غير صالح!"); } catch(err) { alert("خطأ!"); } }; reader.readAsText(file); }
-function generateClientFile() { try { let html = document.documentElement.outerHTML; const hide = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style>`; html = html.replace('</head>', hide + '</head>'); const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'DH_Industrial_Client.html'; a.click(); alert("✅ تم التصدير!"); } catch(e) { alert("خطأ: " + e.message); } }
+
+// ========== دالة تصدير نسخة العميل المعدلة (بنفس طريقة المشاريع) ==========
+function generateClientFile() {
+    try {
+        // 1. تحويل البيانات الحالية إلى نص JSON
+        const jsonData = JSON.stringify(industrialPosts);
+        
+        // 2. الحصول على كود الصفحة بالكامل
+        let html = document.documentElement.outerHTML;
+        
+        // 3. إخفاء أدوات الإدارة للعميل
+        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style>`;
+        
+        // 4. السحر هنا: استبدال مصفوفة البيانات الفارغة بالبيانات الحقيقية
+        const dataInjection = `let industrialPosts = ${jsonData};`;
+        html = html.replace(/let industrialPosts\s*=\s*\[\]\s*;/, dataInjection);
+        
+        // 5. إضافة ستايل إخفاء الإدارة في الهيد
+        html = html.replace('</head>', adminStyles + '</head>');
+        
+        // 6. تحويل النص إلى ملف للتحميل
+        const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'DH_Industrial_Client.html';
+        a.click();
+        
+        alert("✅ تم توليد نسخة العميل بنجاح! الآن ستظهر الحلول لأي شخص يفتح الملف.");
+    } catch(e) {
+        alert("خطأ أثناء التصدير: " + e.message);
+    }
+}
+
 window.onload = init;
 </script>
 
