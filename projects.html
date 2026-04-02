@@ -99,7 +99,7 @@
         <button onclick="smartSearch()">🔍 بحث</button>
         <button class="clear-btn" onclick="clearSearch()">✖️ إلغاء</button>
     </div>
-    <div id="resultsCount" class="results-count" style="display: none;">0 نتيجة</div>
+    <div id="resultsCount" class="results-count" style="display: none;"></div>
     
     <div class="admin-section admin-only" id="admin-panel">
         <h3 id="form-title" style="color:var(--main-blue);">📁 إضافة مشروع جديد</h3>
@@ -115,7 +115,7 @@
         <div class="backup-controls"><button class="btn-backup export-btn" onclick="exportProjects()">📤 تصدير ملف الحفظ</button><button class="btn-backup import-btn" onclick="document.getElementById('importFile').click()">📥 استيراد ملف حفظ</button><input type="file" id="importFile" style="display:none" accept=".json" onchange="importProjects(event)"></div>
     </div>
     
-    <div id="originalContainer" style="display: block;">
+    <div id="originalContainer">
         <div class="posts-grid" id="projects-list">
             <div class="post-card" data-id="1775135395687">
                 <div class="admin-btns admin-only"><button class="edit-btn" onclick="editProject(1775135395687)">✏️</button><button class="delete-btn" onclick="deleteProject(1775135395687)">🗑️</button></div>
@@ -130,7 +130,7 @@
         </div>
     </div>
     
-    <div id="searchResultsContainer" class="search-results-grid" style="display: none;"><div class="no-results">❌ لا توجد نتائج مطابقة لبحثك</div></div>
+    <div id="searchResultsContainer" class="search-results-grid"></div>
 </div>
 
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()"><img id="zoomImage" src=""></div>
