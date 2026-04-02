@@ -75,7 +75,7 @@
         .admin-only { display: block; } 
     </style>
 <style>.admin-only, .admin-section, .admin-btns, .backup-controls { display: none !important; }</style></head>
-<body><script>const clientData = [{"id":1775077179545,"title":"تطوير ماكينات الحقن ","img":"01.jpg","brief":"شغل عال","details":"تمام التمام","video":""}];</script>
+<body><script>const clientData = [{"id":1775117587563,"title":"كل ما يخص ماكينة الحقن ","img":"","brief":"ماكينة الحقن ","details":"","video":"https://youtu.be/AY6JUBKYN-A?si=7prCFT3-6AwGhSFa"},{"id":1775077179545,"title":"تطوير ماكينات الحقن ","img":"01.jpg","brief":"شغل عال","details":"تمام التمام","video":""}];</script>
 
 <header>
     <a href="index.html" class="logo">DH.Automation</a>
@@ -114,6 +114,25 @@
     </div>
 
     <div class="posts-container" id="projects-list">
+            <div class="post-card">
+                <div class="admin-btns admin-only">
+                    <button class="edit-btn" onclick="editProject(1775117587563)">تعديل ✏️</button>
+                    <button class="delete-btn" onclick="deleteProject(1775117587563)">حذف 🗑️</button>
+                </div>
+                
+                <div class="post-content">
+                    <h3>كل ما يخص ماكينة الحقن </h3>
+                    <p>ماكينة الحقن </p>
+                    
+                    <div class="details-area" id="details-1775117587563">
+                        <p style="white-space: pre-wrap;"></p>
+                        <video controls=""><source src="https://youtu.be/AY6JUBKYN-A?si=7prCFT3-6AwGhSFa" type="video/mp4"></video>
+                    </div>
+                    
+                    <button class="more-btn" onclick="toggleDetails(1775117587563, this)">المزيد</button>
+                </div>
+            </div>
+        
             <div class="post-card">
                 <div class="admin-btns admin-only">
                     <button class="edit-btn" onclick="editProject(1775077179545)">تعديل ✏️</button>
