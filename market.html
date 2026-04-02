@@ -324,35 +324,7 @@ function clearSearch() {
 }
 
 // ========== تحميل وحفظ البيانات ==========
-function loadData() {
-    const storage = safeLocalStorage();
-    
-    const savedCart = storage.getItem('cart_market');
-    if (savedCart) {
-        try {
-            cart = JSON.parse(savedCart);
-            updateCartInfo();
-        } catch(e) { cart = []; }
-    }
-    
-    const savedStore = storage.getItem('store_config');
-    if (savedStore) {
-        try {
-            storeData = JSON.parse(savedStore);
-        } catch(e) {
-            storeData = { categories: defaultCategories };
-            storage.setItem('store_config', JSON.stringify(storeData));
-        }
-    } else {
-        storeData = { categories: defaultCategories };
-        storage.setItem('store_config', JSON.stringify(storeData));
-    }
-    
-    if (!storeData.categories || storeData.categories.length === 0) {
-        storeData.categories = defaultCategories;
-        storage.setItem('store_config', JSON.stringify(storeData));
-    }
-}
+function loadData() { /* تم تعطيلها - البيانات محقونة */ }
 
 function saveStoreData() { 
     const storage = safeLocalStorage(); 
@@ -361,10 +333,9 @@ function saveStoreData() {
 
 // ========== دوال العرض ==========
 function initApp() { 
-    loadData();
-    restoreTabs(); 
-    refreshCategoryMenus(); 
-}
+            restoreTabs(); 
+            refreshCategoryMenus(); 
+        }
 
 function restoreTabs() { 
     const tabs = document.getElementById('tabs-container'); 
@@ -716,9 +687,18 @@ function generateFullCode() {
         const adminStyles = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
         html = html.replace('<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"><\/script>', '');
         
-        // طريقة بسيطة: نحذف السطر القديم ونضيف الجديد
-        const newLine = `let storeData = ${jsonData};`;
-        html = html.replace(/let storeData = .*?;/, newLine);
+        // إزالة أي اعتماد على localStorage في نسخة العميل
+        const newStoreLine = `let storeData = ${jsonData};`;
+        html = html.replace(/let storeData = .*?;/, newStoreLine);
+        
+        // تعطيل loadData في نسخة العميل (لأن البيانات موجودة بالفعل)
+        html = html.replace(/function loadData\(\) \{[\s\S]*?\n\}/, 'function loadData() { /* تم تعطيلها - البيانات محقونة */ }');
+        
+        // تعديل initApp عشان يستخدم البيانات المحقونة مباشرة
+        html = html.replace(/function initApp\(\) \{[\s\S]*?\n\}/, `function initApp() { 
+            restoreTabs(); 
+            refreshCategoryMenus(); 
+        }`);
         
         html = html.replace('</head>', adminStyles + '</head>');
         
@@ -728,7 +708,7 @@ function generateFullCode() {
         a.download = 'DH_Market_Client.html';
         a.click();
         
-        alert("✅ تم التصدير بنجاح!");
+        alert("✅ تم توليد نسخة العميل بنجاح!");
     } catch(e) {
         alert("خطأ: " + e.message);
     }
