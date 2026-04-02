@@ -64,6 +64,10 @@
         footer { background: var(--dark-bg); color: white; text-align: center; padding: 20px; margin-top: 40px; }
         .footer-content p { margin: 5px 0; }
         
+        /* زر تنزيل نسخة العميل */
+        .btn-client { background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; margin: 20px auto; display: block; width: fit-content; }
+        .btn-client:hover { background: #218838; }
+        
         @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } .result-card { flex-direction: column; text-align: center; } .result-link { width: 100%; text-align: center; } }
     </style>
 </head>
@@ -109,6 +113,9 @@
             <a href="services.html" class="nav-card"><span class="icon">⚙️</span><h2>خدماتنا البرمجية</h2><p>PLC و Microcontrollers وبرمجة</p></a>
         </div>
     </div>
+    
+    <!-- زر تنزيل نسخة العميل -->
+    <button class="btn-client" onclick="generateClientFile()">🚀 تنزيل نسخة العميل (البحث الشامل)</button>
 </div>
 
 <footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
@@ -283,64 +290,68 @@ function changeName() {
     } else { alert("الرجاء إدخال اسم صحيح"); }
 }
 
-// ========== دالة تصدير نسخة العميل (المعدلة) ==========
+// ========== دالة تصدير نسخة العميل (تعتمد على البيانات اللي في allData) ==========
 function generateClientFile() {
     try {
-        const storage = safeLocalStorage();
+        // نجمع كل البيانات في مصفوفة واحدة
+        const allSearchData = [];
         
-        // جلب جميع البيانات
-        const marketData = storage.getItem('store_config') || '{"categories":[]}';
-        const projectsData = storage.getItem('projects_db') || '[]';
-        const industrialData = storage.getItem('industrial_data') || '[]';
-        const servicesData = storage.getItem('services_db') || '[]';
+        // منتجات السوق
+        for (let key in allData) {
+            allData[key].forEach(item => {
+                allSearchData.push(item);
+            });
+        }
         
-        // الحصول على كود الصفحة
+        // نحول البيانات إلى نص JSON
+        const jsonData = JSON.stringify(allSearchData);
+        
+        // ناخذ كود الصفحة
         let html = document.documentElement.outerHTML;
         
-        // إخفاء أدوات الإدارة
-        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls, #admin-panel { display: none !important; }</style>`;
+        // نخفي عناصر الإدارة
+        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns, .backup-controls, #admin-panel, .btn-client { display: none !important; }</style>`;
         
-        // حقن البيانات في الصفحة
+        // نحقن البيانات في متغير داخل الصفحة
         const dataInjection = `
         <script>
-            // البيانات المحقونة من المدير
-            (function() {
-                const storage = (function() { try { return localStorage; } catch(e) { return { getItem: function() { return null; }, setItem: function() {}, removeItem: function() {} }; } })();
-                
-                const marketData = ${marketData};
-                const projectsData = ${projectsData};
-                const industrialData = ${industrialData};
-                const servicesData = ${servicesData};
-                
-                if (marketData && marketData.categories) {
-                    storage.setItem('store_config', JSON.stringify(marketData));
+            // البيانات المحقونة للبحث الشامل
+            window.__searchData = ${jsonData};
+            
+            // تعديل دالة loadAllData عشان تستخدم البيانات المحقونة
+            window.loadAllData = function() {
+                if (window.__searchData && window.__searchData.length) {
+                    // تجميع البيانات حسب النوع
+                    allData = { market: [], projects: [], industrial: [], services: [] };
+                    window.__searchData.forEach(item => {
+                        if (item.type === 'market') allData.market.push(item);
+                        else if (item.type === 'projects') allData.projects.push(item);
+                        else if (item.type === 'industrial') allData.industrial.push(item);
+                        else if (item.type === 'services') allData.services.push(item);
+                    });
+                } else {
+                    // لو مفيش بيانات محقونة، نحاول من localStorage
+                    const storage = (function() { try { return localStorage; } catch(e) { return { getItem: () => null }; } })();
+                    // ... باقي الكود ...
                 }
-                if (projectsData && projectsData.length) {
-                    storage.setItem('projects_db', JSON.stringify(projectsData));
-                }
-                if (industrialData && industrialData.length) {
-                    storage.setItem('industrial_data', JSON.stringify(industrialData));
-                }
-                if (servicesData && servicesData.length) {
-                    storage.setItem('services_db', JSON.stringify(servicesData));
-                }
-            })();
+            };
         <\/script>
         `;
         
-        // إضافة البيانات قبل نهاية الـ body
+        // نضيف البيانات قبل نهاية الـ body
         html = html.replace('</body>', dataInjection + '</body>');
         html = html.replace('</head>', adminStyles + '</head>');
         
+        // ننزل الملف
         const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'DH_Index_Client.html';
         a.click();
         
-        alert("✅ تم توليد نسخة العميل بنجاح! الآن البحث الشامل سيعمل على النت.");
+        alert("✅ تم توليد نسخة العميل بنجاح! البحث الشامل سيعمل على النت.");
     } catch(e) {
-        alert("خطأ أثناء التصدير: " + e.message);
+        alert("خطأ: " + e.message);
     }
 }
 
