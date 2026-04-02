@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>DH Automation | سوق مساعد المهندس</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #1a1a1a;
+            --main-blue: #0056b3;
+            --accent-orange: #e67e22;
+            --light-bg: #f8f9fa;
+            --header-height: 60px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: right;
+            overflow-x: hidden;
+        }
+
+        /* ========== HEADER الموحد ========== */
+        header {
+            background: var(--dark-bg);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            color: var(--accent-orange);
+        }
+
+        .cart-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--main-blue);
+            padding: 5px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cart-btn:hover {
+            background: #004080;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .page-wrapper {
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height) - 80px);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('01.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            border-bottom: 6px solid var(--main-blue);
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* ========== TABS ========== */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: #fff;
+            border-bottom: 2px solid var(--main-blue);
+            padding: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 25px;
+            border: none;
+            cursor: pointer;
+            background: #eee;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--main-blue);
+            color: white;
+        }
+
+        /* ========== PRODUCTS GRID ========== */
+        .products-grid {
+            display: none;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .products-grid.active {
+            display: grid;
+        }
+
+        @media (min-width: 768px) {
+            .products-grid.active {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .products-grid.active {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .product-card .info {
+            padding: 15px;
+        }
+
+        .product-card h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--main-blue);
+        }
+
+        .price {
+            color: var(--accent-orange);
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .qty-control input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .qty-control button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: var(--main-blue);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .action-btn {
+            margin: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: var(--main-blue);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            width: calc(100% - 30px);
+        }
+
+        /* ========== ADMIN SECTION ========== */
+        .admin-section {
+            background: #fff;
+            padding: 25px;
+            margin: 40px auto;
+            max-width: 1000px;
+            border-radius: 15px;
+            border: 2px dashed var(--main-blue);
+        }
+
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .admin-form input,
+        .admin-form textarea,
+        .admin-form select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .btn-admin {
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-admin:hover {
+            opacity: 0.85;
+        }
+
+        .admin-btns-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .edit-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        /* ========== MODALS ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            padding: 20px;
+            text-align: center;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-content img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content p {
+            margin: 5px 0;
+        }
+
+        /* ========== UTILITIES ========== */
+        .admin-only {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                gap: 8px;
+            }
+            nav a {
+                font-size: 0.7rem;
+            }
+            .logo {
+                font-size: 0.9rem;
+            }
+            .cart-btn span:last-child {
+                font-size: 0.7rem;
+            }
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            .tab-btn {
+                padding: 6px 15px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+<style>.admin-only, #admin-panel, .admin-btns-group { display: none !important; }</style></head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">DH.Automation</a>
+    <nav>
+        <a href="index.html">🏠 الرئيسية</a>
+        <a href="market.html">🛒 السوق</a>
+        <a href="industrial-solutions.html">🏭 الحلول الصناعية</a>
+        <a href="projects.html">🏗️ المشاريع</a>
+        <a href="services.html">⚙️ الخدمات</a>
+        <a href="https://wa.me/201114394767">📞 اتصل بنا</a>
+    </nav>
+    <div class="cart-btn" onclick="openCartModal()">
+        <span>🛒</span>
+        <span id="cart-info">0 قطع - 0 جنيه</span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <section class="hero">
+        <h1>🛒 سوق مساعد المهندس</h1>
+        <p>إدارة احترافية وتحديث ذكي للمعدات والقطع</p>
+    </section>
+
+    <div class="tabs" id="tabs-container"><button class="tab-btn active" onclick="showTab('cat_1775057729050')">كارتات الكترونية صناعية</button><button class="tab-btn " onclick="showTab('cat_1775057744267')">ماكينات حقن بلاستيك</button><button class="tab-btn " onclick="showTab('cat_1775057798752')">قطع غيار جديدة</button><button class="tab-btn " onclick="showTab('cat_1775057806994')">قطع غيار مستعملة</button><button class="tab-btn " onclick="showTab('cat_1775059668559')">بلح</button></div>
+    <div id="products-container"><div id="cat_1775057729050" class="products-grid active">
+        <div class="product-card" data-name="كارت بروبوشنال 10 امبير 2 مخرج" data-price="2000" data-img="image/pro10a.jpg">
+            <img src="image/pro10a.jpg" onclick="showDetails(this)">
+            <div class="info">
+                <h3>كارت بروبوشنال 10 امبير 2 مخرج</h3>
+                <p style="font-size:0.8rem; color:#666;">كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ...</p>
+                <div class="price">2000 جنيه</div>
+                <div class="admin-btns-group admin-only">
+                    <button class="edit-btn" onclick="editProduct(this)">✏️ تعديل</button>
+                    <button class="delete-btn" onclick="removeProduct(this)">🗑️ حذف</button>
+                </div>
+                <div class="qty-control">
+                    <button onclick="changeQty(this,-1)">-</button>
+                    <input type="number" value="1" min="1">
+                    <button onclick="changeQty(this,1)">+</button>
+                </div>
+            </div>
+            <button class="action-btn" onclick="toggleCart(this)" style="background: var(--main-blue);">➕ إضافة للعربة</button>
+        </div></div><div id="cat_1775057744267" class="products-grid ">
+        <div class="product-card" data-name="صيبسب" data-price="20" data-img="">
+            <img src="https://via.placeholder.com/300x180?text=No+Image" onclick="showDetails(this)">
+            <div class="info">
+                <h3>صيبسب</h3>
+                <p style="font-size:0.8rem; color:#666;">سيؤيس</p>
+                <div class="price">20 جنيه</div>
+                <div class="admin-btns-group admin-only">
+                    <button class="edit-btn" onclick="editProduct(this)">✏️ تعديل</button>
+                    <button class="delete-btn" onclick="removeProduct(this)">🗑️ حذف</button>
+                </div>
+                <div class="qty-control">
+                    <button onclick="changeQty(this,-1)">-</button>
+                    <input type="number" value="1" min="1">
+                    <button onclick="changeQty(this,1)">+</button>
+                </div>
+            </div>
+            <button class="action-btn" onclick="toggleCart(this)" style="background: var(--main-blue);">➕ إضافة للعربة</button>
+        </div></div><div id="cat_1775057798752" class="products-grid "></div><div id="cat_1775057806994" class="products-grid "></div><div id="cat_1775059668559" class="products-grid "></div></div>
+
+    <!-- لوحة تحكم المهندس -->
+    <section class="admin-section admin-only" id="admin-panel">
+        <h3 style="text-align:center; color:var(--main-blue);">📋 لوحة تحكم المهندس</h3>
+        
+        <div class="admin-form">
+            <h4>📦 النسخ الاحتياطي</h4>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-admin" style="flex:1; background:#6c757d;" onclick="exportStoreData()">📤 تصدير البيانات</button>
+                <button class="btn-admin" style="flex:1; background:#28a745;" onclick="document.getElementById('importFile').click()">📥 استيراد بيانات</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="importStoreFromFile(event)">
+            </div>
+        </div>
+
+        <div class="admin-form" id="product-editor">
+            <h4 id="form-title">➕ إضافة منتج جديد</h4>
+            <input type="text" id="new-prod-name" placeholder="اسم المنتج">
+            <input type="number" id="new-prod-price" placeholder="السعر">
+            <input type="text" id="new-prod-img" placeholder="رابط الصورة">
+            <textarea id="new-prod-desc" rows="2" placeholder="وصف المنتج"></textarea>
+            <select id="new-prod-category"><option value="cat_1775057729050">كارتات الكترونية صناعية</option><option value="cat_1775057744267">ماكينات حقن بلاستيك</option><option value="cat_1775057798752">قطع غيار جديدة</option><option value="cat_1775057806994">قطع غيار مستعملة</option><option value="cat_1775059668559">بلح</option></select>
+            <button class="btn-admin" id="submit-btn" onclick="addNewProduct()">إضافة للمتجر</button>
+            <button class="btn-admin" id="cancel-edit" style="display:none; background:#6c757d;" onclick="resetForm()">إلغاء التعديل</button>
+        </div>
+
+        <button class="btn-admin" style="width:100%; background:#28a745; margin-top:15px;" onclick="generateFullCode()">🚀 تنزيل نسخة العميل</button>
+    </section>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <p>© 2026 DH Automation - جميع الحقوق محفوظة</p>
+        <p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p>
+    </div>
+</footer>
+
+<!-- مودال تفاصيل المنتج -->
+<div class="modal" id="productDetailsModal" onclick="if(event.target===this) closeProductModal()">
+    <div class="modal-content">
+        <h3 id="details-title" style="color:var(--main-blue);"></h3>
+        <img id="details-img" src="">
+        <p id="details-desc" style="margin:10px 0;"></p>
+        <p id="details-price" style="color:var(--accent-orange); font-weight:bold;"></p>
+        <button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeProductModal()">إغلاق</button>
+    </div>
+</div>
+
+<!-- مودال سلة المشتريات -->
+<div class="modal" id="cartModal" onclick="if(event.target===this) closeCartModal()">
+    <div class="modal-content">
+        <h3 style="color:var(--main-blue);">🛒 سلة المشتريات</h3>
+        <table id="cart-table">
+            <thead>
+                <tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="cart-total" style="font-weight:bold; margin:15px;"></div>
+        <button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">✅ طلب عبر واتساب</button>
+        <button class="btn-admin" style="background:#dc3545; width:100%; margin-bottom:5px;" onclick="emptyCart()">🗑️ إفراغ السلة</button>
+        <button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeCartModal()">إغلاق</button>
+    </div>
+</div>
+
+<script>
+// بيانات المتجر
+let cart = [];
+let storeData = { categories: [{ id: 'inverters', name: 'انفرترات', products: [] }] };
+
+// دالة آمنة للـ localStorage
+function safeLocalStorage() {
+    try { return localStorage; } catch(e) { 
+        return { getItem:()=>null, setItem:()=>{}, removeItem:()=>{} };
+    }
+}
+
+function initApp() {
+    const storage = safeLocalStorage();
+    const savedCart = storage.getItem("cart_market");
+    if (savedCart) { cart = JSON.parse(savedCart); updateCartInfo(); }
+    
+    const savedStore = storage.getItem("store_config");
+    if (savedStore) {
+        storeData = JSON.parse(savedStore);
+    }
+    restoreStore(storeData);
+    syncCardsWithCart();
+}
+
+function restoreStore(data) {
+    const tabs = document.getElementById('tabs-container');
+    const prods = document.getElementById('products-container');
+    if (!tabs || !prods) return;
+    
+    tabs.innerHTML = '';
+    prods.innerHTML = '';
+    
+    data.categories.forEach((cat, index) => {
+        const active = index === 0 ? 'active' : '';
+        tabs.innerHTML += `<button class="tab-btn ${active}" onclick="showTab('${cat.id}')">${cat.name}</button>`;
+        
+        let html = `<div id="${cat.id}" class="products-grid ${active}">`;
+        cat.products.forEach(p => {
+            html += generateProductHTML(p.name, p.price, p.img, p.desc);
+        });
+        html += '</div>';
+        prods.innerHTML += html;
+    });
+    refreshCategoryMenus();
+}
+
+function generateProductHTML(name, price, img, desc) {
+    return `
+        <div class="product-card" data-name="${escapeHtml(name)}" data-price="${price}" data-img="${img || ''}">
+            <img src="${img || 'https://via.placeholder.com/300x180?text=No+Image'}" onclick="showDetails(this)">
+            <div class="info">
+                <h3>${escapeHtml(name)}</h3>
+                <p style="font-size:0.8rem; color:#666;">${escapeHtml(desc || '')}</p>
+                <div class="price">${price} جنيه</div>
+                <div class="admin-btns-group admin-only">
+                    <button class="edit-btn" onclick="editProduct(this)">✏️ تعديل</button>
+                    <button class="delete-btn" onclick="removeProduct(this)">🗑️ حذف</button>
+                </div>
+                <div class="qty-control">
+                    <button onclick="changeQty(this,-1)">-</button>
+                    <input type="number" value="1" min="1">
+                    <button onclick="changeQty(this,1)">+</button>
+                </div>
+            </div>
+            <button class="action-btn" onclick="toggleCart(this)">➕ إضافة للعربة</button>
+        </div>`;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+function showDetails(img) {
+    const card = img.closest(".product-card");
+    document.getElementById("details-title").innerText = card.dataset.name;
+    document.getElementById("details-img").src = card.dataset.img || 'https://via.placeholder.com/300x200';
+    document.getElementById("details-desc").innerText = card.querySelector('p')?.innerText || '';
+    document.getElementById("details-price").innerText = "السعر: " + card.dataset.price + " جنيه";
+    document.getElementById("productDetailsModal").style.display = "flex";
+}
+
+function closeProductModal() {
+    document.getElementById("productDetailsModal").style.display = "none";
+}
+
+function closeCartModal() {
+    document.getElementById("cartModal").style.display = "none";
+}
+
+function exportStoreData() {
+    const storage = safeLocalStorage();
+    const data = storage.getItem("store_config");
+    if(!data) return alert("لا توجد بيانات للحفظ!");
+    const blob = new Blob([data], {type: "application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `DH_Backup_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.json`;
+    a.click();
+}
+
+function importStoreFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            const storage = safeLocalStorage();
+            storage.setItem("store_config", JSON.stringify(data));
+            storeData = data;
+            restoreStore(data);
+            alert("✅ تم استيراد البيانات بنجاح!");
+        } catch(err) { alert("❌ الملف غير صالح!"); }
+    };
+    reader.readAsText(file);
+}
+
+function emptyCart() {
+    if(confirm("هل تريد إفراغ السلة بالكامل؟")) { 
+        cart = []; 
+        updateCartInfo(); 
+        syncCardsWithCart(); 
+        closeCartModal();
+    }
+}
+
+function changeQty(btn, delta) {
+    const input = btn.parentElement.querySelector('input');
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    input.value = val;
+    const card = btn.closest('.product-card');
+    const item = cart.find(i => i.name === card.dataset.name);
+    if (item) { item.qty = val; updateCartInfo(); }
+}
+
+function sendWhatsApp() {
+    if(cart.length === 0) return alert("السلة فارغة!");
+    let total = 0, msg = "🛒 *طلب جديد من DH Automation*\n\n";
+    cart.forEach((item, i) => { 
+        total += item.qty * item.price; 
+        msg += `${i+1}. ${item.name}\n📦 الكمية: ${item.qty} | 💰: ${item.qty * item.price} ج\n`;
+    });
+    msg += `\n💵 *الإجمالي: ${total} جنيه*`;
+    window.open("https://wa.me/201114394767?text=" + encodeURIComponent(msg));
+}
+
+function addNewProduct() {
+    const name = document.getElementById('new-prod-name').value;
+    const price = document.getElementById('new-prod-price').value;
+    const img = document.getElementById('new-prod-img').value;
+    const desc = document.getElementById('new-prod-desc').value;
+    const catId = document.getElementById('new-prod-category').value;
+    
+    if(!name || !price) return alert("الرجاء إدخال اسم المنتج والسعر!");
+    
+    const grid = document.getElementById(catId);
+    if(grid) {
+        grid.insertAdjacentHTML('beforeend', generateProductHTML(name, price, img, desc));
+    }
+    resetForm();
+    saveStoreData();
+    syncCardsWithCart();
+}
+
+function saveStoreData() {
+    const categories = [];
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        const onclickAttr = btn.getAttribute('onclick');
+        if(!onclickAttr) return;
+        const match = onclickAttr.match(/'([^']+)'/);
+        if(!match) return;
+        const id = match[1];
+        const products = [];
+        const grid = document.getElementById(id);
+        if(grid) {
+            grid.querySelectorAll('.product-card').forEach(card => {
+                products.push({ 
+                    name: card.dataset.name, 
+                    price: card.dataset.price, 
+                    img: card.dataset.img, 
+                    desc: card.querySelector('p')?.innerText || '' 
+                });
+            });
+        }
+        categories.push({ id, name: btn.innerText, products });
+    });
+    storeData = { categories };
+    const storage = safeLocalStorage();
+    storage.setItem("store_config", JSON.stringify(storeData));
+}
+
+function toggleCart(btn) {
+    const card = btn.closest(".product-card");
+    const name = card.dataset.name;
+    const price = parseInt(card.dataset.price);
+    const qty = parseInt(card.querySelector("input").value);
+    
+    const idx = cart.findIndex(i => i.name === name);
+    if (idx === -1) {
+        cart.push({name, price, qty});
+    } else {
+        cart.splice(idx, 1);
+    }
+    updateCartInfo();
+    syncCardsWithCart();
+}
+
+function updateCartInfo() {
+    let q = 0, t = 0;
+    cart.forEach(i => { q += i.qty; t += i.qty * i.price; });
+    document.getElementById("cart-info").innerText = q + " قطع - " + t + " جنيه";
+    const storage = safeLocalStorage();
+    storage.setItem("cart_market", JSON.stringify(cart));
+}
+
+function syncCardsWithCart() {
+    document.querySelectorAll('.product-card').forEach(card => {
+        const btn = card.querySelector('.action-btn');
+        const item = cart.find(i => i.name === card.dataset.name);
+        if(btn) {
+            btn.innerText = item ? "❌ إلغاء" : "➕ إضافة للعربة";
+            btn.style.background = item ? "#dc3545" : "var(--main-blue)";
+        }
+    });
+}
+
+function openCartModal() {
+    const tbody = document.querySelector("#cart-table tbody");
+    if(!tbody) return;
+    tbody.innerHTML = "";
+    let total = 0;
+    cart.forEach(item => {
+        tbody.innerHTML += `<tr><td>${escapeHtml(item.name)}</td><td>${item.qty}</td><td>${item.price}</td><td>${item.qty * item.price}</td></tr>`;
+        total += item.qty * item.price;
+    });
+    document.getElementById("cart-total").innerText = "💰 الإجمالي: " + total + " جنيه";
+    document.getElementById("cartModal").style.display = "flex";
+}
+
+function showTab(id) { 
+    document.querySelectorAll('.products-grid').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    const targetGrid = document.getElementById(id);
+    if(targetGrid) targetGrid.classList.add('active');
+    const targetBtn = document.querySelector(`[onclick="showTab('${id}')"]`);
+    if(targetBtn) targetBtn.classList.add('active');
+}
+
+function refreshCategoryMenus() {
+    const sel = document.getElementById('new-prod-category');
+    if(!sel) return;
+    sel.innerHTML = '';
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        const onclickAttr = btn.getAttribute('onclick');
+        if(onclickAttr) {
+            const match = onclickAttr.match(/'([^']+)'/);
+            if(match) {
+                sel.innerHTML += `<option value="${match[1]}">${btn.innerText}</option>`;
+            }
+        }
+    });
+}
+
+function removeProduct(btn) { 
+    if(confirm("هل تريد حذف هذا المنتج؟")) { 
+        btn.closest('.product-card').remove(); 
+        saveStoreData(); 
+        syncCardsWithCart();
+    } 
+}
+
+function resetForm() {
+    document.getElementById('form-title').innerText = "➕ إضافة منتج جديد";
+    document.getElementById('submit-btn').innerText = "إضافة للمتجر";
+    document.getElementById('submit-btn').onclick = addNewProduct;
+    document.getElementById('cancel-edit').style.display = "none";
+    ['new-prod-name','new-prod-price','new-prod-img','new-prod-desc'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = '';
+    });
+}
+
+function editProduct(btn) {
+    const card = btn.closest('.product-card');
+    document.getElementById('new-prod-name').value = card.dataset.name;
+    document.getElementById('new-prod-price').value = card.dataset.price;
+    document.getElementById('new-prod-img').value = card.dataset.img;
+    document.getElementById('new-prod-desc').value = card.querySelector('p')?.innerText || '';
+    
+    const catSelect = document.getElementById('new-prod-category');
+    const parentId = card.parentElement.id;
+    if(catSelect && parentId) {
+        for(let i = 0; i < catSelect.options.length; i++) {
+            if(catSelect.options[i].value === parentId) {
+                catSelect.selectedIndex = i;
+                break;
+            }
+        }
+    }
+    
+    document.getElementById('form-title').innerText = "✏️ تعديل: " + card.dataset.name;
+    document.getElementById('submit-btn').innerText = "💾 حفظ التعديلات";
+    document.getElementById('submit-btn').onclick = function() { 
+        card.remove(); 
+        addNewProduct(); 
+        resetForm();
+    };
+    document.getElementById('cancel-edit').style.display = "block";
+}
+
+function generateFullCode() {
+    try {
+        const storage = safeLocalStorage();
+        const currentData = storage.getItem("store_config");
+        let fullHtml = document.documentElement.outerHTML;
+        const adminHideCSS = `<style>.admin-only, #admin-panel, .admin-btns-group { display: none !important; }</style>`;
+        fullHtml = fullHtml.replace('</head>', adminHideCSS + '</head>');
+        const safeData = currentData ? currentData.replace(/\\/g, "\\\\").replace(/'/g, "\\'") : JSON.stringify(storeData);
+        fullHtml = fullHtml.replace(/const savedStore = localStorage\.getItem\("store_config"\);[^;]*;/, `const savedStore = '${safeData}';`);
+        const blob = new Blob(["<!DOCTYPE html>\n" + fullHtml], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'DH_Market_Client.html';
+        a.click();
+        alert("✅ تم تصدير نسخة العميل بنجاح!");
+    } catch(err) { alert("❌ خطأ: " + err.message); }
+}
+
+window.onload = initApp;
+</script>
+
+</body></html>
