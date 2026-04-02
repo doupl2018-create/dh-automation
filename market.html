@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head>
+        <script>
+            var storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]}; 
+            // تعطيل الـ LocalStorage عشان نعتمد على البيانات المحقونة فقط
+            function safeLocalStorage() { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; }
+        </script><style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DH Automation | سوق مساعد المهندس</title>
@@ -98,7 +103,7 @@
         
         @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } .products-mini-grid { grid-template-columns: repeat(2, 1fr); } .search-bar input { font-size: 0.85rem; } .search-bar button { padding: 10px 15px; } }
     </style>
-<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style></head>
+</head>
 <body>
 <header>
     <a href="index.html" class="logo">DH.Automation</a>
@@ -185,7 +190,7 @@
 <script>
 // ========== المتغيرات العامة ==========
 let cart = [];
-let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]}; // DATA_PLACEHOLDER
+ // DATA_PLACEHOLDER
 let currentExpandedProduct = null;
 let currentCategoryId = '';
 
@@ -716,39 +721,36 @@ function importStoreFromFile(event) {
 
 function generateFullCode() {
     try {
-        // 1. تجهيز البيانات الحالية
         const jsonData = JSON.stringify(storeData);
-        
-        // 2. سحب كود الصفحة بالكامل
         let html = document.documentElement.outerHTML;
 
-        // 3. ستايل إخفاء الإدارة
+        // 1. ستايل إخفاء الإدارة
         const hideAdminCSS = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
         
-        // 4. السحر هنا: هنستبدل السطر اللي فيه الكومنت بالبيانات الحقيقية
-        // الطريقة دي أدق بكتير من البحث العشوائي
-        const dataInjection = `let storeData = ${jsonData}; // DATA_PLACEHOLDER`;
-        
-        if (html.includes('// DATA_PLACEHOLDER')) {
-            html = html.replace(/let storeData\s*=\s*[\s\S]*?;\s*\/\/\s*DATA_PLACEHOLDER/, dataInjection);
-        } else {
-            // حل احتياطي لو ملقاش الكومنت
-            html = html.replace(/let storeData\s*=\s*\{[\s\S]*?\};/, `let storeData = ${jsonData};`);
-        }
+        // 2. "قص" التعريف القديم من الكود عشان ميعملش تضارب (Conflict)
+        // بنشيل السطر اللي بيبدأ بـ let storeData أو var storeData
+        html = html.replace(/let\s+storeData\s*=\s*\{[\s\S]*?\};/, "");
+        html = html.replace(/var\s+storeData\s*=\s*\{[\s\S]*?\};/, "");
 
-        // 5. إضافة ستايل الإخفاء
-        html = html.replace('</head>', hideAdminCSS + '</head>');
+        // 3. حقن البيانات الجديدة "بشكل نظيف" في الهيد
+        const injectionScript = `
+        <script>
+            var storeData = ${jsonData}; 
+            // تعطيل الـ LocalStorage عشان نعتمد على البيانات المحقونة فقط
+            function safeLocalStorage() { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; }
+        <\/script>`;
 
-        // 6. التصدير
+        html = html.replace('<head>', '<head>' + injectionScript + hideAdminCSS);
+
         const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'DH_Market_Client.html';
         a.click();
         
-        alert("✅ تم التحديث! نسخة العميل الآن تحتوي على كل الأقسام والمنتجات.");
+        alert("✅ تم الإصلاح! النسخة الآن تعمل بدون تضارب.");
     } catch (e) { 
-        alert("❌ خطأ تقني: " + e.message); 
+        alert("❌ خطأ: " + e.message); 
     }
 }
 
