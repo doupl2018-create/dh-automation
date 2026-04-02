@@ -163,18 +163,18 @@
             <div class="image-upload-area">
                 <label>📸 رفع صورة من جهازك:</label>
                 <input type="file" id="imageUpload" accept="image/*" onchange="uploadImage(this)">
-                <div id="imagePreview" class="image-preview" style="display: none;">
+                <div id="imagePreview" class="image-preview">
                     <img id="previewImg" src="">
                     <br>
                     <button type="button" class="clear-image-btn" onclick="clearImage()">✖️ إزالة الصورة</button>
                 </div>
-                <div class="upload-hint">⚠️ الصورة ستتحول إلى نص Base64 وتتخزن داخل الملف</div>
+                <div class="upload-hint">⚠️ الصورة ستتحول إلى نص Base64 وتتخزن داخل الملف (حجم مناسب حتى 2 ميجابايت)</div>
             </div>
             
             <textarea id="new-prod-desc" rows="2" placeholder="وصف المنتج"></textarea>
             <select id="new-prod-category"><option value="cat_1775057729050">كارتات الكترونية صناعية</option><option value="cat_1775057744267">ماكينات حقن بلاستيك</option><option value="cat_1775057798752">قطع غيار جديدة</option><option value="cat_1775057806994">قطع غيار مستعملة</option><option value="cat_1775059668559">بلح</option></select>
             <button class="btn-admin" id="submit-btn" onclick="addNewProduct()">إضافة للمتجر</button>
-            <button class="btn-admin" id="cancel-edit" style="display: none; background: rgb(108, 117, 125);" onclick="resetForm()">إلغاء التعديل</button>
+            <button class="btn-admin" id="cancel-edit" style="display:none; background:#6c757d;" onclick="resetForm()">إلغاء التعديل</button>
         </div>
         <button class="btn-admin" style="width:100%; background:#28a745; margin-top:15px;" onclick="generateFullCode()">🚀 تنزيل نسخة العميل</button>
     </section>
@@ -361,7 +361,6 @@ function generateFullCode() {
         const adminStyles = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel, .image-upload-area { display: none !important; }</style>`;
         const dataInjection = `let storeData = ${jsonData};`;
         html = html.replace(/let storeData\s*=\s*\{\s*categories:\s*\[\]\s*\};?/, dataInjection);
-        html = html.replace('<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"><\/script>', '');
         html = html.replace('</head>', adminStyles + '</head>');
         const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
         const a = document.createElement('a');
