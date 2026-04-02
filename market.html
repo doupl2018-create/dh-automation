@@ -708,39 +708,29 @@ function importStoreFromFile(event) {
     reader.readAsText(file); 
 }
 
-// ========== تصدير نسخة العميل (الطريقة المضمونة) ==========
 function generateFullCode() {
     try {
-        // 1. تحويل البيانات الحالية إلى نص JSON
         const jsonData = JSON.stringify(storeData);
-        
-        // 2. الحصول على كود الصفحة بالكامل
         let html = document.documentElement.outerHTML;
         
-        // 3. إخفاء أدوات الإدارة للعميل
         const adminStyles = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
-        
-        // 4. إزالة مكتبة Fuse.js
         html = html.replace('<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"><\/script>', '');
         
-        // 5. الطريقة المضمونة: البحث عن السطر اللي فيه let storeData واستبداله
-        // نستخدم regex يمسك أي let storeData = ...; مهما كان المحتوى
-        const dataInjection = `let storeData = ${jsonData};`;
-        html = html.replace(/let storeData\s*=\s*[^;]+;/, dataInjection);
+        // طريقة بسيطة: نحذف السطر القديم ونضيف الجديد
+        const newLine = `let storeData = ${jsonData};`;
+        html = html.replace(/let storeData = .*?;/, newLine);
         
-        // 6. إضافة ستايل إخفاء الإدارة في الهيد
         html = html.replace('</head>', adminStyles + '</head>');
         
-        // 7. تحويل النص إلى ملف للتحميل
         const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'DH_Market_Client.html';
         a.click();
         
-        alert("✅ تم توليد نسخة العميل بنجاح! الآن ستظهر المنتجات لأي شخص يفتح الملف.");
+        alert("✅ تم التصدير بنجاح!");
     } catch(e) {
-        alert("خطأ أثناء التصدير: " + e.message);
+        alert("خطأ: " + e.message);
     }
 }
 
