@@ -1,10 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head>
-        <script>
-            var storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]}; 
-            // تعطيل الـ LocalStorage عشان نعتمد على البيانات المحقونة فقط
-            function safeLocalStorage() { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; }
-        </script><style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DH Automation | سوق مساعد المهندس</title>
@@ -103,7 +98,7 @@
         
         @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } .products-mini-grid { grid-template-columns: repeat(2, 1fr); } .search-bar input { font-size: 0.85rem; } .search-bar button { padding: 10px 15px; } }
     </style>
-</head>
+<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style></head>
 <body>
 <header>
     <a href="index.html" class="logo">DH.Automation</a>
@@ -183,14 +178,13 @@
 </div>
 
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()"><img id="zoomImage" src=""></div>
-<div class="modal" id="cartModal" onclick="if(event.target===this) closeCartModal()"><div class="modal-content"><h3 style="color:var(--main-blue);">🛒 سلة المشتريات</h3><div id="cart-total" style="font-weight:bold; margin:15px;"></div><button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">✅ طلب عبر واتساب</button><button class="btn-admin" style="background:#dc3545; width:100%; margin-bottom:5px;" onclick="emptyCart()">🗑️ إفراغ السلة</button><button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeCartModal()">إغلاق</button><footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer><table id="cart-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody></tbody><tbody><tr>
+<div class="modal" id="cartModal" onclick="if(event.target===this) closeCartModal()"><div class="modal-content"><h3 style="color:var(--main-blue);">🛒 سلة المشتريات</h3>能有<div id="cart-total" style="font-weight:bold; margin:15px;"></div><button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">✅ طلب عبر واتساب</button><button class="btn-admin" style="background:#dc3545; width:100%; margin-bottom:5px;" onclick="emptyCart()">🗑️ إفراغ السلة</button><button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeCartModal()">إغلاق</button><footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer><table id="cart-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody></tbody>
 
 
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
 <script>
 // ========== المتغيرات العامة ==========
 let cart = [];
- // DATA_PLACEHOLDER
+let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
 let currentExpandedProduct = null;
 let currentCategoryId = '';
 
@@ -248,7 +242,6 @@ function smartSearch() {
         return;
     }
     
-    // تجميع كل المنتجات من كل الأقسام
     const allProducts = [];
     storeData.categories.forEach(cat => {
         cat.products.forEach((product, idx) => {
@@ -274,7 +267,6 @@ function smartSearch() {
         return;
     }
     
-    // البحث البسيط (مطابقة جزئية مع تجاهل الأخطاء الإملائية البسيطة)
     const results = allProducts.filter(product => {
         const nameMatch = product.name.toLowerCase().includes(searchTerm);
         const descMatch = product.desc && product.desc.toLowerCase().includes(searchTerm);
@@ -335,7 +327,6 @@ function clearSearch() {
 function loadData() {
     const storage = safeLocalStorage();
     
-    // تحميل السلة
     const savedCart = storage.getItem('cart_market');
     if (savedCart) {
         try {
@@ -344,7 +335,6 @@ function loadData() {
         } catch(e) { cart = []; }
     }
     
-    // تحميل بيانات المتجر
     const savedStore = storage.getItem('store_config');
     if (savedStore) {
         try {
@@ -358,7 +348,6 @@ function loadData() {
         storage.setItem('store_config', JSON.stringify(storeData));
     }
     
-    // التأكد من وجود الأقسام
     if (!storeData.categories || storeData.categories.length === 0) {
         storeData.categories = defaultCategories;
         storage.setItem('store_config', JSON.stringify(storeData));
@@ -719,38 +708,38 @@ function importStoreFromFile(event) {
     reader.readAsText(file); 
 }
 
+// ========== تصدير نسخة العميل (المعدلة بنفس الطريقة العبقرية) ==========
 function generateFullCode() {
     try {
+        // 1. تحويل البيانات الحالية إلى نص JSON
         const jsonData = JSON.stringify(storeData);
-        let html = document.documentElement.outerHTML;
-
-        // 1. ستايل إخفاء الإدارة
-        const hideAdminCSS = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
         
-        // 2. "قص" التعريف القديم من الكود عشان ميعملش تضارب (Conflict)
-        // بنشيل السطر اللي بيبدأ بـ let storeData أو var storeData
-        html = html.replace(/let\s+storeData\s*=\s*\{[\s\S]*?\};/, "");
-        html = html.replace(/var\s+storeData\s*=\s*\{[\s\S]*?\};/, "");
-
-        // 3. حقن البيانات الجديدة "بشكل نظيف" في الهيد
-        const injectionScript = `
-        <script>
-            var storeData = ${jsonData}; 
-            // تعطيل الـ LocalStorage عشان نعتمد على البيانات المحقونة فقط
-            function safeLocalStorage() { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; }
-        <\/script>`;
-
-        html = html.replace('<head>', '<head>' + injectionScript + hideAdminCSS);
-
+        // 2. الحصول على كود الصفحة بالكامل
+        let html = document.documentElement.outerHTML;
+        
+        // 3. إخفاء أدوات الإدارة للعميل
+        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
+        
+        // 4. السحر هنا: استبدال بيانات المتجر الفارغة بالبيانات الحقيقية
+        const dataInjection = `let storeData = ${jsonData};`;
+        html = html.replace(/let storeData\s*=\s*\{\s*categories:\s*\[\]\s*\};?/, dataInjection);
+        
+        // 5. إزالة مكتبة Fuse.js من نسخة العميل (لأننا بنستخدم بحث بسيط)
+        html = html.replace('<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"><\/script>', '');
+        
+        // 6. إضافة ستايل إخفاء الإدارة في الهيد
+        html = html.replace('</head>', adminStyles + '</head>');
+        
+        // 7. تحويل النص إلى ملف للتحميل
         const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'DH_Market_Client.html';
         a.click();
         
-        alert("✅ تم الإصلاح! النسخة الآن تعمل بدون تضارب.");
-    } catch (e) { 
-        alert("❌ خطأ: " + e.message); 
+        alert("✅ تم توليد نسخة العميل بنجاح! الآن ستظهر المنتجات لأي شخص يفتح الملف.");
+    } catch(e) {
+        alert("خطأ أثناء التصدير: " + e.message);
     }
 }
 
@@ -758,4 +747,4 @@ function generateFullCode() {
 window.onload = initApp;
 </script>
 
-</tr></tbody></table></div></div></body></html>
+</table></div></div></body></html>
