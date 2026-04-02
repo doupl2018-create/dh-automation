@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head>
+<html lang="ar" dir="rtl">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DH Automation | سوق مساعد المهندس</title>
@@ -98,7 +99,7 @@
         
         @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } .products-mini-grid { grid-template-columns: repeat(2, 1fr); } .search-bar input { font-size: 0.85rem; } .search-bar button { padding: 10px 15px; } }
     </style>
-<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style></head>
+</head>
 <body>
 <header>
     <a href="index.html" class="logo">DH.Automation</a>
@@ -124,7 +125,7 @@
     </div>
     <div id="resultsCount" class="results-count" style="display: none;"></div>
     
-    <div class="tabs" id="tabs-container"><button class="tab-btn active" onclick="switchCategory('cat_1775057729050')">كارتات الكترونية صناعية</button><button class="tab-btn" onclick="switchCategory('cat_1775057744267')">ماكينات حقن بلاستيك</button><button class="tab-btn" onclick="switchCategory('cat_1775057798752')">قطع غيار جديدة</button><button class="tab-btn" onclick="switchCategory('cat_1775057806994')">قطع غيار مستعملة</button><button class="tab-btn" onclick="switchCategory('cat_1775059668559')">بلح</button></div>
+    <div class="tabs" id="tabs-container"></div>
     
     <div class="market-layout">
         <div class="expanded-product" id="expandedProduct">
@@ -138,53 +139,30 @@
             </div>
         </div>
         
-        <div id="originalContainer" style="display: block;">
-            <div id="products-mini-container" class="products-mini-grid">
-            <div class="product-mini-card" onclick="expandProduct(0)">
-                <img src="01.jpg" onerror="this.src='01.jpg'">
-                <div class="mini-info">
-                    <div class="admin-btns-group admin-only" onclick="event.stopPropagation()">
-                        <button class="edit-mini-btn" onclick="editProductFromMini(0)">✏️</button>
-                        <button class="delete-mini-btn" onclick="deleteProductFromMini(0)">🗑️</button>
-                    </div>
-                    <h4>كارت بروبوشنال 10 امبير 2 مخرج</h4>
-                    <div class="mini-price">2000 ج</div>
-                </div>
-            </div>
-        
-            <div class="product-mini-card" onclick="expandProduct(1)">
-                <img src="01.jpg" onerror="this.src='01.jpg'">
-                <div class="mini-info">
-                    <div class="admin-btns-group admin-only" onclick="event.stopPropagation()">
-                        <button class="edit-mini-btn" onclick="editProductFromMini(1)">✏️</button>
-                        <button class="delete-mini-btn" onclick="deleteProductFromMini(1)">🗑️</button>
-                    </div>
-                    <h4>كارت مساطر حثية</h4>
-                    <div class="mini-price">3000 ج</div>
-                </div>
-            </div>
-        </div>
+        <div id="originalContainer">
+            <div id="products-mini-container" class="products-mini-grid"></div>
         </div>
         
-        <div id="searchResultsContainer" class="search-results-container products-mini-grid" style="display: none;"></div>
+        <div id="searchResultsContainer" class="search-results-container products-mini-grid"></div>
     </div>
     
     <section class="admin-section admin-only" id="admin-panel">
         <h3 style="text-align:center; color:var(--main-blue);">📋 لوحة تحكم المهندس</h3>
         <div class="admin-form"><h4>📦 النسخ الاحتياطي</h4><div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn-admin" style="flex:1; background:#6c757d;" onclick="exportStoreData()">📤 تصدير البيانات</button><button class="btn-admin" style="flex:1; background:#28a745;" onclick="document.getElementById('importFile').click()">📥 استيراد بيانات</button><input type="file" id="importFile" style="display:none" accept=".json" onchange="importStoreFromFile(event)"></div></div>
-        <div class="admin-form" id="product-editor"><h4 id="form-title">➕ إضافة منتج جديد</h4><input type="text" id="new-prod-name" placeholder="اسم المنتج"><input type="number" id="new-prod-price" placeholder="السعر"><input type="text" id="new-prod-img" placeholder="رابط الصورة"><textarea id="new-prod-desc" rows="2" placeholder="وصف المنتج"></textarea><select id="new-prod-category"><option value="cat_1775057729050">كارتات الكترونية صناعية</option><option value="cat_1775057744267">ماكينات حقن بلاستيك</option><option value="cat_1775057798752">قطع غيار جديدة</option><option value="cat_1775057806994">قطع غيار مستعملة</option><option value="cat_1775059668559">بلح</option></select><button class="btn-admin" id="submit-btn" onclick="addNewProduct()">إضافة للمتجر</button><button class="btn-admin" id="cancel-edit" style="display:none; background:#6c757d;" onclick="resetForm()">إلغاء التعديل</button></div>
+        <div class="admin-form" id="product-editor"><h4 id="form-title">➕ إضافة منتج جديد</h4><input type="text" id="new-prod-name" placeholder="اسم المنتج"><input type="number" id="new-prod-price" placeholder="السعر"><input type="text" id="new-prod-img" placeholder="رابط الصورة"><textarea id="new-prod-desc" rows="2" placeholder="وصف المنتج"></textarea><select id="new-prod-category"></select><button class="btn-admin" id="submit-btn" onclick="addNewProduct()">إضافة للمتجر</button><button class="btn-admin" id="cancel-edit" style="display:none; background:#6c757d;" onclick="resetForm()">إلغاء التعديل</button></div>
         <button class="btn-admin" style="width:100%; background:#28a745; margin-top:15px;" onclick="generateFullCode()">🚀 تنزيل نسخة العميل</button>
     </section>
 </div>
 
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()"><img id="zoomImage" src=""></div>
-<div class="modal" id="cartModal" onclick="if(event.target===this) closeCartModal()"><div class="modal-content"><h3 style="color:var(--main-blue);">🛒 سلة المشتريات</h3>能有<div id="cart-total" style="font-weight:bold; margin:15px;"></div><button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">✅ طلب عبر واتساب</button><button class="btn-admin" style="background:#dc3545; width:100%; margin-bottom:5px;" onclick="emptyCart()">🗑️ إفراغ السلة</button><button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeCartModal()">إغلاق</button><footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer><table id="cart-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody></tbody>
+<div class="modal" id="cartModal" onclick="if(event.target===this) closeCartModal()"><div class="modal-content"><h3 style="color:var(--main-blue);">🛒 سلة المشتريات</h3><table id="cart-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody></tbody><tr><div id="cart-total" style="font-weight:bold; margin:15px;"></div><button class="btn-admin" style="background:#25D366; width:100%; margin-bottom:5px;" onclick="sendWhatsApp()">✅ طلب عبر واتساب</button><button class="btn-admin" style="background:#dc3545; width:100%; margin-bottom:5px;" onclick="emptyCart()">🗑️ إفراغ السلة</button><button class="btn-admin" style="background:#6c757d; width:100%;" onclick="closeCartModal()">إغلاق</button></div></div>
+<footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
 
-
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
 <script>
 // ========== المتغيرات العامة ==========
 let cart = [];
-let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"2000","img":"image/pro10a.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم ..."},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
+let storeData = { categories: [] };
 let currentExpandedProduct = null;
 let currentCategoryId = '';
 
@@ -242,6 +220,7 @@ function smartSearch() {
         return;
     }
     
+    // تجميع كل المنتجات من كل الأقسام
     const allProducts = [];
     storeData.categories.forEach(cat => {
         cat.products.forEach((product, idx) => {
@@ -267,6 +246,7 @@ function smartSearch() {
         return;
     }
     
+    // البحث البسيط (مطابقة جزئية مع تجاهل الأخطاء الإملائية البسيطة)
     const results = allProducts.filter(product => {
         const nameMatch = product.name.toLowerCase().includes(searchTerm);
         const descMatch = product.desc && product.desc.toLowerCase().includes(searchTerm);
@@ -324,17 +304,38 @@ function clearSearch() {
 }
 
 // ========== تحميل وحفظ البيانات ==========
-function loadData() { 
-            const storage = safeLocalStorage(); 
-            const savedCart = storage.getItem('cart_market'); 
-            if (savedCart) { 
-                try { 
-                    cart = JSON.parse(savedCart); 
-                    updateCartInfo(); 
-                } catch(e) { cart = []; } 
-            } 
-            // ملاحظة: بيانات المتجر محقونة بالفعل، مش محتاجة نقرأها من localStorage
+function loadData() {
+    const storage = safeLocalStorage();
+    
+    // تحميل السلة
+    const savedCart = storage.getItem('cart_market');
+    if (savedCart) {
+        try {
+            cart = JSON.parse(savedCart);
+            updateCartInfo();
+        } catch(e) { cart = []; }
+    }
+    
+    // تحميل بيانات المتجر
+    const savedStore = storage.getItem('store_config');
+    if (savedStore) {
+        try {
+            storeData = JSON.parse(savedStore);
+        } catch(e) {
+            storeData = { categories: defaultCategories };
+            storage.setItem('store_config', JSON.stringify(storeData));
         }
+    } else {
+        storeData = { categories: defaultCategories };
+        storage.setItem('store_config', JSON.stringify(storeData));
+    }
+    
+    // التأكد من وجود الأقسام
+    if (!storeData.categories || storeData.categories.length === 0) {
+        storeData.categories = defaultCategories;
+        storage.setItem('store_config', JSON.stringify(storeData));
+    }
+}
 
 function saveStoreData() { 
     const storage = safeLocalStorage(); 
@@ -464,32 +465,32 @@ function toggleExpandedCart() {
 }
 
 function updateCartInfo() { 
-            let q = 0, t = 0; 
-            cart.forEach(i => { q += i.qty; t += i.qty * i.price; }); 
-            const cartInfo = document.getElementById('cart-info'); 
-            if (cartInfo) cartInfo.innerText = q + ' قطع - ' + t + ' جنيه'; 
-            const storage = safeLocalStorage(); 
-            storage.setItem('cart_market', JSON.stringify(cart)); 
-            if (currentExpandedProduct) { 
-                const { product, categoryId } = currentExpandedProduct; 
-                const existingItem = cart.find(i => i.name === product.name && i.categoryId === categoryId); 
-                const qtyInput = document.getElementById('expandedQty'); 
-                if (existingItem && qtyInput && parseInt(qtyInput.value) !== existingItem.qty) { 
-                    qtyInput.value = existingItem.qty; 
-                } 
-                const actionBtn = document.getElementById('expandedActionBtn'); 
-                if (actionBtn) { 
-                    const exists = cart.some(i => i.name === product.name && i.categoryId === categoryId); 
-                    if (exists) { 
-                        actionBtn.innerText = '❌ إلغاء من العربة'; 
-                        actionBtn.classList.add('cancel'); 
-                    } else { 
-                        actionBtn.innerText = '➕ إضافة للعربة'; 
-                        actionBtn.classList.remove('cancel'); 
-                    } 
-                } 
+    let q = 0, t = 0; 
+    cart.forEach(i => { q += i.qty; t += i.qty * i.price; }); 
+    const cartInfo = document.getElementById('cart-info'); 
+    if (cartInfo) cartInfo.innerText = q + ' قطع - ' + t + ' جنيه'; 
+    const storage = safeLocalStorage(); 
+    storage.setItem('cart_market', JSON.stringify(cart)); 
+    if (currentExpandedProduct) { 
+        const { product, categoryId } = currentExpandedProduct; 
+        const existingItem = cart.find(i => i.name === product.name && i.categoryId === categoryId); 
+        const qtyInput = document.getElementById('expandedQty'); 
+        if (existingItem && qtyInput && parseInt(qtyInput.value) !== existingItem.qty) { 
+            qtyInput.value = existingItem.qty; 
+        } 
+        const actionBtn = document.getElementById('expandedActionBtn'); 
+        if (actionBtn) { 
+            const exists = cart.some(i => i.name === product.name && i.categoryId === categoryId); 
+            if (exists) { 
+                actionBtn.innerText = '❌ إلغاء من العربة'; 
+                actionBtn.classList.add('cancel'); 
+            } else { 
+                actionBtn.innerText = '➕ إضافة للعربة'; 
+                actionBtn.classList.remove('cancel'); 
             } 
-        }
+        } 
+    } 
+}
 
 // ========== الزوم ==========
 function openZoom(imgSrc) { 
@@ -690,78 +691,27 @@ function importStoreFromFile(event) {
     reader.readAsText(file); 
 }
 
+// ========== تصدير نسخة العميل ==========
 function generateFullCode() {
     try {
-        const jsonData = JSON.stringify(storeData);
-        let html = document.documentElement.outerHTML;
+        let currentContent = document.documentElement.outerHTML;
+        const hideAdminCSS = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
+        let finalHtml = currentContent
+            .replace('</head>', hideAdminCSS + '</head>');
         
-        const adminStyles = `<style>.admin-only, .admin-section, .admin-btns-group, .edit-mini-btn, .delete-mini-btn, #admin-panel { display: none !important; }</style>`;
-        html = html.replace('<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"><\/script>', '');
-        
-        // حقن بيانات المتجر
-        const newStoreLine = `let storeData = ${jsonData};`;
-        html = html.replace(/let storeData = .*?;/, newStoreLine);
-        
-        // تعديل loadData عشان تحفظ السلة وتقرأها من localStorage
-        const newLoadData = `function loadData() { 
-            const storage = safeLocalStorage(); 
-            const savedCart = storage.getItem('cart_market'); 
-            if (savedCart) { 
-                try { 
-                    cart = JSON.parse(savedCart); 
-                    updateCartInfo(); 
-                } catch(e) { cart = []; } 
-            } 
-            // ملاحظة: بيانات المتجر محقونة بالفعل، مش محتاجة نقرأها من localStorage
-        }`;
-        html = html.replace(/function loadData\(\) \{[\s\S]*?\n\}/, newLoadData);
-        
-        // تعديل updateCartInfo عشان تحفظ السلة في localStorage
-        const newUpdateCartInfo = `function updateCartInfo() { 
-            let q = 0, t = 0; 
-            cart.forEach(i => { q += i.qty; t += i.qty * i.price; }); 
-            const cartInfo = document.getElementById('cart-info'); 
-            if (cartInfo) cartInfo.innerText = q + ' قطع - ' + t + ' جنيه'; 
-            const storage = safeLocalStorage(); 
-            storage.setItem('cart_market', JSON.stringify(cart)); 
-            if (currentExpandedProduct) { 
-                const { product, categoryId } = currentExpandedProduct; 
-                const existingItem = cart.find(i => i.name === product.name && i.categoryId === categoryId); 
-                const qtyInput = document.getElementById('expandedQty'); 
-                if (existingItem && qtyInput && parseInt(qtyInput.value) !== existingItem.qty) { 
-                    qtyInput.value = existingItem.qty; 
-                } 
-                const actionBtn = document.getElementById('expandedActionBtn'); 
-                if (actionBtn) { 
-                    const exists = cart.some(i => i.name === product.name && i.categoryId === categoryId); 
-                    if (exists) { 
-                        actionBtn.innerText = '❌ إلغاء من العربة'; 
-                        actionBtn.classList.add('cancel'); 
-                    } else { 
-                        actionBtn.innerText = '➕ إضافة للعربة'; 
-                        actionBtn.classList.remove('cancel'); 
-                    } 
-                } 
-            } 
-        }`;
-        html = html.replace(/function updateCartInfo\(\) \{[\s\S]*?\n\}/, newUpdateCartInfo);
-        
-        html = html.replace('</head>', adminStyles + '</head>');
-        
-        const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: 'text/html' });
+        const blob = new Blob(["<!DOCTYPE html>\n" + finalHtml], { type: 'text/html' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'DH_Market_Client.html';
         a.click();
-        
-        alert("✅ تم توليد نسخة العميل بنجاح!");
-    } catch(e) {
-        alert("خطأ: " + e.message);
+        alert("✅ تم استخراج نسخة العميل بنجاح!");
+    } catch (e) { 
+        alert("❌ خطأ: " + e.message); 
     }
 }
 
 // ========== بدء التشغيل ==========
 window.onload = initApp;
 </script>
-
-</table></div></div></body></html>
+</body>
+</html>
