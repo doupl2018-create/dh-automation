@@ -127,11 +127,11 @@
     <div class="tabs" id="tabs-container"><button class="tab-btn active" onclick="switchCategory('cat_1775057729050')">كارتات الكترونية صناعية</button><button class="tab-btn" onclick="switchCategory('cat_1775057744267')">ماكينات حقن بلاستيك</button><button class="tab-btn" onclick="switchCategory('cat_1775057798752')">قطع غيار جديدة</button><button class="tab-btn" onclick="switchCategory('cat_1775057806994')">قطع غيار مستعملة</button><button class="tab-btn" onclick="switchCategory('cat_1775059668559')">بلح</button></div>
     
     <div class="market-layout">
-        <div class="expanded-product active" id="expandedProduct">
+        <div class="expanded-product" id="expandedProduct">
             <div class="expanded-product-inner">
-                <div class="expanded-product-img"><img id="expandedImg" src="image/1 (29).jpg" onclick="openZoomFromExpanded()"></div>
+                <div class="expanded-product-img"><img id="expandedImg" src="" onclick="openZoomFromExpanded()"></div>
                 <div class="expanded-product-info">
-                    <h2 id="expandedTitle">كارت بروبوشنال 10 امبير 2 مخرج</h2><div class="price" id="expandedPrice">1950 جنيه</div><div class="desc" id="expandedDesc">كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم <br>-جهد 24 فولت - اشارة من 0 الى 10 فولت خرج على حسب الصمام - اقصى خرج 24 فولت </div>
+                    <h2 id="expandedTitle"></h2><div class="price" id="expandedPrice"></div><div class="desc" id="expandedDesc"></div>
                     <div class="qty-control"><button onclick="changeExpandedQty(-1)">-</button><input type="number" id="expandedQty" value="1" min="1"><button onclick="changeExpandedQty(1)">+</button></div>
                     <button class="action-btn" id="expandedActionBtn" onclick="toggleExpandedCart()">➕ إضافة للعربة</button>
                 </div>
@@ -141,7 +141,7 @@
         <div id="originalContainer" style="display: block;">
             <div id="products-mini-container" class="products-mini-grid">
             <div class="product-mini-card" onclick="expandProduct(0)">
-                <img src="01.jpg" onerror="this.src='01.jpg'">
+                <img src="image/pro001.jpg" onerror="this.src='01.jpg'">
                 <div class="mini-info">
                     <div class="admin-btns-group admin-only" onclick="event.stopPropagation()">
                         <button class="edit-mini-btn" onclick="editProductFromMini(0)">✏️</button>
@@ -153,7 +153,7 @@
             </div>
         
             <div class="product-mini-card" onclick="expandProduct(1)">
-                <img src="01.jpg" onerror="this.src='01.jpg'">
+                <img src="image/rul001.jpg" onerror="this.src='01.jpg'">
                 <div class="mini-info">
                     <div class="admin-btns-group admin-only" onclick="event.stopPropagation()">
                         <button class="edit-mini-btn" onclick="editProductFromMini(1)">✏️</button>
@@ -184,7 +184,7 @@
 <script>
 // ========== المتغيرات العامة ==========
 let cart = [];
-let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"1950","img":"image/1 (29).jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم \n-جهد 24 فولت - اشارة من 0 الى 10 فولت خرج على حسب الصمام - اقصى خرج 24 فولت "},{"name":"كارت مساطر حثية","price":"3000","img":"","desc":"مساطر سندرتو"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
+let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"1950","img":"image/pro001.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم \n-جهد 24 فولت - اشارة من 0 الى 10 فولت خرج على حسب الصمام - اقصى خرج 24 فولت"},{"name":"كارت مساطر حثية","price":"3000","img":"image/rul001.jpg","desc":"كارت مساطر سندرتو لتحويل اشارة 4 مساطر حثية الى اشارة انالوج عادي من 0 الى 2.5 العكس \nجهد التغذية 24 فولت على 24 و GD\nالمساطر عبارة عن 2 ملف واحد مقاوته كبيرة والثاني صغيرة - المقاومة الصغيرة على TA TB  والوقاومة الكبيرة على SA SB\nوكل مسطرة عليها 2 خرج واحد ايجابي والتاني سلبي على اتجاه المسطرة والجراوند آخر مسمار في الروزتة على الشمال"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
 let currentExpandedProduct = null;
 let currentCategoryId = '';
 
