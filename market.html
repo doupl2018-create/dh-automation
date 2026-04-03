@@ -163,6 +163,18 @@
                     <div class="mini-price">3000 ج</div>
                 </div>
             </div>
+        
+            <div class="product-mini-card" onclick="expandProduct(2)">
+                <img src="01.jpg" onerror="this.src='01.jpg'">
+                <div class="mini-info">
+                    <div class="admin-btns-group admin-only" onclick="event.stopPropagation()">
+                        <button class="edit-mini-btn" onclick="editProductFromMini(2)">✏️</button>
+                        <button class="delete-mini-btn" onclick="deleteProductFromMini(2)">🗑️</button>
+                    </div>
+                    <h4>كارت خرج AC 16 قناة</h4>
+                    <div class="mini-price">2800 ج</div>
+                </div>
+            </div>
         </div>
         </div>
         
@@ -172,7 +184,7 @@
     <section class="admin-section admin-only" id="admin-panel">
         <h3 style="text-align:center; color:var(--main-blue);">📋 لوحة تحكم المهندس</h3>
         <div class="admin-form"><h4>📦 النسخ الاحتياطي</h4><div style="display:flex; gap:10px; flex-wrap:wrap;"><button class="btn-admin" style="flex:1; background:#6c757d;" onclick="exportStoreData()">📤 تصدير البيانات</button><button class="btn-admin" style="flex:1; background:#28a745;" onclick="document.getElementById('importFile').click()">📥 استيراد بيانات</button><input type="file" id="importFile" style="display:none" accept=".json" onchange="importStoreFromFile(event)"></div></div>
-        <div class="admin-form" id="product-editor"><h4 id="form-title">➕ إضافة منتج جديد</h4><input type="text" id="new-prod-name" placeholder="اسم المنتج"><input type="number" id="new-prod-price" placeholder="السعر"><input type="text" id="new-prod-img" placeholder="رابط الصورة"><textarea id="new-prod-desc" rows="2" placeholder="وصف المنتج"></textarea><select id="new-prod-category"><option value="cat_1775057729050">كارتات الكترونية صناعية</option><option value="cat_1775057744267">ماكينات حقن بلاستيك</option><option value="cat_1775057798752">قطع غيار جديدة</option><option value="cat_1775057806994">قطع غيار مستعملة</option><option value="cat_1775059668559">بلح</option></select><button class="btn-admin" id="submit-btn" onclick="addNewProduct()">إضافة للمتجر</button><button class="btn-admin" id="cancel-edit" style="display: none; background: rgb(108, 117, 125);" onclick="resetForm()">إلغاء التعديل</button></div>
+        <div class="admin-form" id="product-editor"><h4 id="form-title">➕ إضافة منتج جديد</h4><input type="text" id="new-prod-name" placeholder="اسم المنتج"><input type="number" id="new-prod-price" placeholder="السعر"><input type="text" id="new-prod-img" placeholder="رابط الصورة"><textarea id="new-prod-desc" rows="2" placeholder="وصف المنتج"></textarea><select id="new-prod-category"><option value="cat_1775057729050">كارتات الكترونية صناعية</option><option value="cat_1775057744267">ماكينات حقن بلاستيك</option><option value="cat_1775057798752">قطع غيار جديدة</option><option value="cat_1775057806994">قطع غيار مستعملة</option><option value="cat_1775059668559">بلح</option></select><button class="btn-admin" id="submit-btn" onclick="addNewProduct()">إضافة للمتجر</button><button class="btn-admin" id="cancel-edit" style="display:none; background:#6c757d;" onclick="resetForm()">إلغاء التعديل</button></div>
         <button class="btn-admin" style="width:100%; background:#28a745; margin-top:15px;" onclick="generateFullCode()">🚀 تنزيل نسخة العميل</button>
     </section>
 </div>
@@ -184,7 +196,7 @@
 <script>
 // ========== المتغيرات العامة ==========
 let cart = [];
-let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"1950","img":"image/pro001.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم \n-جهد 24 فولت - اشارة من 0 الى 10 فولت خرج على حسب الصمام - اقصى خرج 24 فولت"},{"name":"كارت مساطر حثية","price":"3000","img":"image/rul001.jpg","desc":"كارت مساطر سندرتو لتحويل اشارة 4 مساطر حثية الى اشارة انالوج عادي من 0 الى 2.5 العكس \nجهد التغذية 24 فولت على 24 و GD\nالمساطر عبارة عن 2 ملف واحد مقاوته كبيرة والثاني صغيرة - المقاومة الصغيرة على TA TB  والوقاومة الكبيرة على SA SB\nوكل مسطرة عليها 2 خرج واحد ايجابي والتاني سلبي على اتجاه المسطرة والجراوند آخر مسمار في الروزتة على الشمال"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
+let storeData = {"categories":[{"id":"cat_1775057729050","name":"كارتات الكترونية صناعية","products":[{"name":"كارت بروبوشنال 10 امبير 2 مخرج","price":"1950","img":"image/pro001.jpg","desc":"كارت بروبوشنال 2 قناة 10 امبير على كل قنا لتشغيل صمامات السرعة والضغط لجميع الماكينات من 2 اوم الى 30 اوم \n-جهد 24 فولت - اشارة من 0 الى 10 فولت خرج على حسب الصمام - اقصى خرج 24 فولت"},{"name":"كارت مساطر حثية","price":"3000","img":"image/rul001.jpg","desc":"كارت مساطر سندرتو لتحويل اشارة 4 مساطر حثية الى اشارة انالوج عادي من 0 الى 2.5 العكس \nجهد التغذية 24 فولت على 24 و GD\nالمساطر عبارة عن 2 ملف واحد مقاوته كبيرة والثاني صغيرة - المقاومة الصغيرة على TA TB  والوقاومة الكبيرة على SA SB\nوكل مسطرة عليها 2 خرج واحد ايجابي والتاني سلبي على اتجاه المسطرة والجراوند آخر مسمار في الروزتة على الشمال"},{"name":"كارت خرج AC 16 قناة","price":"2800","img":"image/pow001.jpg","desc":"كارت خرج من 24 الى 220 فولت AC 16 مخرج - دخل 24 فولت +- - زي نظام سولد ستيت ريلاي يستخدم في تشغيل صمامات الماكينات او الكونتاكتور من بعد ال PLC"}]},{"id":"cat_1775057744267","name":"ماكينات حقن بلاستيك","products":[{"name":"صيبسب","price":"20","img":"","desc":"سيؤيس"}]},{"id":"cat_1775057798752","name":"قطع غيار جديدة","products":[]},{"id":"cat_1775057806994","name":"قطع غيار مستعملة","products":[]},{"id":"cat_1775059668559","name":"بلح","products":[]}]};
 let currentExpandedProduct = null;
 let currentCategoryId = '';
 
