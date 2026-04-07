@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المدير الشامل V13 - مساعد المهندس</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #004a99; --s: #28a745; --d: #d63031; --a: #f39c12; --g: #6c5ce7; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; background: #f0f2f5; padding: 20px; margin: 0; }
+        .admin-box { background: white; max-width: 1200px; margin: 0 auto; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-top: 10px solid var(--p); }
+        .mode-selector { display: flex; gap: 10px; margin-bottom: 25px; background: #eee; padding: 10px; border-radius: 10px; }
+        .mode-btn { flex: 1; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; transition: 0.3s; }
+        .mode-btn.active { background: var(--p); color: white; }
+        .form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; align-items: center; }
+        input, select, textarea { flex: 1; min-width: 200px; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Tajawal'; box-sizing: border-box; }
+        .product-card { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 15px; position: relative; border-right: 6px solid var(--a); }
+        .btn { border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; font-family: 'Tajawal'; }
+        .btn-add { background: var(--s); margin-bottom: 20px; }
+        .btn-main { background: var(--p); width: 100%; padding: 20px; font-size: 1.2rem; margin-top: 10px;}
+        .btn-small { background: var(--g); padding: 8px 15px; font-size: 0.8rem; }
+        .btn-browse { background: var(--a); padding: 8px 15px; font-size: 0.8rem; }
+        .mgmt-table { width: 100%; border-collapse: collapse; margin-top: 30px; background: white; }
+        .mgmt-table th, .mgmt-table td { padding: 12px; border: 1px solid #eee; text-align: center; }
+        .mgmt-table th { background: #444; color: white; }
+        .remove-field { position:absolute; left:10px; top:10px; color:red; border:none; background:#fee; cursor:pointer; padding:5px 10px; border-radius:5px; }
+        .desc-long { width: 100%; }
+        .cats-area { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .cat-tag { display: inline-block; background: var(--p); color: white; padding: 5px 12px; border-radius: 20px; margin: 3px; }
+        .cat-remove { background: red; border: none; color: white; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; margin-right: 8px; }
+        .img-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .img-row input { flex: 2; }
+        .img-row button { flex: 0 0 auto; }
+    </style>
+</head>
+<body>
+
+<div class="admin-box">
+    <h2 style="text-align:center; color:var(--p)">🛠️ لوحة تحكم مساعد المهندس الشاملة V13</h2>
+    
+    <div class="mode-selector">
+        <button id="btn-market" class="mode-btn active" onclick="switchMode('MARKET')">🛒 مدير سوق المكونات</button>
+        <button id="btn-solutions" class="mode-btn" onclick="switchMode('SOLUTIONS')">💡 مدير الحلول والمشاريع</button>
+    </div>
+
+    <div id="editor-zone">
+        <div class="form-row">
+            <input type="text" id="pageFileName" placeholder="اسم الملف (English)" style="flex:2">
+            <input type="text" id="localKey" placeholder="المفتاح الفريد (Local Key)" style="flex:2">
+            <button class="btn btn-small" onclick="generateRandomKey()">🔄 توليد مفتاح عشوائي</button>
+        </div>
+        
+        <div class="form-row">
+            <input type="text" id="pageTitle" placeholder="عنوان الصفحة">
+            <input type="text" id="whatsappNum" placeholder="رقم الواتساب">
+        </div>
+        
+        <div class="form-row">
+            <textarea id="pageDesc" rows="2" placeholder="وصف الصفحة" style="flex:2"></textarea>
+            <div style="flex:1">
+                <input type="text" id="heroImage" placeholder="صورة البنر (مثال: 01.jpg)" value="01.jpg">
+                <small>📁 توضع بجانب ملف HTML</small>
+            </div>
+        </div>
+
+        <div id="catsManager" class="cats-area">
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <input type="text" id="newCatName" placeholder="اسم القسم الجديد" style="flex:2">
+                <button class="btn btn-small" style="background:var(--s)" onclick="addCategory()">➕ إضافة قسم</button>
+            </div>
+            <div id="catsList" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div>
+            <small>⚠️ الأقسام خاصة بوضع السوق فقط</small>
+        </div>
+
+        <button class="btn btn-add" onclick="addField()">➕ إضافة صنف جديد</button>
+        <div id="itemsList"></div>
+
+        <div style="display:flex; gap:10px; margin: 20px 0;">
+            <button class="btn" style="background:#6c5ce7; flex:1" onclick="exportBackup()">📤 تصدير Backup</button>
+            <button class="btn" style="background:#00b894; flex:1" onclick="document.getElementById('fileIn').click()">📥 استيراد Backup</button>
+            <input type="file" id="fileIn" style="display:none" onchange="importBackup(this)">
+        </div>
+
+        <button class="btn btn-main" onclick="saveAndGenerate()">🚀 حفظ وتوليد الصفحة النهائية</button>
+    </div>
+
+    <hr>
+    <h3>📂 أرشيف الصفحات المحفوظة:</h3>
+    <table class="mgmt-table">
+        <thead><tr><th>المفتاح</th><th>الملف</th><th>العنوان</th><th>العدد</th><th>إجراء</th></tr></thead>
+        <tbody id="mgmtBody"></tbody>
+    </table>
+</div>
+
+<script>
+    let currentMode = 'MARKET';
+    let categories = [];
+    
+    window.onload = function() { updateTable(); renderCatsList(); };
+    
+    function switchMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(mode === 'MARKET' ? 'btn-market' : 'btn-solutions').classList.add('active');
+        document.getElementById('itemsList').innerHTML = '';
+        document.getElementById('catsManager').style.display = mode === 'MARKET' ? 'block' : 'none';
+        updateTable();
+    }
+    
+    function generateRandomKey() {
+        const random = Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+        document.getElementById('localKey').value = random;
+    }
+    
+    function addCategory() {
+        const name = document.getElementById('newCatName').value.trim();
+        if(!name) return alert("اكتب اسم القسم!");
+        if(categories.includes(name)) return alert("القسم موجود بالفعل!");
+        categories.push(name);
+        renderCatsList();
+        document.getElementById('newCatName').value = '';
+    }
+    
+    function removeCategory(idx) {
+        categories.splice(idx, 1);
+        renderCatsList();
+        document.querySelectorAll('.i-cat').forEach(select => {
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- بدون قسم --</option>' + categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            if(categories.includes(currentVal)) select.value = currentVal;
+            else select.value = '';
+        });
+    }
+    
+    function renderCatsList() {
+        const container = document.getElementById('catsList');
+        if(!container) return;
+        container.innerHTML = categories.map((cat, i) => `
+            <span class="cat-tag">
+                ${cat}
+                <button class="cat-remove" onclick="removeCategory(${i})">✕</button>
+            </span>
+        `).join('');
+        if(categories.length === 0) container.innerHTML = '<small style="color:#999">لا توجد أقسام، أضف قسم جديد</small>';
+    }
+    
+    function browseImages(buttonElement) {
+        const productCard = buttonElement.closest('.product-card');
+        const imgsInput = productCard.querySelector('.i-imgs');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.multiple = true;
+        fileInput.accept = 'image/*';
+        
+        fileInput.onchange = function(e) {
+            const files = Array.from(e.target.files);
+            if(files.length === 0) return;
+            const fileNames = files.map(file => {
+                let name = file.name.split('.')[0];
+                name = name.replace(/\s+/g, '_');
+                return name;
+            });
+            const currentValue = imgsInput.value.trim();
+            if(currentValue) {
+                imgsInput.value = currentValue + ', ' + fileNames.join(', ');
+            } else {
+                imgsInput.value = fileNames.join(', ');
+            }
+            alert(`✅ تم اختيار ${files.length} صورة\n📝 الأسماء: ${fileNames.join(', ')}\n\n⚠️ تذكر: بعد تحميل ملف HTML، انقل الصور يدويًا إلى مجلد:\n${document.getElementById('pageFileName').value || 'اسم_الملف'}_images/`);
+        };
+        fileInput.click();
+    }
+    
+    function addField(data = {title:'', price:'', desc:'', imgs:'', cat:''}) {
+        const div = document.createElement('div');
+        div.className = 'product-card';
+        const priceInput = currentMode === 'MARKET' ? `<input type="number" class="i-price" placeholder="السعر" style="flex:1" value="${data.price}">` : '';
+        const catSelect = currentMode === 'MARKET' ? `
+            <select class="i-cat" style="flex:1">
+                <option value="">-- بدون قسم --</option>
+                ${categories.map(c => `<option value="${c}" ${data.cat === c ? 'selected' : ''}>${c}</option>`).join('')}
+            </select>
+        ` : '';
+        div.innerHTML = `
+            <div class="form-row">
+                <input type="text" class="i-title" placeholder="الاسم" value="${data.title}" style="flex:2">
+                ${priceInput}
+                ${catSelect}
+            </div>
+            <textarea class="i-desc desc-long" rows="3" placeholder="الشرح (يمكنك كتابة نص طويل)...">${data.desc || ''}</textarea>
+            <div class="img-row">
+                <input type="text" class="i-imgs" placeholder="أسماء الصور (مثال: main, photo1)" value="${data.imgs || ''}">
+                <button type="button" class="btn btn-browse" onclick="browseImages(this)">🖼️ اختيار صور</button>
+            </div>
+            <button class="remove-field" onclick="this.parentElement.remove()">حذف X</button>
+        `;
+        document.getElementById('itemsList').appendChild(div);
+    }
+    
+    function saveAndGenerate() {
+        const fileName = document.getElementById('pageFileName').value.trim();
+        const localKey = document.getElementById('localKey').value.trim();
+        if(!fileName) return alert("اكتب اسم الملف أولاً!");
+        if(!localKey) return alert("اكتب مفتاح فريد (Local Key) أو اضغط على توليد عشوائي!");
+        if(!/^[a-zA-Z0-9_-]+$/.test(fileName)) return alert("اسم الملف يجب أن يحتوي على أحرف إنجليزية وأرقام فقط!");
+        
+        const data = {
+            mode: currentMode,
+            title: document.getElementById('pageTitle').value,
+            desc: document.getElementById('pageDesc').value,
+            whatsapp: document.getElementById('whatsappNum').value,
+            heroImage: document.getElementById('heroImage').value || '01.jpg',
+            fileName: fileName,
+            localKey: localKey,
+            categories: categories,
+            items: Array.from(document.querySelectorAll('.product-card')).map(e => ({
+                title: e.querySelector('.i-title').value,
+                price: e.querySelector('.i-price')?.value || '',
+                desc: e.querySelector('.i-desc').value,
+                imgs: e.querySelector('.i-imgs').value,
+                cat: e.querySelector('.i-cat')?.value || ''
+            }))
+        };
+        
+        const storageKey = `ENG_${currentMode}_${localKey}`;
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        updateTable();
+        generateHTML(fileName, data, currentMode);
+    }
+    
+    function updateTable() {
+        const tbody = document.getElementById('mgmtBody');
+        tbody.innerHTML = '';
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if(key.startsWith('ENG_')) {
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    const parts = key.split('_');
+                    const localKey = parts[2];
+                    tbody.innerHTML += `<tr>
+                        <td><small>${localKey}</small></td>
+                        <td>${data.fileName || '--'}</td>
+                        <td>${data.title || 'بدون عنوان'}</td>
+                        <td>${data.items?.length || 0}</td>
+                        <td>
+                            <button onclick="loadPage('${key}')">📂 تحميل</button>
+                            <button onclick="deletePage('${key}')" style="color:red">🗑️ حذف</button>
+                        </td>
+                    </tr>`;
+                } catch(e) {}
+            }
+        }
+    }
+    
+    function loadPage(key) {
+        const data = JSON.parse(localStorage.getItem(key));
+        const parts = key.split('_');
+        const mode = parts[1];
+        const localKey = parts[2];
+        
+        switchMode(mode);
+        categories = data.categories || [];
+        renderCatsList();
+        
+        document.getElementById('localKey').value = localKey;
+        document.getElementById('pageFileName').value = data.fileName || '';
+        document.getElementById('pageTitle').value = data.title || '';
+        document.getElementById('pageDesc').value = data.desc || '';
+        document.getElementById('whatsappNum').value = data.whatsapp || '';
+        document.getElementById('heroImage').value = data.heroImage || '01.jpg';
+        
+        document.getElementById('itemsList').innerHTML = '';
+        if(data.items) data.items.forEach(item => addField(item));
+        window.scrollTo(0,0);
+    }
+    
+    function deletePage(key) { if(confirm("حذف الصفحة نهائياً؟")) { localStorage.removeItem(key); updateTable(); } }
+    
+    function generateHTML(fileName, data, mode) {
+        const cartKey = `cart_${data.localKey}`;
+        
+        const fuzzySearchCode = `
+            function normalizeText(str) {
+                return str.toLowerCase().replace(/[اتن]/g, function(m) {
+                    const map = { 'ا': 'ا', 'ت': 'ت', 'ن': 'ن', 'ة': 'ه', 'ى': 'ي' };
+                    return map[m] || m;
+                }).replace(/[^\\u0621-\\u064A\\s]/g, '');
+            }
+            
+            function getSimilarityScore(text1, text2) {
+                const str1 = normalizeText(text1);
+                const str2 = normalizeText(text2);
+                if(str1 === str2) return 100;
+                if(str1.includes(str2) || str2.includes(str1)) return 80;
+                let matches = 0;
+                for(let i = 0; i < Math.min(str1.length, str2.length); i++) {
+                    if(str1[i] === str2[i]) matches++;
+                }
+                return (matches / Math.max(str1.length, str2.length)) * 100;
+            }
+            
+            function filterItems() {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                const searchResult = document.getElementById('searchResult');
+                const items = document.querySelectorAll('.product-item');
+                let visibleCount = 0;
+                const minScore = 40;
+                
+                items.forEach(item => {
+                    const title = item.getAttribute('data-title') || '';
+                    const desc = item.getAttribute('data-desc') || '';
+                    let score = 0;
+                    if(searchTerm === '') {
+                        score = 100;
+                    } else {
+                        score = Math.max(getSimilarityScore(title, searchTerm), getSimilarityScore(desc, searchTerm));
+                        for(let i = 0; i < searchTerm.length; i++) {
+                            for(let j = 1; j <= searchTerm.length - i; j++) {
+                                const subTerm = searchTerm.substr(i, j);
+                                if(subTerm.length >= 2) {
+                                    score = Math.max(score, getSimilarityScore(title, subTerm));
+                                    score = Math.max(score, getSimilarityScore(desc, subTerm));
+                                }
+                            }
+                        }
+                    }
+                    if(score >= minScore || searchTerm === '') {
+                        item.style.display = '';
+                        visibleCount++;
+                        if(searchTerm !== '' && title.toLowerCase().includes(searchTerm.toLowerCase())) {
+                            const titleElem = item.querySelector('.product-title');
+                            if(titleElem) {
+                                const regex = new RegExp(\`(\${searchTerm})\`, 'gi');
+                                titleElem.innerHTML = titleElem.innerText.replace(regex, '<mark>$1</mark>');
+                            }
+                        }
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                if(searchResult) {
+                    searchResult.innerHTML = visibleCount === 0 ? '😞 لا توجد نتائج مطابقة' : \`🔍 \${visibleCount} نتيجة\`;
+                }
+            }
+            
+            function initSearch() {
+                const searchInput = document.getElementById('searchInput');
+                if(searchInput) {
+                    searchInput.addEventListener('input', filterItems);
+                    filterItems();
+                }
+            }
+            document.addEventListener('DOMContentLoaded', initSearch);
+        `;
+        
+        const cartCode = `
+            let cart = {};
+            const CART_STORAGE_KEY = '${cartKey}';
+            
+            function loadCartFromStorage() {
+                const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+                if(savedCart) {
+                    cart = JSON.parse(savedCart);
+                    for(let key in cart) {
+                        const btn = document.getElementById('btn-'+key);
+                        if(btn) {
+                            btn.innerText = "إلغاء الصنف";
+                            btn.style.background = "#d63031";
+                        }
+                        const qtyInput = document.getElementById('qty-'+key);
+                        if(qtyInput && cart[key].qty) {
+                            qtyInput.value = cart[key].qty;
+                        }
+                    }
+                    updateUI();
+                }
+            }
+            
+            function saveCartToStorage() {
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+            }
+            
+            function updateQty(i, d) {
+                let input = document.getElementById('qty-'+i);
+                if(input) {
+                    let val = parseInt(input.value) + d;
+                    if(val >= 1) { 
+                        input.value = val; 
+                        if(cart[i]) { 
+                            cart[i].qty = val; 
+                            saveCartToStorage();
+                            updateUI(); 
+                        } 
+                    }
+                }
+            }
+            
+            function toggleCart(i, title, price) {
+                let btn = document.getElementById('btn-'+i);
+                let qtyInput = document.getElementById('qty-'+i);
+                if(cart[i]) {
+                    delete cart[i];
+                    btn.innerText = "إضافة للسلة";
+                    btn.style.background = "#004a99";
+                } else {
+                    cart[i] = { title: title, price: price, qty: parseInt(qtyInput.value) };
+                    btn.innerText = "إلغاء الصنف";
+                    btn.style.background = "#d63031";
+                }
+                saveCartToStorage();
+                updateUI();
+            }
+            
+            function updateUI() {
+                let totalItems = Object.keys(cart).length;
+                let totalPrice = 0;
+                for(let key in cart) totalPrice += cart[key].price * cart[key].qty;
+                document.getElementById('cq').innerText = totalItems;
+                document.getElementById('ct').innerText = totalPrice.toLocaleString();
+            }
+            
+            function clearCart() {
+                if(confirm("⚠️ تفريغ السلة؟")) {
+                    cart = {};
+                    saveCartToStorage();
+                    document.querySelectorAll('.btn-add-cart').forEach(btn => {
+                        btn.innerText = "إضافة للسلة";
+                        btn.style.background = "#004a99";
+                    });
+                    updateUI();
+                }
+            }
+            
+            function sendWA() {
+                if(Object.keys(cart).length === 0) return alert("🛒 السلة فارغة!");
+                let message = "📦 طلب شراء جديد:\\n\\n";
+                for(let key in cart) message += "• " + cart[key].title + " (" + cart[key].qty + ") = " + (cart[key].price * cart[key].qty).toLocaleString() + " ج.م\\n";
+                let total = 0; for(let key in cart) total += cart[key].price * cart[key].qty;
+                message += "\\n💰 الإجمالي: " + total.toLocaleString() + " ج.م";
+                window.open("https://wa.me/${data.whatsapp}?text=" + encodeURIComponent(message));
+            }
+            
+            document.addEventListener('DOMContentLoaded', loadCartFromStorage);
+        `;
+        
+        let groupedItems = {};
+        if(mode === 'MARKET' && data.categories && data.categories.length > 0) {
+            data.categories.forEach(cat => { groupedItems[cat] = []; });
+            groupedItems[''] = [];
+            data.items.forEach(item => {
+                const cat = item.cat || '';
+                if(groupedItems[cat]) groupedItems[cat].push(item);
+                else groupedItems[''].push(item);
+            });
+        } else {
+            groupedItems['all'] = data.items;
+        }
+        
+        let itemsHTML = '';
+        
+        if(mode === 'MARKET' && data.categories && data.categories.length > 0) {
+            for(let cat of data.categories) {
+                if(groupedItems[cat] && groupedItems[cat].length > 0) {
+                    itemsHTML += `<div class="category-section"><h2 class="cat-title">📁 ${cat}</h2><div class="grid">`;
+                    itemsHTML += groupedItems[cat].map((item, idx) => renderProductCard(item, idx, fileName, mode, data)).join('');
+                    itemsHTML += `</div></div>`;
+                }
+            }
+            if(groupedItems[''] && groupedItems[''].length > 0) {
+                itemsHTML += `<div class="category-section"><h2 class="cat-title">📦 أخرى</h2><div class="grid">`;
+                itemsHTML += groupedItems[''].map((item, idx) => renderProductCard(item, idx, fileName, mode, data)).join('');
+                itemsHTML += `</div></div>`;
+            }
+        } else {
+            itemsHTML = `<div class="grid">${data.items.map((item, idx) => renderProductCard(item, idx, fileName, mode, data)).join('')}</div>`;
+        }
+        
+        const finalPage = `<!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${data.title}</title>
+            <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+            <style>
+                :root { --p: #004a99; --wa: #25D366; --d: #d63031; }
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: 'Tajawal', sans-serif; background: #f4f7f6; padding-bottom: 120px; }
+                .hero { position: relative; text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #003366, #001a33); color: #fff; overflow: hidden; }
+                .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; }
+                .hero-content { position: relative; z-index: 2; }
+                .hero h1 { font-size: 2rem; margin-bottom: 10px; }
+                header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+                .search-section { background: white; padding: 15px 5%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+                .search-box { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; position: relative; }
+                .search-box input { flex: 1; padding: 12px 20px; border: 2px solid #ddd; border-radius: 50px; font-size: 1rem; font-family: 'Tajawal'; transition: 0.3s; }
+                .search-box input:focus { border-color: var(--p); outline: none; }
+                .search-result { text-align: center; margin-top: 10px; color: #666; font-size: 0.9rem; }
+                mark { background: #ffeb3b; padding: 0 3px; border-radius: 3px; color: #333; }
+                .category-section { margin-bottom: 40px; }
+                .cat-title { font-size: 1.6rem; padding: 0 5%; margin-bottom: 20px; color: var(--p); border-right: 5px solid var(--p); padding-right: 15px; }
+                .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 0 5%; max-width: 1400px; margin: 0 auto; }
+                .card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.2s; border-top: 5px solid var(--p); }
+                .card:hover { transform: translateY(-5px); }
+                .gallery { display: flex; overflow-x: auto; height: 220px; scrollbar-width: thin; background: #f8f9fa; gap: 2px; }
+                .gallery img { height: 100%; width: auto; min-width: 100%; object-fit: cover; cursor: pointer; }
+                .no-img { display: flex; align-items: center; justify-content: center; width: 100%; color: #999; }
+                .info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
+                .price { color: var(--p); font-weight: bold; font-size: 1.4rem; }
+                .desc-text { color: #555; font-size: 0.9rem; line-height: 1.5; }
+                .desc-text.short { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                .more { color: var(--p); cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+                .floating-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; display: ${mode === 'MARKET' ? 'flex' : 'none'}; gap: 10px; z-index: 1000; }
+                .cart-btn { flex: 1; background: var(--p); color: #fff; padding: 15px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.15); border: none; font-family: 'Tajawal'; }
+                .clear-btn { background: var(--d); color: #fff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.4rem; }
+                #zM { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; cursor: pointer; }
+                @media (max-width: 768px) { .grid { padding: 20px; } .hero h1 { font-size: 1.4rem; } }
+            </style>
+        </head>
+        <body>
+            <header>
+                <div onclick="history.back()" style="cursor:pointer;">🏠 الرئيسية</div>
+                <div style="font-weight:bold;">مساعد المهندس</div>
+                <a href="https://wa.me/${data.whatsapp}" style="color:var(--wa);text-decoration:none;font-weight:bold" target="_blank">واتساب</a>
+            </header>
+            <section class="hero">
+                <img src="${data.heroImage || '01.jpg'}" class="hero-bg" onerror="this.style.display='none'">
+                <div class="hero-content">
+                    <h1>${data.title}</h1>
+                    <p>${data.desc}</p>
+                </div>
+            </section>
+            <div class="search-section">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج... (مثل: كهرباء, سباكة, دهانات)">
+                </div>
+                <div id="searchResult" class="search-result"></div>
+            </div>
+            <main>
+                ${itemsHTML}
+            </main>
+            <div class="floating-bar">
+                <div class="cart-btn" onclick="sendWA()">
+                    <span><b id="cq">0</b> أصناف | <b id="ct">0</b> ج.م</span>
+                    <b>طلب 💬</b>
+                </div>
+                <button class="clear-btn" onclick="clearCart()">🗑️</button>
+            </div>
+            <div id="zM" onclick="this.style.display='none'">
+                <img id="zi" style="max-width:90%; max-height:90%; border-radius:10px;">
+            </div>
+            <script>
+                ${fuzzySearchCode}
+                ${cartCode}
+                
+                function toggleTxt(idx) {
+    const p = document.getElementById('txt-'+idx);
+    if(p) {
+        const isShort = p.classList.contains('short');
+        if(isShort) {
+            // التبديل إلى النص الكامل
+            const fullText = p.getAttribute('data-full');
+            if(fullText) p.innerText = fullText;
+            p.classList.remove('short');
+            p.nextElementSibling.innerText = "أقل";
+        } else {
+            // التبديل إلى النص المختصر
+            const shortText = p.getAttribute('data-short');
+            if(shortText) p.innerText = shortText;
+            p.classList.add('short');
+            p.nextElementSibling.innerText = "المزيد...";
+        }
+    }
+}
+                function openZoom(src) { document.getElementById('zi').src = src; document.getElementById('zM').style.display = 'flex'; }
+            <\/script>
+        </body>
+        </html>`;
+        
+        function renderProductCard(item, idx, fName, m, d) {
+    const imgsHtml = item.imgs ? `<div class="gallery">${item.imgs.split(',').map(img => `<img src="${fName}_images/${img.trim()}.jpg" alt="${item.title}" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'">`).join('')}</div>` : '<div class="gallery"><div class="no-img">🚫 لا توجد صور</div></div>';
+    
+    const fullDesc = item.desc || '';
+    const shortDescText = fullDesc.length > 100 ? fullDesc.substring(0, 100) + '...' : fullDesc;
+    const isLong = fullDesc.length > 100;
+    
+    const descHtml = isLong ? 
+        `<p class="desc-text short" id="txt-${idx}" data-full="${fullDesc.replace(/"/g, '&quot;')}" data-short="${shortDescText.replace(/"/g, '&quot;')}">${shortDescText}</p>
+         <span class="more" onclick="toggleTxt(${idx})">المزيد...</span>` : 
+        `<p class="desc-text">${fullDesc}</p>`;
+    
+    const action = m === 'MARKET' ? 
+        `<div style="display:flex;gap:5px;margin-top:auto;"><div style="display:flex;align-items:center;background:#eee;border-radius:5px;"><button onclick="updateQty(${idx},-1)" style="border:none;padding:5px 10px;cursor:pointer">-</button><input id="qty-${idx}" value="1" readonly style="width:30px;border:none;text-align:center;background:none;"><button onclick="updateQty(${idx},1)" style="border:none;padding:5px 10px;cursor:pointer">+</button></div><button class="btn-add-cart" id="btn-${idx}" onclick="toggleCart(${idx},'${item.title.replace(/'/g, "\\'")}',${item.price})" style="background:var(--p);color:#fff;border:none;padding:10px;border-radius:5px;flex-grow:1;cursor:pointer;">إضافة للسلة</button></div>` :
+        `<a href="https://wa.me/${d.whatsapp}?text=استفسار عن: ${encodeURIComponent(item.title)}" style="background:var(--wa);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:auto;">اطلب الآن 💬</a>`;
+    
+    return `<div class="card product-item" data-title="${item.title.replace(/"/g, '&quot;')}" data-desc="${fullDesc.replace(/"/g, '&quot;')}">
+                ${imgsHtml}
+                <div class="info">
+                    <h3 class="product-title">${item.title}</h3>
+                    ${item.price ? `<div class="price">${Number(item.price).toLocaleString()} ج.م</div>` : ''}
+                    ${descHtml}
+                    ${action}
+                </div>
+            </div>`;
+}
+        
+        const blob = new Blob([finalPage], {type: 'text/html;charset=utf-8'});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName + ".html";
+        link.click();
+    }
+    
+    function exportBackup() {
+        let out = {};
+        for(let i = 0; i < localStorage.length; i++) {
+            let k = localStorage.key(i);
+            if(k.startsWith('ENG_')) out[k] = localStorage.getItem(k);
+        }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(out)], {type:'application/json'}));
+        a.download = 'Backup.json';
+        a.click();
+    }
+    
+    function importBackup(inp) {
+        const r = new FileReader();
+        r.onload = () => {
+            const d = JSON.parse(r.result);
+            for(let k in d) localStorage.setItem(k, d[k]);
+            updateTable();
+            alert("✅ تم الاستيراد بنجاح!");
+        };
+        r.readAsText(inp.files[0]);
+    }
+</script>
+</body>
+</html>
