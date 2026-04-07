@@ -2,275 +2,298 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>DH Automation | الرئيسية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد المهندس - DH Automation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --dark-bg: #1a1a1a; --main-blue: #0056b3; --accent-orange: #e67e22; --light-bg: #f8f9fa; --header-height: 60px; }
-        body { margin: 0; padding: 0; background: var(--light-bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: right; overflow-x: hidden; }
-        
-        header { background: var(--dark-bg); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; height: var(--header-height); position: fixed; top: 0; right: 0; left: 0; width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 1000; box-sizing: border-box; }
-        .logo { font-weight: bold; font-size: 1.2rem; color: var(--accent-orange); text-decoration: none; }
-        .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: white; background: none; border: none; }
-        nav { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
-        nav a { color: white; text-decoration: none; font-size: 0.85rem; transition: color 0.3s; white-space: nowrap; padding: 5px 0; }
-        nav a:hover { color: var(--accent-orange); }
-        .user-area { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; }
-        .user-area span:first-child { font-size: 18px; }
-        .user-area span:last-child { font-weight: bold; font-size: 0.85rem; }
-        
-        @media (max-width: 768px) {
-            .menu-toggle { display: block; order: 2; }
-            .user-area { order: 3; }
-            .logo { order: 1; }
-            nav { display: none; position: absolute; top: var(--header-height); right: 0; background: var(--dark-bg); flex-direction: column; width: 220px; padding: 20px; gap: 15px; border-radius: 0 0 10px 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 999; }
-            nav.active { display: flex; }
-            nav a { width: 100%; text-align: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-            nav a:last-child { border-bottom: none; }
+        :root {
+            --primary: #004a99;
+            --accent: #f39c12;
+            --whatsapp: #25D366;
+            --bg: #f4f7f6;
+            --white: #ffffff;
         }
-        
-        .page-wrapper { margin-top: var(--header-height); min-height: calc(100vh - var(--header-height) - 80px); }
-        .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('01.jpg'); background-size: cover; background-position: center; color: white; text-align: center; padding: 60px 20px; border-bottom: 6px solid var(--main-blue); }
-        .hero h1 { font-size: 2rem; margin-bottom: 10px; }
-        
-        .search-bar { display: flex; justify-content: center; gap: 10px; max-width: 700px; margin: 20px auto; padding: 0 20px; flex-wrap: wrap; }
-        .search-bar input { flex: 2; padding: 12px 20px; border: 2px solid var(--main-blue); border-radius: 30px; font-size: 1rem; font-family: inherit; text-align: right; }
-        .search-bar input:focus { outline: none; border-color: var(--accent-orange); }
-        .search-bar button { padding: 12px 25px; border: none; border-radius: 30px; background: var(--main-blue); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .search-bar button:hover { background: var(--accent-orange); }
-        .search-bar .clear-btn { background: #6c757d; }
-        .search-bar .clear-btn:hover { background: #5a6268; }
-        .results-count { text-align: center; color: var(--main-blue); font-weight: bold; margin: 5px 0; font-size: 0.9rem; }
-        .no-results { text-align: center; padding: 50px; color: #888; font-size: 1.2rem; }
-        
-        .search-results-container { display: none; margin: 20px auto; max-width: 900px; padding: 0 20px; }
-        .result-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
-        .result-card img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; }
-        .result-info { flex: 1; }
-        .result-info h3 { color: var(--main-blue); margin-bottom: 5px; }
-        .result-info p { color: #666; font-size: 0.85rem; }
-        .result-badge { background: var(--accent-orange); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; }
-        .result-link { background: var(--main-blue); color: white; border: none; padding: 8px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
-        .result-link:hover { background: var(--accent-orange); }
-        
-        .nav-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 30px 20px; max-width: 600px; margin: -30px auto 40px; }
-        @media (min-width: 768px) { .nav-grid { grid-template-columns: 1fr 1fr; max-width: 900px; } }
-        .nav-card { background: white; padding: 25px; border-radius: 15px; text-align: center; text-decoration: none; color: inherit; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s; display: block; }
-        .nav-card:hover { transform: translateY(-5px); }
-        .nav-card .icon { font-size: 45px; margin-bottom: 10px; display: block; }
-        .nav-card h2 { color: var(--main-blue); font-size: 1.2rem; margin: 10px 0; }
-        .nav-card p { color: #666; font-size: 0.85rem; }
-        
-        footer { background: var(--dark-bg); color: white; text-align: center; padding: 20px; margin-top: 40px; }
-        .footer-content p { margin: 5px 0; }
-        
-        @media (max-width: 600px) { .hero h1 { font-size: 1.5rem; } .result-card { flex-direction: column; text-align: center; } .result-link { width: 100%; text-align: center; } }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            background-color: var(--bg);
+        }
+
+        header {
+            background: var(--white);
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-weight: bold; font-size: 1.1rem; color: var(--primary); text-decoration: none; }
+        .hamburger-btn { font-size: 24px; cursor: pointer; border: none; background: none; }
+
+        .btn-whatsapp {
+            background: var(--whatsapp);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .hero {
+            position: relative;
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #003366 0%, #001a33 100%);
+            color: white;
+        }
+
+        .hero-content h1 { font-size: 2rem; margin: 0; }
+        .hero-content p { font-size: 1rem; margin-top: 10px; opacity: 0.9; }
+
+        /* شريط البحث السريع */
+        .quick-search {
+            max-width: 500px;
+            margin: -25px auto 0;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .quick-search input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            font-family: 'Tajawal';
+            font-size: 1rem;
+            text-align: center;
+        }
+        .quick-search input:focus { outline: none; box-shadow: 0 5px 25px rgba(0,0,0,0.2); }
+
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 40px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card-link { text-decoration: none; color: inherit; display: block; }
+        .card {
+            background: var(--white);
+            padding: 25px 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-right: 4px solid var(--primary);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .card:hover { transform: translateY(-5px); border-right-color: var(--accent); }
+        .card h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 10px; }
+        .card p { color: #636e72; line-height: 1.6; font-size: 0.9rem; }
+
+        /* معرض المنتجات الجديدة */
+        .new-products {
+            padding: 20px 5%;
+            background: white;
+            margin-top: 20px;
+        }
+        .new-products h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+        .products-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px;
+            scrollbar-width: thin;
+        }
+        .product-mini {
+            min-width: 200px;
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .product-mini img {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        footer {
+            background: #222;
+            color: #ddd;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+
+        .sidebar {
+            position: fixed;
+            right: -260px;
+            top: 0;
+            width: 260px;
+            height: 100%;
+            background: var(--primary);
+            z-index: 2000;
+            padding-top: 60px;
+            transition: 0.3s;
+        }
+        .sidebar.active { right: 0; }
+        .sidebar a { 
+            display: block; 
+            padding: 15px 25px; 
+            color: white; 
+            text-decoration: none; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 40px 15px; }
+            .hero-content h1 { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
-<header>
-    <a href="index.html" class="logo">DH.Automation</a>
-    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-    <nav id="mainNav">
-        <a href="index.html">🏠 الرئيسية</a>
-        <a href="market.html">🛒 السوق</a>
-        <a href="industrial-solutions.html">🏭 الحلول الصناعية</a>
-        <a href="projects.html">🏗️ المشاريع</a>
-        <a href="services.html">⚙️ الخدمات</a>
-        <a href="https://wa.me/201114394767">📞 اتصل بنا</a>
-    </nav>
-    <div class="user-area"><span>👷</span><span id="header-user-name">مهندس...</span></div>
-</header>
 
-<div class="page-wrapper">
+    <header>
+        <div class="hamburger-btn" onclick="toggleSidebar()">☰</div>
+        <a href="index.html" class="logo">DH Automation</a>
+        <a href="https://wa.me/201114394767?text=أهلاً مساعد المهندس" class="btn-whatsapp">واتساب</a>
+    </header>
+
+    <nav class="sidebar" id="sidebar">
+    <a href="index.html" onclick="toggleSidebar()">🏠 الرئيسية</a>
+    <a href="shop.html" onclick="toggleSidebar()">🛒 سوق مساعد المهندس</a>
+    <a href="solutions.html" onclick="toggleSidebar()">⚙️ الحلول الصناعية</a>
+    <a href="projects.html" onclick="toggleSidebar()">🏗️ أعمالنا</a>
+    <a href="services.html" onclick="toggleSidebar()">🛠️ خدماتنا</a>
+    <a href="contact.html" onclick="toggleSidebar()">📞 اتصل بنا</a>
+</nav>
+
     <section class="hero">
-        <h1>DH Automation</h1>
-        <p id="hero-welcome">أهلاً بك يا باشمهندس</p>
-        <div class="name-change-section" style="margin-top:15px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-            <input type="text" id="newName" placeholder="أدخل اسمك" style="padding:8px 15px; border-radius:25px; border:none; width:180px;">
-            <button onclick="changeName()" style="padding:8px 20px; border-radius:25px; border:none; background:var(--accent-orange); color:white; cursor:pointer;">تغيير الاسم</button>
+        <div class="hero-content">
+            <h1>🛠️ مساعد المهندس</h1>
+            <p>حلول الأتمتة والتحكم الصناعي - تسوق بأمان وسلة مشتريات ذكية</p>
         </div>
     </section>
-    
-    <div class="search-bar">
-        <input type="text" id="smartSearch" placeholder="🔍 بحث شامل في كل الأقسام..." onkeyup="smartSearch()">
-        <button onclick="smartSearch()">🔍 بحث</button>
-        <button class="clear-btn" onclick="clearSearch()">✖️ إلغاء</button>
+
+    <div class="quick-search">
+        <input type="text" id="quickSearch" placeholder="🔍 ابحث عن منتج أو قسم... (كهرباء، سباكة، أتمتة)">
     </div>
-    <div id="resultsCount" class="results-count" style="display: none;"></div>
-    
-    <div id="searchResultsContainer" class="search-results-container"></div>
-    
-    <div id="originalContainer">
-        <div class="nav-grid">
-            <a href="market.html" class="nav-card"><span class="icon">🛒</span><h2>سوق مساعد المهندس</h2><p>انفرترات وقطع غيار - أحدث المنتجات</p></a>
-            <a href="industrial-solutions.html" class="nav-card"><span class="icon">🏭</span><h2>الحلول الصناعية</h2><p>تطوير خطوط الإنتاج والأتمتة</p></a>
-            <a href="projects.html" class="nav-card"><span class="icon">🏗️</span><h2>أعمالنا المنفذة</h2><p>معرض المشاريع السابقة والإنجازات</p></a>
-            <a href="services.html" class="nav-card"><span class="icon">⚙️</span><h2>خدماتنا البرمجية</h2><p>PLC و Microcontrollers وبرمجة</p></a>
+
+    <main class="sections-grid">
+    <a href="shop.html" class="card-link">
+        <div class="card">
+            <h3>🛒 سوق مساعد المهندس</h3>
+            <p>تصفح واطلب أفضل القطع الصناعية والميكانيكية بجودة عالية وتوصيل سريع.</p>
+        </div>
+    </a>
+
+    <a href="solutions.html" class="card-link">
+        <div class="card">
+            <h3>⚙️ الحلول الصناعية</h3>
+            <p>نقدم ابتكارات تقنية وهندسية لتطوير خطوط الإنتاج ورفع كفاءة العمليات.</p>
+        </div>
+    </a>
+
+    <a href="projects.html" class="card-link">
+        <div class="card">
+            <h3>🏗️ أعمالنا</h3>
+            <p>استعرض سجل إنجازاتنا والمشاريع الكبرى التي قمنا بتنفيذها بنجاح.</p>
+        </div>
+    </a>
+
+    <a href="services.html" class="card-link">
+        <div class="card">
+            <h3>🛠️ خدماتنا</h3>
+            <p>دعم فني متخصص، برمجية PLC، وصيانة وقائية متكاملة لمشروعك.</p>
+        </div>
+    </a>
+
+    <a href="contact.html" class="card-link">
+        <div class="card">
+            <h3>📞 اتصل بنا</h3>
+            <p>تواصل مع فريق الدعم الفني، استفسارات، أو طلب عروض أسعار.</p>
+        </div>
+    </a>
+</main>
+
+    <div class="new-products">
+        <h2>🆕 أحدث المنتجات</h2>
+        <div class="products-scroll" id="latestProducts">
+            <!-- هنا هتظهر آخر 4 منتجات من الصفحات المختلفة -->
         </div>
     </div>
-</div>
 
-<footer><div class="footer-content"><p>© 2026 DH Automation - جميع الحقوق محفوظة</p><p style="font-size: 12px; margin-top: 8px;">المهندس مدبولي | تصميم وتطوير أنظمة الأتمتة</p></div></footer>
+    <footer>
+        جميع الحقوق محفوظة لدى <b>دي اتش اوتوميشن</b> &copy; 2026
+    </footer>
 
-<script>
-let allData = { market: [], projects: [], industrial: [], services: [] };
-
-function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-
-function toggleMenu() { const nav = document.getElementById('mainNav'); if (nav) nav.classList.toggle('active'); }
-document.addEventListener('click', function(event) { const nav = document.getElementById('mainNav'); const toggle = document.querySelector('.menu-toggle'); if (nav && toggle && !nav.contains(event.target) && !toggle.contains(event.target)) nav.classList.remove('active'); });
-
-async function loadAllData() {
-    try {
-        const response = await fetch('dh_automation_data.json');
-        if (response.ok) {
-            const data = await response.json();
-            
-            // منتجات السوق
-            if (data.store_config && data.store_config.categories) {
-                allData.market = [];
-                data.store_config.categories.forEach(cat => {
-                    cat.products.forEach(product => {
-                        allData.market.push({
-                            name: product.name, desc: product.desc || '', price: product.price,
-                            img: product.img, category: cat.name, type: 'market',
-                            typeName: '🛒 منتج', link: 'market.html'
-                        });
-                    });
-                });
-            }
-            
-            // المشاريع
-            if (data.projects_db && data.projects_db.length) {
-                allData.projects = data.projects_db.map(p => ({
-                    name: p.title, desc: p.brief, details: p.details, img: p.img,
-                    type: 'projects', typeName: '🏗️ مشروع', link: 'projects.html'
-                }));
-            }
-            
-            // الحلول الصناعية
-            if (data.industrial_data && data.industrial_data.length) {
-                allData.industrial = data.industrial_data.map(p => ({
-                    name: p.title, desc: p.brief, details: p.details, img: p.img,
-                    type: 'industrial', typeName: '🏭 حل صناعي', link: 'industrial-solutions.html'
-                }));
-            }
-            
-            // الخدمات
-            if (data.services_db && data.services_db.length) {
-                allData.services = data.services_db.map(p => ({
-                    name: p.title, desc: p.brief, details: p.details, img: p.img,
-                    type: 'services', typeName: '⚙️ خدمة', link: 'services.html'
-                }));
-            }
-            
-            // اسم المهندس
-            if (data.engineerName) {
-                updateName(data.engineerName);
-            }
-        } else {
-            console.log('⚠️ ملف البيانات غير موجود');
-        }
-    } catch(e) {
-        console.log('⚠️ خطأ في تحميل البيانات');
-    }
-}
-
-function smartSearch() {
-    const searchTerm = document.getElementById('smartSearch').value.trim().toLowerCase();
-    const resultsContainer = document.getElementById('searchResultsContainer');
-    const originalContainer = document.getElementById('originalContainer');
-    const resultsCount = document.getElementById('resultsCount');
-    
-    if (searchTerm === '') {
-        if (resultsContainer) resultsContainer.style.display = 'none';
-        if (originalContainer) originalContainer.style.display = 'block';
-        if (resultsCount) resultsCount.style.display = 'none';
-        return;
-    }
-    
-    let allItems = [];
-    for (let key in allData) { allItems = allItems.concat(allData[key]); }
-    
-    if (allItems.length === 0) {
-        if (resultsContainer) {
-            resultsContainer.style.display = 'block';
-            resultsContainer.innerHTML = '<div class="no-results">📭 لا توجد بيانات للبحث فيها حالياً</div>';
-        }
-        if (originalContainer) originalContainer.style.display = 'none';
-        if (resultsCount) resultsCount.style.display = 'none';
-        return;
-    }
-    
-    const results = allItems.filter(item => {
-        const nameMatch = item.name && item.name.toLowerCase().includes(searchTerm);
-        const descMatch = item.desc && item.desc.toLowerCase().includes(searchTerm);
-        return nameMatch || descMatch;
-    });
-    
-    if (resultsContainer && originalContainer) {
-        originalContainer.style.display = 'none';
-        resultsContainer.style.display = 'block';
-        resultsContainer.innerHTML = '';
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         
-        if (results.length === 0) {
-            resultsContainer.innerHTML = '<div class="no-results">❌ لا توجد نتائج مطابقة لبحثك<br>🔍 جرب كلمات مختلفة</div>';
-            if (resultsCount) resultsCount.innerText = '0 نتيجة';
-        } else {
-            if (resultsCount) resultsCount.innerText = `${results.length} نتيجة`;
-            results.forEach(item => {
-                resultsContainer.insertAdjacentHTML('beforeend', `
-                    <div class="result-card">
-                        <img src="${item.img || '01.jpg'}" onerror="this.src='01.jpg'">
-                        <div class="result-info">
-                            <h3>${escapeHtml(item.name)}</h3>
-                            <p>${escapeHtml(item.desc ? item.desc.substring(0, 100) : '')}</p>
-                            <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                                <span class="result-badge">${item.typeName}</span>
-                                ${item.price ? `<span class="result-badge" style="background: #28a745;">💰 ${item.price} ج</span>` : ''}
-                            </div>
-                        </div>
-                        <a href="${item.link}" class="result-link">عرض التفاصيل →</a>
-                    </div>
-                `);
+        // البحث السريع
+        document.getElementById('quickSearch')?.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.card-link');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if(text.includes(term) || term === '') card.style.display = '';
+                else card.style.display = 'none';
             });
+        });
+
+        // عرض آخر المنتجات (لو عايز تستدعيها من localStorage)
+        function loadLatestProducts() {
+            const container = document.getElementById('latestProducts');
+            if(!container) return;
+            let allProducts = [];
+            for(let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if(key.startsWith('ENG_MARKET_')) {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if(data.items) {
+                        data.items.forEach(item => {
+                            allProducts.push({
+                                title: item.title,
+                                price: item.price,
+                                imgs: item.imgs,
+                                pageFile: data.fileName
+                            });
+                        });
+                    }
+                }
+            }
+            allProducts = allProducts.slice(-4).reverse();
+            if(allProducts.length === 0) {
+                container.innerHTML = '<p style="text-align:center">✨ قم بإضافة منتجات من المدير لتظهر هنا</p>';
+                return;
+            }
+            container.innerHTML = allProducts.map(p => `
+                <div class="product-mini">
+                    <img src="${p.pageFile || 'product'}_images/${p.imgs?.split(',')[0]?.trim() || 'main'}.jpg" 
+                         onerror="this.src='https://placehold.co/200x120?text=No+Image'">
+                    <h4>${p.title}</h4>
+                    ${p.price ? `<span style="color:var(--primary);font-weight:bold">${Number(p.price).toLocaleString()} ج.م</span>` : ''}
+                </div>
+            `).join('');
         }
-        if (resultsCount) resultsCount.style.display = 'block';
-    }
-}
-
-function clearSearch() {
-    document.getElementById('smartSearch').value = '';
-    const resultsContainer = document.getElementById('searchResultsContainer');
-    const originalContainer = document.getElementById('originalContainer');
-    const resultsCount = document.getElementById('resultsCount');
-    if (resultsContainer) resultsContainer.style.display = 'none';
-    if (originalContainer) originalContainer.style.display = 'block';
-    if (resultsCount) resultsCount.style.display = 'none';
-}
-
-function updateName(name) {
-    if (name && name !== 'null') {
-        const userNameSpan = document.getElementById('header-user-name');
-        const welcomeP = document.getElementById('hero-welcome');
-        if (userNameSpan) userNameSpan.innerText = "مهندس " + name;
-        if (welcomeP) welcomeP.innerText = "أهلاً مهندس " + name;
-    }
-}
-
-function changeName() {
-    const newNameInput = document.getElementById('newName');
-    const newName = newNameInput ? newNameInput.value.trim() : '';
-    if (newName) {
-        updateName(newName);
-        if (newNameInput) newNameInput.value = "";
-    } else { alert("الرجاء إدخال اسم صحيح"); }
-}
-
-window.onload = function() {
-    loadAllData();
-};
-</script>
+        loadLatestProducts();
+    </script>
 </body>
 </html>

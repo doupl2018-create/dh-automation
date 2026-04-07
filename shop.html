@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>سوق مساعد المهندس</title>
+            <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+            <style>
+                :root { --p: #004a99; --wa: #25D366; --d: #d63031; }
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: 'Tajawal', sans-serif; background: #f4f7f6; padding-bottom: 120px; }
+                .hero { position: relative; text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #003366, #001a33); color: #fff; overflow: hidden; }
+                .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; }
+                .hero-content { position: relative; z-index: 2; }
+                .hero h1 { font-size: 2rem; margin-bottom: 10px; }
+                header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+                .search-section { background: white; padding: 15px 5%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+                .search-box { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; position: relative; }
+                .search-box input { flex: 1; padding: 12px 20px; border: 2px solid #ddd; border-radius: 50px; font-size: 1rem; font-family: 'Tajawal'; transition: 0.3s; }
+                .search-box input:focus { border-color: var(--p); outline: none; }
+                .search-result { text-align: center; margin-top: 10px; color: #666; font-size: 0.9rem; }
+                mark { background: #ffeb3b; padding: 0 3px; border-radius: 3px; color: #333; }
+                .category-section { margin-bottom: 40px; }
+                .cat-title { font-size: 1.6rem; padding: 0 5%; margin-bottom: 20px; color: var(--p); border-right: 5px solid var(--p); padding-right: 15px; }
+                .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 0 5%; max-width: 1400px; margin: 0 auto; }
+                .card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.2s; border-top: 5px solid var(--p); }
+                .card:hover { transform: translateY(-5px); }
+                .gallery { display: flex; overflow-x: auto; height: 220px; scrollbar-width: thin; background: #f8f9fa; gap: 2px; }
+                .gallery img { height: 100%; width: auto; min-width: 100%; object-fit: cover; cursor: pointer; }
+                .no-img { display: flex; align-items: center; justify-content: center; width: 100%; color: #999; }
+                .info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
+                .price { color: var(--p); font-weight: bold; font-size: 1.4rem; }
+                .desc-text { color: #555; font-size: 0.9rem; line-height: 1.5; }
+                .desc-text.short { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                .more { color: var(--p); cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+                .floating-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; display: flex; gap: 10px; z-index: 1000; }
+                .cart-btn { flex: 1; background: var(--p); color: #fff; padding: 15px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.15); border: none; font-family: 'Tajawal'; }
+                .clear-btn { background: var(--d); color: #fff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.4rem; }
+                #zM { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; cursor: pointer; }
+                @media (max-width: 768px) { .grid { padding: 20px; } .hero h1 { font-size: 1.4rem; } }
+            </style>
+        </head>
+        <body>
+            <header>
+                <div onclick="history.back()" style="cursor:pointer;">🏠 الرئيسية</div>
+                <div style="font-weight:bold;">مساعد المهندس</div>
+                <a href="https://wa.me/201114394767" style="color:var(--wa);text-decoration:none;font-weight:bold" target="_blank">واتساب</a>
+            </header>
+            <section class="hero">
+                <img src="02.jpg" class="hero-bg" onerror="this.style.display='none'">
+                <div class="hero-content">
+                    <h1>سوق مساعد المهندس</h1>
+                    <p>تصفح واطلب أفضل القطع الصناعية والميكانيكية بجودة عالية وتوصيل سريع</p>
+                </div>
+            </section>
+            <div class="search-section">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج... (مثل: كهرباء, سباكة, دهانات)">
+                </div>
+                <div id="searchResult" class="search-result"></div>
+            </div>
+            <main>
+                <div class="category-section"><h2 class="cat-title">📁 كراتات الكترونية صناعية</h2><div class="grid"><div class="card product-item" data-title="كارت بروبوشنال 10 امبير 2 خرج" data-desc="كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 10 امبير خدمة شاقة مزود بمروحة تبريد يستخدم في تشغل صمامات السرعة والضغط لماكينات الحقن والمعدات الصناعية والديزل (حفار-لودر-جريدر-ونش)
+التوصيل:-
+الروزتة من اليمين :-
+1- الطرف الأول من مخرج B
+2- الطرف الثاني من مخرج B
+3- الطرف الأول من مخرج A
+4- الطرف الثاني من مخرج A
+5-6-  موجب التغذية +24 
+7-8- سالب التغذية GND
+9- لا يوجد توصيل عليه 
+10 - جراوند الاشارة موصول مع جراند التعذية 
+11- اشارة B
+12- اشارة A">
+                <div class="gallery"><img src="shop_images/IMG-20250911-WA0004.jpg" alt="كارت بروبوشنال 10 امبير 2 خرج" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="shop_images/IMG_20250408_205041.jpg" alt="كارت بروبوشنال 10 امبير 2 خرج" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                <div class="info">
+                    <h3 class="product-title">كارت بروبوشنال 10 امبير 2 خرج</h3>
+                    <div class="price">1,950 ج.م</div>
+                    <p class="desc-text short" id="txt-0" data-full="كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 10 امبير خدمة شاقة مزود بمروحة تبريد يستخدم في تشغل صمامات السرعة والضغط لماكينات الحقن والمعدات الصناعية والديزل (حفار-لودر-جريدر-ونش)
+التوصيل:-
+الروزتة من اليمين :-
+1- الطرف الأول من مخرج B
+2- الطرف الثاني من مخرج B
+3- الطرف الأول من مخرج A
+4- الطرف الثاني من مخرج A
+5-6-  موجب التغذية +24 
+7-8- سالب التغذية GND
+9- لا يوجد توصيل عليه 
+10 - جراوند الاشارة موصول مع جراند التعذية 
+11- اشارة B
+12- اشارة A" data-short="كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 10 امبير خدمة شاقة مزود بمروحة تبريد يستخدم في تشغل صمام...">كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 10 امبير خدمة شاقة مزود بمروحة تبريد يستخدم في تشغل صمام...</p>
+         <span class="more" onclick="toggleTxt(0)">المزيد...</span>
+                    <div style="display:flex;gap:5px;margin-top:auto;"><div style="display:flex;align-items:center;background:#eee;border-radius:5px;"><button onclick="updateQty(0,-1)" style="border:none;padding:5px 10px;cursor:pointer">-</button><input id="qty-0" value="1" readonly style="width:30px;border:none;text-align:center;background:none;"><button onclick="updateQty(0,1)" style="border:none;padding:5px 10px;cursor:pointer">+</button></div><button class="btn-add-cart" id="btn-0" onclick="toggleCart(0,'كارت بروبوشنال 10 امبير 2 خرج',1950)" style="background:var(--p);color:#fff;border:none;padding:10px;border-radius:5px;flex-grow:1;cursor:pointer;">إضافة للسلة</button></div>
+                </div>
+            </div><div class="card product-item" data-title="كارت بروبوشنال 2-3 امبير " data-desc="كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 2-3 امبير خدمة شاقة يستخدم في تشغل صمامات السرعة والضغط لماكينات الحقن والمعدات الصناعية والديزل (حفار-لودر-جريدر-ونش)">
+                <div class="gallery"><img src="shop_images/IMG_20260331_052813.jpg" alt="كارت بروبوشنال 2-3 امبير " onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="shop_images/IMG_20260331_052821-2.jpg" alt="كارت بروبوشنال 2-3 امبير " onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="shop_images/IMG_20260331_052827.jpg" alt="كارت بروبوشنال 2-3 امبير " onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                <div class="info">
+                    <h3 class="product-title">كارت بروبوشنال 2-3 امبير </h3>
+                    <div class="price">1,500 ج.م</div>
+                    <p class="desc-text short" id="txt-1" data-full="كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 2-3 امبير خدمة شاقة يستخدم في تشغل صمامات السرعة والضغط لماكينات الحقن والمعدات الصناعية والديزل (حفار-لودر-جريدر-ونش)" data-short="كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 2-3 امبير خدمة شاقة يستخدم في تشغل صمامات السرعة والضغط ...">كارت بروبوشنال 2 خرج سرعة وضغط , على كل خرج 2-3 امبير خدمة شاقة يستخدم في تشغل صمامات السرعة والضغط ...</p>
+         <span class="more" onclick="toggleTxt(1)">المزيد...</span>
+                    <div style="display:flex;gap:5px;margin-top:auto;"><div style="display:flex;align-items:center;background:#eee;border-radius:5px;"><button onclick="updateQty(1,-1)" style="border:none;padding:5px 10px;cursor:pointer">-</button><input id="qty-1" value="1" readonly style="width:30px;border:none;text-align:center;background:none;"><button onclick="updateQty(1,1)" style="border:none;padding:5px 10px;cursor:pointer">+</button></div><button class="btn-add-cart" id="btn-1" onclick="toggleCart(1,'كارت بروبوشنال 2-3 امبير ',1500)" style="background:var(--p);color:#fff;border:none;padding:10px;border-radius:5px;flex-grow:1;cursor:pointer;">إضافة للسلة</button></div>
+                </div>
+            </div><div class="card product-item" data-title="كارت مساطر حثية (سندرتو)" data-desc="كارت حويل اشارة المساطر الحثية LVDT الى اشارة تناظرية (أنالوج) لأستخدامها في تعديل ماكينات الحقن منها ماكينة (سندرتو) وغيرها يتميز بتشغيل وتحويل اشارة 4 مساطر حثية الى تناظرية ايجابية وسلبية (بيعكس الاتجاه من خلال الخرج p ,N )">
+                <div class="gallery"><img src="shop_images/Gemini_Generated_Image_64op8u64op8u64op.jpg" alt="كارت مساطر حثية (سندرتو)" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                <div class="info">
+                    <h3 class="product-title">كارت مساطر حثية (سندرتو)</h3>
+                    <div class="price">2,950 ج.م</div>
+                    <p class="desc-text short" id="txt-2" data-full="كارت حويل اشارة المساطر الحثية LVDT الى اشارة تناظرية (أنالوج) لأستخدامها في تعديل ماكينات الحقن منها ماكينة (سندرتو) وغيرها يتميز بتشغيل وتحويل اشارة 4 مساطر حثية الى تناظرية ايجابية وسلبية (بيعكس الاتجاه من خلال الخرج p ,N )" data-short="كارت حويل اشارة المساطر الحثية LVDT الى اشارة تناظرية (أنالوج) لأستخدامها في تعديل ماكينات الحقن منه...">كارت حويل اشارة المساطر الحثية LVDT الى اشارة تناظرية (أنالوج) لأستخدامها في تعديل ماكينات الحقن منه...</p>
+         <span class="more" onclick="toggleTxt(2)">المزيد...</span>
+                    <div style="display:flex;gap:5px;margin-top:auto;"><div style="display:flex;align-items:center;background:#eee;border-radius:5px;"><button onclick="updateQty(2,-1)" style="border:none;padding:5px 10px;cursor:pointer">-</button><input id="qty-2" value="1" readonly style="width:30px;border:none;text-align:center;background:none;"><button onclick="updateQty(2,1)" style="border:none;padding:5px 10px;cursor:pointer">+</button></div><button class="btn-add-cart" id="btn-2" onclick="toggleCart(2,'كارت مساطر حثية (سندرتو)',2950)" style="background:var(--p);color:#fff;border:none;padding:10px;border-radius:5px;flex-grow:1;cursor:pointer;">إضافة للسلة</button></div>
+                </div>
+            </div><div class="card product-item" data-title="كارت خرج (OUT) لـ PLC سالب الخرج NPN" data-desc="كارت خرج (OUT) لـ PLC سالب الخرج NPN 
+بياخد اشارة موجب او سالب على حسب الكومن ويخرج سالب 
+مزود على كل خرج فيوز أمان ">
+                <div class="gallery"><img src="shop_images/Gemini_Generated_Image_4ms2dg4ms2dg4ms2.jpg" alt="كارت خرج (OUT) لـ PLC سالب الخرج NPN" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                <div class="info">
+                    <h3 class="product-title">كارت خرج (OUT) لـ PLC سالب الخرج NPN</h3>
+                    <div class="price">1,900 ج.م</div>
+                    <p class="desc-text short" id="txt-3" data-full="كارت خرج (OUT) لـ PLC سالب الخرج NPN 
+بياخد اشارة موجب او سالب على حسب الكومن ويخرج سالب 
+مزود على كل خرج فيوز أمان " data-short="كارت خرج (OUT) لـ PLC سالب الخرج NPN 
+بياخد اشارة موجب او سالب على حسب الكومن ويخرج سالب 
+مزود على ك...">كارت خرج (OUT) لـ PLC سالب الخرج NPN 
+بياخد اشارة موجب او سالب على حسب الكومن ويخرج سالب 
+مزود على ك...</p>
+         <span class="more" onclick="toggleTxt(3)">المزيد...</span>
+                    <div style="display:flex;gap:5px;margin-top:auto;"><div style="display:flex;align-items:center;background:#eee;border-radius:5px;"><button onclick="updateQty(3,-1)" style="border:none;padding:5px 10px;cursor:pointer">-</button><input id="qty-3" value="1" readonly style="width:30px;border:none;text-align:center;background:none;"><button onclick="updateQty(3,1)" style="border:none;padding:5px 10px;cursor:pointer">+</button></div><button class="btn-add-cart" id="btn-3" onclick="toggleCart(3,'كارت خرج (OUT) لـ PLC سالب الخرج NPN',1900)" style="background:var(--p);color:#fff;border:none;padding:10px;border-radius:5px;flex-grow:1;cursor:pointer;">إضافة للسلة</button></div>
+                </div>
+            </div><div class="card product-item" data-title="كارت بروبوشنال بـ(فيد باك)" data-desc="كرات بروبوشنال نظام مغلق (فيد باك ) للصمامات التي تعمل على نظام مقفول (closed loop) عالية الدقة 
+مثل:-
+صمامات البوش الريكسروز والصمامات الكوباية بفيد باك التي تعمل على ماكينات بي ام براغي وسندرتو ">
+                <div class="gallery"><img src="shop_images/IMG_20260406_132739.jpg" alt="كارت بروبوشنال بـ(فيد باك)" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="shop_images/IMG_20260406_132743.jpg" alt="كارت بروبوشنال بـ(فيد باك)" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                <div class="info">
+                    <h3 class="product-title">كارت بروبوشنال بـ(فيد باك)</h3>
+                    <div class="price">2,200 ج.م</div>
+                    <p class="desc-text short" id="txt-4" data-full="كرات بروبوشنال نظام مغلق (فيد باك ) للصمامات التي تعمل على نظام مقفول (closed loop) عالية الدقة 
+مثل:-
+صمامات البوش الريكسروز والصمامات الكوباية بفيد باك التي تعمل على ماكينات بي ام براغي وسندرتو " data-short="كرات بروبوشنال نظام مغلق (فيد باك ) للصمامات التي تعمل على نظام مقفول (closed loop) عالية الدقة 
+مثل...">كرات بروبوشنال نظام مغلق (فيد باك ) للصمامات التي تعمل على نظام مقفول (closed loop) عالية الدقة 
+مثل...</p>
+         <span class="more" onclick="toggleTxt(4)">المزيد...</span>
+                    <div style="display:flex;gap:5px;margin-top:auto;"><div style="display:flex;align-items:center;background:#eee;border-radius:5px;"><button onclick="updateQty(4,-1)" style="border:none;padding:5px 10px;cursor:pointer">-</button><input id="qty-4" value="1" readonly style="width:30px;border:none;text-align:center;background:none;"><button onclick="updateQty(4,1)" style="border:none;padding:5px 10px;cursor:pointer">+</button></div><button class="btn-add-cart" id="btn-4" onclick="toggleCart(4,'كارت بروبوشنال بـ(فيد باك)',2200)" style="background:var(--p);color:#fff;border:none;padding:10px;border-radius:5px;flex-grow:1;cursor:pointer;">إضافة للسلة</button></div>
+                </div>
+            </div></div></div>
+            </main>
+            <div class="floating-bar">
+                <div class="cart-btn" onclick="sendWA()">
+                    <span><b id="cq">0</b> أصناف | <b id="ct">0</b> ج.م</span>
+                    <b>طلب 💬</b>
+                </div>
+                <button class="clear-btn" onclick="clearCart()">🗑️</button>
+            </div>
+            <div id="zM" onclick="this.style.display='none'">
+                <img id="zi" style="max-width:90%; max-height:90%; border-radius:10px;">
+            </div>
+            <script>
+                
+            function normalizeText(str) {
+                return str.toLowerCase().replace(/[اتن]/g, function(m) {
+                    const map = { 'ا': 'ا', 'ت': 'ت', 'ن': 'ن', 'ة': 'ه', 'ى': 'ي' };
+                    return map[m] || m;
+                }).replace(/[^\u0621-\u064A\s]/g, '');
+            }
+            
+            function getSimilarityScore(text1, text2) {
+                const str1 = normalizeText(text1);
+                const str2 = normalizeText(text2);
+                if(str1 === str2) return 100;
+                if(str1.includes(str2) || str2.includes(str1)) return 80;
+                let matches = 0;
+                for(let i = 0; i < Math.min(str1.length, str2.length); i++) {
+                    if(str1[i] === str2[i]) matches++;
+                }
+                return (matches / Math.max(str1.length, str2.length)) * 100;
+            }
+            
+            function filterItems() {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                const searchResult = document.getElementById('searchResult');
+                const items = document.querySelectorAll('.product-item');
+                let visibleCount = 0;
+                const minScore = 40;
+                
+                items.forEach(item => {
+                    const title = item.getAttribute('data-title') || '';
+                    const desc = item.getAttribute('data-desc') || '';
+                    let score = 0;
+                    if(searchTerm === '') {
+                        score = 100;
+                    } else {
+                        score = Math.max(getSimilarityScore(title, searchTerm), getSimilarityScore(desc, searchTerm));
+                        for(let i = 0; i < searchTerm.length; i++) {
+                            for(let j = 1; j <= searchTerm.length - i; j++) {
+                                const subTerm = searchTerm.substr(i, j);
+                                if(subTerm.length >= 2) {
+                                    score = Math.max(score, getSimilarityScore(title, subTerm));
+                                    score = Math.max(score, getSimilarityScore(desc, subTerm));
+                                }
+                            }
+                        }
+                    }
+                    if(score >= minScore || searchTerm === '') {
+                        item.style.display = '';
+                        visibleCount++;
+                        if(searchTerm !== '' && title.toLowerCase().includes(searchTerm.toLowerCase())) {
+                            const titleElem = item.querySelector('.product-title');
+                            if(titleElem) {
+                                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                                titleElem.innerHTML = titleElem.innerText.replace(regex, '<mark>$1</mark>');
+                            }
+                        }
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                if(searchResult) {
+                    searchResult.innerHTML = visibleCount === 0 ? '😞 لا توجد نتائج مطابقة' : `🔍 ${visibleCount} نتيجة`;
+                }
+            }
+            
+            function initSearch() {
+                const searchInput = document.getElementById('searchInput');
+                if(searchInput) {
+                    searchInput.addEventListener('input', filterItems);
+                    filterItems();
+                }
+            }
+            document.addEventListener('DOMContentLoaded', initSearch);
+        
+                
+            let cart = {};
+            const CART_STORAGE_KEY = 'cart_xcs6a1f7_mnomdprq';
+            
+            function loadCartFromStorage() {
+                const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+                if(savedCart) {
+                    cart = JSON.parse(savedCart);
+                    for(let key in cart) {
+                        const btn = document.getElementById('btn-'+key);
+                        if(btn) {
+                            btn.innerText = "إلغاء الصنف";
+                            btn.style.background = "#d63031";
+                        }
+                        const qtyInput = document.getElementById('qty-'+key);
+                        if(qtyInput && cart[key].qty) {
+                            qtyInput.value = cart[key].qty;
+                        }
+                    }
+                    updateUI();
+                }
+            }
+            
+            function saveCartToStorage() {
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+            }
+            
+            function updateQty(i, d) {
+                let input = document.getElementById('qty-'+i);
+                if(input) {
+                    let val = parseInt(input.value) + d;
+                    if(val >= 1) { 
+                        input.value = val; 
+                        if(cart[i]) { 
+                            cart[i].qty = val; 
+                            saveCartToStorage();
+                            updateUI(); 
+                        } 
+                    }
+                }
+            }
+            
+            function toggleCart(i, title, price) {
+                let btn = document.getElementById('btn-'+i);
+                let qtyInput = document.getElementById('qty-'+i);
+                if(cart[i]) {
+                    delete cart[i];
+                    btn.innerText = "إضافة للسلة";
+                    btn.style.background = "#004a99";
+                } else {
+                    cart[i] = { title: title, price: price, qty: parseInt(qtyInput.value) };
+                    btn.innerText = "إلغاء الصنف";
+                    btn.style.background = "#d63031";
+                }
+                saveCartToStorage();
+                updateUI();
+            }
+            
+            function updateUI() {
+                let totalItems = Object.keys(cart).length;
+                let totalPrice = 0;
+                for(let key in cart) totalPrice += cart[key].price * cart[key].qty;
+                document.getElementById('cq').innerText = totalItems;
+                document.getElementById('ct').innerText = totalPrice.toLocaleString();
+            }
+            
+            function clearCart() {
+                if(confirm("⚠️ تفريغ السلة؟")) {
+                    cart = {};
+                    saveCartToStorage();
+                    document.querySelectorAll('.btn-add-cart').forEach(btn => {
+                        btn.innerText = "إضافة للسلة";
+                        btn.style.background = "#004a99";
+                    });
+                    updateUI();
+                }
+            }
+            
+            function sendWA() {
+                if(Object.keys(cart).length === 0) return alert("🛒 السلة فارغة!");
+                let message = "📦 طلب شراء جديد:\n\n";
+                for(let key in cart) message += "• " + cart[key].title + " (" + cart[key].qty + ") = " + (cart[key].price * cart[key].qty).toLocaleString() + " ج.م\n";
+                let total = 0; for(let key in cart) total += cart[key].price * cart[key].qty;
+                message += "\n💰 الإجمالي: " + total.toLocaleString() + " ج.م";
+                window.open("https://wa.me/201114394767?text=" + encodeURIComponent(message));
+            }
+            
+            document.addEventListener('DOMContentLoaded', loadCartFromStorage);
+        
+                
+                function toggleTxt(idx) {
+    const p = document.getElementById('txt-'+idx);
+    if(p) {
+        const isShort = p.classList.contains('short');
+        if(isShort) {
+            // التبديل إلى النص الكامل
+            const fullText = p.getAttribute('data-full');
+            if(fullText) p.innerText = fullText;
+            p.classList.remove('short');
+            p.nextElementSibling.innerText = "أقل";
+        } else {
+            // التبديل إلى النص المختصر
+            const shortText = p.getAttribute('data-short');
+            if(shortText) p.innerText = shortText;
+            p.classList.add('short');
+            p.nextElementSibling.innerText = "المزيد...";
+        }
+    }
+}
+                function openZoom(src) { document.getElementById('zi').src = src; document.getElementById('zM').style.display = 'flex'; }
+            </script>
+        </body>
+        </html>
