@@ -100,6 +100,22 @@
         .card:hover { transform: translateY(-5px); border-right-color: var(--accent); }
         .card h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 10px; }
         .card p { color: #636e72; line-height: 1.6; font-size: 0.9rem; }
+        
+        /* كارت مميز لمدير الإنفرترات */
+        .card.special { 
+            border-right-color: var(--accent); 
+            background: linear-gradient(135deg, #fff, #fef9e6);
+        }
+        .card.special h3 { color: var(--accent); }
+        .card-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-top: 10px;
+        }
 
         /* معرض المنتجات الجديدة */
         .new-products {
@@ -160,7 +176,10 @@
             color: white; 
             text-decoration: none; 
             border-bottom: 1px solid rgba(255,255,255,0.1); 
+            transition: 0.2s;
         }
+        .sidebar a:hover { background: rgba(255,255,255,0.1); padding-right: 30px; }
+        .sidebar a i { margin-left: 10px; }
 
         @media (max-width: 768px) {
             .hero { padding: 40px 15px; }
@@ -177,13 +196,14 @@
     </header>
 
     <nav class="sidebar" id="sidebar">
-    <a href="index.html" onclick="toggleSidebar()">🏠 الرئيسية</a>
-    <a href="shop.html" onclick="toggleSidebar()">🛒 سوق مساعد المهندس</a>
-    <a href="solutions.html" onclick="toggleSidebar()">⚙️ الحلول الصناعية</a>
-    <a href="projects.html" onclick="toggleSidebar()">🏗️ أعمالنا</a>
-    <a href="services.html" onclick="toggleSidebar()">🛠️ خدماتنا</a>
-    <a href="contact.html" onclick="toggleSidebar()">📞 اتصل بنا</a>
-</nav>
+        <a href="index.html" onclick="toggleSidebar()">🏠 الرئيسية</a>
+        <a href="shop.html" onclick="toggleSidebar()">🛒 سوق مساعد المهندس</a>
+        <a href="solutions.html" onclick="toggleSidebar()">⚙️ الحلول الصناعية</a>
+        <a href="projects.html" onclick="toggleSidebar()">🏗️ أعمالنا</a>
+        <a href="services.html" onclick="toggleSidebar()">🛠️ خدماتنا</a>
+        <a href="edit_inverters.html" onclick="toggleSidebar()">📟 مدير الإنفرترات</a>
+        <a href="contact.html" onclick="toggleSidebar()">📞 اتصل بنا</a>
+    </nav>
 
     <section class="hero">
         <div class="hero-content">
@@ -197,41 +217,50 @@
     </div>
 
     <main class="sections-grid">
-    <a href="shop.html" class="card-link">
-        <div class="card">
-            <h3>🛒 سوق مساعد المهندس</h3>
-            <p>تصفح واطلب أفضل القطع الصناعية والميكانيكية بجودة عالية وتوصيل سريع.</p>
-        </div>
-    </a>
+        <a href="shop.html" class="card-link">
+            <div class="card">
+                <h3>🛒 سوق مساعد المهندس</h3>
+                <p>تصفح واطلب أفضل القطع الصناعية والميكانيكية بجودة عالية وتوصيل سريع.</p>
+            </div>
+        </a>
 
-    <a href="solutions.html" class="card-link">
-        <div class="card">
-            <h3>⚙️ الحلول الصناعية</h3>
-            <p>نقدم ابتكارات تقنية وهندسية لتطوير خطوط الإنتاج ورفع كفاءة العمليات.</p>
-        </div>
-    </a>
+        <a href="solutions.html" class="card-link">
+            <div class="card">
+                <h3>⚙️ الحلول الصناعية</h3>
+                <p>نقدم ابتكارات تقنية وهندسية لتطوير خطوط الإنتاج ورفع كفاءة العمليات.</p>
+            </div>
+        </a>
 
-    <a href="projects.html" class="card-link">
-        <div class="card">
-            <h3>🏗️ أعمالنا</h3>
-            <p>استعرض سجل إنجازاتنا والمشاريع الكبرى التي قمنا بتنفيذها بنجاح.</p>
-        </div>
-    </a>
+        <a href="projects.html" class="card-link">
+            <div class="card">
+                <h3>🏗️ أعمالنا</h3>
+                <p>استعرض سجل إنجازاتنا والمشاريع الكبرى التي قمنا بتنفيذها بنجاح.</p>
+            </div>
+        </a>
 
-    <a href="services.html" class="card-link">
-        <div class="card">
-            <h3>🛠️ خدماتنا</h3>
-            <p>دعم فني متخصص، برمجية PLC، وصيانة وقائية متكاملة لمشروعك.</p>
-        </div>
-    </a>
+        <a href="services.html" class="card-link">
+            <div class="card">
+                <h3>🛠️ خدماتنا</h3>
+                <p>دعم فني متخصص، برمجية PLC، وصيانة وقائية متكاملة لمشروعك.</p>
+            </div>
+        </a>
 
-    <a href="contact.html" class="card-link">
-        <div class="card">
-            <h3>📞 اتصل بنا</h3>
-            <p>تواصل مع فريق الدعم الفني، استفسارات، أو طلب عروض أسعار.</p>
-        </div>
-    </a>
-</main>
+        <!-- الكارت الجديد لمدير الإنفرترات -->
+        <a href="edit_inverters.html" class="card-link">
+            <div class="card special">
+                <h3>📟 مدير الإنفرترات DH</h3>
+                <p>أداة احترافية لإدارة بارامترات وأعطال الإنفرترات. دعم 8 ماركات عالمية مع بحث ذكي وتصدير.</p>
+                <span class="card-badge">🔥 أداة مجانية</span>
+            </div>
+        </a>
+
+        <a href="contact.html" class="card-link">
+            <div class="card">
+                <h3>📞 اتصل بنا</h3>
+                <p>تواصل مع فريق الدعم الفني، استفسارات، أو طلب عروض أسعار.</p>
+            </div>
+        </a>
+    </main>
 
     <div class="new-products">
         <h2>🆕 أحدث المنتجات</h2>
@@ -245,7 +274,18 @@
     </footer>
 
     <script>
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('active'); 
+        }
+        
+        // إغلاق القائمة الجانبية عند النقر خارجها
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const hamburger = document.querySelector('.hamburger-btn');
+            if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
         
         // البحث السريع
         document.getElementById('quickSearch')?.addEventListener('input', function(e) {
@@ -258,25 +298,27 @@
             });
         });
 
-        // عرض آخر المنتجات (لو عايز تستدعيها من localStorage)
+        // عرض آخر المنتجات
         function loadLatestProducts() {
             const container = document.getElementById('latestProducts');
             if(!container) return;
             let allProducts = [];
             for(let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                if(key.startsWith('ENG_MARKET_')) {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    if(data.items) {
-                        data.items.forEach(item => {
-                            allProducts.push({
-                                title: item.title,
-                                price: item.price,
-                                imgs: item.imgs,
-                                pageFile: data.fileName
+                if(key && key.startsWith('ENG_MARKET_')) {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if(data && data.items) {
+                            data.items.forEach(item => {
+                                allProducts.push({
+                                    title: item.title,
+                                    price: item.price,
+                                    imgs: item.imgs,
+                                    pageFile: data.fileName
+                                });
                             });
-                        });
-                    }
+                        }
+                    } catch(e) {}
                 }
             }
             allProducts = allProducts.slice(-4).reverse();
