@@ -1,71 +1,279 @@
 <!DOCTYPE html>
-        <html lang="ar" dir="rtl">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>دليل DH - العميل</title>
-            <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-            <style>
-                *{box-sizing:border-box;}
-                body{font-family:'Tajawal',sans-serif; background:#f4f7f9; padding:20px;}
-                .container{max-width:1000px;margin:auto;background:white;border-radius:20px;padding:20px;box-shadow:0 0 20px rgba(0,0,0,0.1);}
-                h1{color:#004a99;text-align:center;}
-                .search-box{width:100%;padding:12px;margin:15px 0;border-radius:10px;border:1px solid #ccc;}
-                .filters{display:flex;gap:10px;margin-bottom:20px;}
-                .filters select{flex:1;padding:10px;border-radius:8px;}
-                .card{background:#f8f9fa;border-right:5px solid #004a99;padding:15px;margin-bottom:15px;border-radius:10px;}
-                .param{border-right-color:#28a745;}
-                .error{border-right-color:#f39c12;}
-                .badge{display:inline-block;padding:3px 8px;border-radius:15px;font-size:0.8rem;}
-                .badge-param{background:#28a74520;color:#155724;}
-                .badge-error{background:#f39c1220;color:#856404;}
-            </style>
-        </head>
-        <body>
-        <div class="container">
-            <h1>📋 دليل DH التقني</h1>
-            <input type="text" id="search" class="search-box" placeholder="بحث..." onkeyup="filterData()">
-            <div class="filters">
-                <select id="brandFilter" onchange="filterData()"><option value="all">كل الماركات</option></select>
-                <select id="modelFilter" onchange="filterData()"><option value="all">كل الموديلات</option></select>
-            </div>
-            <div id="results"></div>
-        </div>
-        <script>
-            const data = {
-                params: [{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"مصدر أمر التشغيل","code":"P00.01","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"مصدر ضبط التردد","code":"P00.06","val":"0=لوحة، 1=AI1، 2=AI2، 3=Modbus","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"الحد الأقصى للتردد","code":"P00.03","val":"50-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"زمن التسارع","code":"P00.11","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"زمن التباطؤ","code":"P00.12","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"إعادة ضبط المصنع","code":"P00.18","val":"1=إعادة ضبط","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200A","req":"نوع التحكم","code":"P00.00","val":"0=V/F، 1=SVC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200A","req":"قدرة المحرك","code":"P02.01","val":"حسب قدرة المحرك","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD300/GD350","req":"معامل التخميد","code":"P03.05","val":"0-100%","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"CHV100","req":"تحكم متجه FOC","code":"P0.17","val":"2=FOC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"مصدر أمر التشغيل","code":"DR.01","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"التردد المرجعي","code":"DR.02","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"زمن التسارع","code":"ACC.01","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"زمن التباطؤ","code":"DEC.01","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"H100","req":"نوع التحكم","code":"Pd.01","val":"0=V/F، 1=SVC، 2=FOC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"D700","req":"مصدر أمر التشغيل","code":"Pr.79","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"D700","req":"التردد الأقصى","code":"Pr.1","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"D700","req":"زمن التسارع/التباطؤ","code":"Pr.7/Pr.8","val":"0-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"E800","req":"اتصال Ethernet","code":"Pr.1436","val":"إعدادات IP","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV12","req":"مصدر الأمر","code":"FUn","val":"L1=لوحة، L2=طرفية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV12","req":"التردد المرجعي","code":"Fr1","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV12","req":"زمن التسارع","code":"ACC","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV320","req":"تحكم متجه","code":"Ctl","val":"0=V/F، 1=SVC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"مصدر الأمر","code":"P0700","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"التردد المرجعي","code":"P1000","val":"0=لوحة، 1=AI، 2=Modbus","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"الحد الأقصى للتردد","code":"P1082","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"زمن التسارع","code":"P1120","val":"0-650 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"G120/G120C","req":"إعدادات الأمان","code":"P9601","val":"تفعيل Safe Torque Off","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"مصدر الأمر","code":"1102","val":"0=لوحة، 1=طرفية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"التردد المرجعي","code":"1103","val":"0=لوحة، 1=AI1، 2=AI2","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"التردد الأقصى","code":"2008","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"زمن التسارع","code":"2202","val":"0-1800 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS880","req":"تحكم متجه مباشر DTC","code":"99.04","val":"تفعيل DTC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC51/FC101","req":"مصدر الأمر","code":"3-02","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC51/FC101","req":"التردد المرجعي","code":"3-15","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC51/FC101","req":"زمن التسارع","code":"3-41","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC302","req":"تحكم متجه","code":"1-01","val":"0=V/F، 1=FOC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-E","req":"مصدر الأمر","code":"P00.01","val":"0=لوحة، 1=طرفية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-E","req":"التردد المرجعي","code":"P00.10","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-E","req":"زمن التسارع","code":"P01.12","val":"0.1-600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-C2000","req":"تحكم متجه","code":"P00.11","val":"0=V/F، 1=SVC","date":"2026-01-01T00:00:00.000Z"}],
-                errors: [{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OC1/OC2/OC3","eName":"تيار زائد","eSolve":"زيادة زمن التسارع/التباطؤ، فحص الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OV1/OV2/OV3","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ، إضافة مقاومة فرملة","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OL1/OL2","eName":"حمل زائد","eSolve":"فحص قدرة المحرك/الإنفرتر، تقليل الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OH1/OH2","eName":"حرارة زائدة","eSolve":"تنظيف المراوح، تحسين التهوية","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"LS Electric","model":"S100/C100","eCode":"OC/OV","eName":"تيار/جهد زائد","eSolve":"زيادة زمن التسارع/التباطؤ","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"LS Electric","model":"S100/C100","eCode":"OL","eName":"حمل زائد","eSolve":"فحص الحمل والمحرك","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Mitsubishi","model":"D700","eCode":"E.OC1/E.OC2/E.OC3","eName":"تيار زائد","eSolve":"زيادة زمن التسارع/التباطؤ، فحص الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Mitsubishi","model":"D700","eCode":"E.OV1/E.OV2/E.OV3","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ، إضافة مقاومة فرملة","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Mitsubishi","model":"D700","eCode":"E.THM/E.THT","eName":"حمل زائد","eSolve":"فحص قدرة المحرك، تقليل الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Schneider","model":"ATV12","eCode":"OCF/OCB","eName":"تيار زائد","eSolve":"زيادة زمن التسارع، فحص المحرك","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Schneider","model":"ATV12","eCode":"OBF","eName":"جهد زائد","eSolve":"فحص جهد الدخل، زيادة زمن التباطؤ","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Siemens","model":"V20","eCode":"F0001/F0002","eName":"تيار زائد","eSolve":"زيادة زمن التسارع P1120، فحص الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Siemens","model":"V20","eCode":"F0003","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ P1121، إضافة مقاومة فرملة","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Siemens","model":"V20","eCode":"F0004","eName":"حرارة زائدة","eSolve":"تنظيف المراوح، تحسين التهوية","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"ABB","model":"ACS150/ACS350","eCode":"OVERLOAD","eName":"حمل زائد","eSolve":"فحص الحمل، تعديل البارامترات 2202 و 2203","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"ABB","model":"ACS150/ACS350","eCode":"OVER VOLTAGE","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ 2203","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Danfoss","model":"FC51/FC101","eCode":"ALARM 7","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ 3-42","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Danfoss","model":"FC51/FC101","eCode":"ALARM 8","eName":"تيار زائد","eSolve":"زيادة زمن التسارع 3-41","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Delta","model":"VFD-E","eCode":"OCC/Ocd","eName":"تيار زائد","eSolve":"زيادة زمن التسارع P01.12","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Delta","model":"VFD-E","eCode":"OL","eName":"حمل زائد","eSolve":"فحص قدرة المحرك والإنفرتر","date":"2026-01-01T00:00:00.000Z"}]
-            };
-            const brands = [...new Set([...data.params.map(p=>p.brand), ...data.errors.map(e=>e.brand)])];
-            function populateFilters(){
-                let brandSelect = document.getElementById('brandFilter');
-                brandSelect.innerHTML = '<option value="all">كل الماركات</option>' + brands.map(b=>'<option value="'+b+'">'+b+'</option>').join('');
-                filterData();
-            }
-            function filterData(){
-                let brand = document.getElementById('brandFilter').value;
-                let model = document.getElementById('modelFilter').value;
-                let search = document.getElementById('search').value.toLowerCase();
-                let items = [...data.params, ...data.errors];
-                if(brand !== 'all') items = items.filter(i=>i.brand === brand);
-                if(model !== 'all') items = items.filter(i=>i.model === model);
-                if(search) items = items.filter(i=>JSON.stringify(i).toLowerCase().includes(search));
-                
-                let models = [...new Set(items.map(i=>i.model))];
-                let modelSelect = document.getElementById('modelFilter');
-                modelSelect.innerHTML = '<option value="all">كل الموديلات</option>' + models.map(m=>'<option value="'+m+'">'+m+'</option>').join('');
-                
-                let container = document.getElementById('results');
-                if(items.length===0){ container.innerHTML='<p style="text-align:center">لا توجد نتائج</p>'; return; }
-                container.innerHTML = items.map(item=>{
-                    if(item.type==='param'){
-                        return '<div class="card param"><div><strong>'+item.req+'</strong> ('+item.code+' = '+item.val+')</div><div class="badge badge-param">بارامتر</div><small>'+item.brand+' | '+item.model+'</small></div>';
-                    } else {
-                        return '<div class="card error"><div><strong>'+item.eCode+' - '+item.eName+'</strong></div><div>🔧 '+item.eSolve+'</div><div class="badge badge-error">عطل</div><small>'+item.brand+' | '+item.model+'</small></div>';
+            <html lang="ar" dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>دليل DH التقني - العميل</title>
+                <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+                <style>
+                    :root {
+                        --primary: #004a99;
+                        --accent: #f39c12;
+                        --whatsapp: #25D366;
+                        --bg: #f4f7f6;
+                        --white: #ffffff;
                     }
-                }).join('');
-            }
-            populateFilters();
-        </script>
-        </body>
-        </html>
+                    * { box-sizing: border-box; }
+                    body { 
+                        font-family: 'Tajawal', sans-serif; 
+                        background: var(--bg); 
+                        margin: 0;
+                        padding: 0;
+                    }
+                    
+                    header {
+                        background: var(--white);
+                        padding: 10px 5%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                        position: sticky;
+                        top: 0;
+                        z-index: 1000;
+                    }
+                    .logo { font-weight: bold; font-size: 1.1rem; color: var(--primary); text-decoration: none; }
+                    .btn-whatsapp {
+                        background: var(--whatsapp);
+                        color: white;
+                        padding: 8px 15px;
+                        border-radius: 50px;
+                        text-decoration: none;
+                        font-weight: bold;
+                        font-size: 0.85rem;
+                    }
+                    
+                    .back-home {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: var(--primary);
+                        color: white;
+                        padding: 8px 20px;
+                        border-radius: 50px;
+                        text-decoration: none;
+                        font-weight: bold;
+                        margin: 15px 5% 0;
+                        transition: 0.3s;
+                    }
+                    .back-home:hover {
+                        background: var(--accent);
+                        transform: translateX(-5px);
+                    }
+                    
+                    .container { 
+                        max-width: 1000px; 
+                        margin: 20px auto; 
+                        background: var(--white); 
+                        border-radius: 15px; 
+                        padding: 25px; 
+                        box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+                    }
+                    
+                    h1 { 
+                        color: var(--primary); 
+                        text-align: center; 
+                        margin: 0 0 10px 0;
+                    }
+                    .subtitle {
+                        text-align: center;
+                        color: #666;
+                        margin-bottom: 25px;
+                        font-size: 0.9rem;
+                    }
+                    
+                    .search-box { 
+                        width: 100%; 
+                        padding: 12px 20px; 
+                        margin: 15px 0; 
+                        border-radius: 50px; 
+                        border: 1px solid #ddd;
+                        font-family: 'Tajawal';
+                        font-size: 1rem;
+                    }
+                    .search-box:focus { outline: none; border-color: var(--primary); }
+                    
+                    .filters {
+                        display: flex;
+                        gap: 10px;
+                        margin-bottom: 20px;
+                        flex-wrap: wrap;
+                    }
+                    .filters select { 
+                        flex: 1; 
+                        padding: 10px; 
+                        border-radius: 8px; 
+                        border: 1px solid #ddd;
+                        font-family: 'Tajawal';
+                        background: white;
+                    }
+                    
+                    .results-container {
+                        max-height: 550px;
+                        overflow-y: auto;
+                    }
+                    
+                    .card {
+                        background: #f8f9fa;
+                        border-right: 5px solid var(--primary);
+                        padding: 15px;
+                        margin-bottom: 15px;
+                        border-radius: 12px;
+                        transition: transform 0.2s;
+                    }
+                    .card:hover { transform: translateX(-5px); }
+                    .param { border-right-color: #28a745; }
+                    .error { border-right-color: var(--accent); }
+                    
+                    .badge {
+                        display: inline-block;
+                        padding: 3px 10px;
+                        border-radius: 20px;
+                        font-size: 0.7rem;
+                        font-weight: bold;
+                        margin-top: 8px;
+                    }
+                    .badge-param { background: #28a74520; color: #155724; }
+                    .badge-error { background: #f39c1220; color: #856404; }
+                    
+                    .brand-model {
+                        color: #666;
+                        font-size: 0.75rem;
+                        margin-top: 8px;
+                    }
+                    
+                    .no-results {
+                        text-align: center;
+                        padding: 40px;
+                        color: #666;
+                    }
+                    
+                    footer {
+                        background: #222;
+                        color: #ddd;
+                        text-align: center;
+                        padding: 15px;
+                        font-size: 0.8rem;
+                        margin-top: 20px;
+                    }
+                    
+                    .whatsapp-float {
+                        position: fixed;
+                        bottom: 20px;
+                        left: 20px;
+                        background: var(--whatsapp);
+                        color: white;
+                        width: 55px;
+                        height: 55px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        text-decoration: none;
+                        font-size: 30px;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                        transition: 0.3s;
+                        z-index: 100;
+                    }
+                    .whatsapp-float:hover {
+                        transform: scale(1.1);
+                    }
+                </style>
+            </head>
+            <body>
+                <header>
+                    <a href="index.html" class="logo">DH Automation</a>
+                    <a href="https://wa.me/201114394767?text=أهلاً مهندس" class="btn-whatsapp">واتساب</a>
+                </header>
+                
+                <a href="index.html" class="back-home">🏠 ← العودة إلى الرئيسية</a>
+                
+                <div class="container">
+                    <h1>📋 دليل DH التقني للمهندسين</h1>
+                    <div class="subtitle">🔧 بارامترات وأعطال الإنفرترات - مرجع سريع وشامل</div>
+                    
+                    <input type="text" id="search" class="search-box" placeholder="🔍 بحث في البارامترات والأعطال..." onkeyup="filterData()">
+                    
+                    <div class="filters">
+                        <select id="brandFilter" onchange="filterData()">
+                            <option value="all">🏷️ كل الماركات</option>
+                        </select>
+                        <select id="modelFilter" onchange="filterData()">
+                            <option value="all">📟 كل الموديلات</option>
+                        </select>
+                    </div>
+                    
+                    <div class="results-container" id="results"></div>
+                </div>
+                
+                <footer>
+                    جميع الحقوق محفوظة لدى <b>دي اتش اوتوميشن</b> &copy; 2026
+                </footer>
+                
+                <a href="https://wa.me/201114394767?text=أهلاً مهندس" class="whatsapp-float" target="_blank">💬</a>
+                
+                <script>
+                    const data = {
+                        params: [{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"مصدر أمر التشغيل","code":"P00.01","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"مصدر ضبط التردد","code":"P00.06","val":"0=لوحة، 1=AI1، 2=AI2، 3=Modbus","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"الحد الأقصى للتردد","code":"P00.03","val":"50-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"زمن التسارع","code":"P00.11","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"زمن التباطؤ","code":"P00.12","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200/GD20/GD10","req":"إعادة ضبط المصنع","code":"P00.18","val":"1=إعادة ضبط","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200A","req":"نوع التحكم","code":"P00.00","val":"0=V/F، 1=SVC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD200A","req":"قدرة المحرك","code":"P02.01","val":"حسب قدرة المحرك","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"GD300/GD350","req":"معامل التخميد","code":"P03.05","val":"0-100%","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"INVT","model":"CHV100","req":"تحكم متجه FOC","code":"P0.17","val":"2=FOC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"مصدر أمر التشغيل","code":"DR.01","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"التردد المرجعي","code":"DR.02","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"زمن التسارع","code":"ACC.01","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"S100/C100","req":"زمن التباطؤ","code":"DEC.01","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"LS Electric","model":"H100","req":"نوع التحكم","code":"Pd.01","val":"0=V/F، 1=SVC، 2=FOC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"D700","req":"مصدر أمر التشغيل","code":"Pr.79","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"D700","req":"التردد الأقصى","code":"Pr.1","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"D700","req":"زمن التسارع/التباطؤ","code":"Pr.7/Pr.8","val":"0-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Mitsubishi","model":"E800","req":"اتصال Ethernet","code":"Pr.1436","val":"إعدادات IP","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV12","req":"مصدر الأمر","code":"FUn","val":"L1=لوحة، L2=طرفية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV12","req":"التردد المرجعي","code":"Fr1","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV12","req":"زمن التسارع","code":"ACC","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Schneider","model":"ATV320","req":"تحكم متجه","code":"Ctl","val":"0=V/F، 1=SVC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"مصدر الأمر","code":"P0700","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"التردد المرجعي","code":"P1000","val":"0=لوحة، 1=AI، 2=Modbus","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"الحد الأقصى للتردد","code":"P1082","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"V20","req":"زمن التسارع","code":"P1120","val":"0-650 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Siemens","model":"G120/G120C","req":"إعدادات الأمان","code":"P9601","val":"تفعيل Safe Torque Off","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"مصدر الأمر","code":"1102","val":"0=لوحة، 1=طرفية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"التردد المرجعي","code":"1103","val":"0=لوحة، 1=AI1، 2=AI2","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"التردد الأقصى","code":"2008","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS150/ACS350","req":"زمن التسارع","code":"2202","val":"0-1800 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"ABB","model":"ACS880","req":"تحكم متجه مباشر DTC","code":"99.04","val":"تفعيل DTC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC51/FC101","req":"مصدر الأمر","code":"3-02","val":"0=لوحة، 1=طرفية، 2=اتصال","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC51/FC101","req":"التردد المرجعي","code":"3-15","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC51/FC101","req":"زمن التسارع","code":"3-41","val":"0.1-3600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Danfoss","model":"FC302","req":"تحكم متجه","code":"1-01","val":"0=V/F، 1=FOC","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-E","req":"مصدر الأمر","code":"P00.01","val":"0=لوحة، 1=طرفية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-E","req":"التردد المرجعي","code":"P00.10","val":"0-400 Hz","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-E","req":"زمن التسارع","code":"P01.12","val":"0.1-600 ثانية","date":"2026-01-01T00:00:00.000Z"},{"type":"param","brand":"Delta","model":"VFD-C2000","req":"تحكم متجه","code":"P00.11","val":"0=V/F، 1=SVC","date":"2026-01-01T00:00:00.000Z"}],
+                        errors: [{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OC1/OC2/OC3","eName":"تيار زائد","eSolve":"زيادة زمن التسارع/التباطؤ، فحص الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OV1/OV2/OV3","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ، إضافة مقاومة فرملة","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OL1/OL2","eName":"حمل زائد","eSolve":"فحص قدرة المحرك/الإنفرتر، تقليل الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"INVT","model":"GD200/GD20/GD10","eCode":"OH1/OH2","eName":"حرارة زائدة","eSolve":"تنظيف المراوح، تحسين التهوية","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"LS Electric","model":"S100/C100","eCode":"OC/OV","eName":"تيار/جهد زائد","eSolve":"زيادة زمن التسارع/التباطؤ","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"LS Electric","model":"S100/C100","eCode":"OL","eName":"حمل زائد","eSolve":"فحص الحمل والمحرك","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Mitsubishi","model":"D700","eCode":"E.OC1/E.OC2/E.OC3","eName":"تيار زائد","eSolve":"زيادة زمن التسارع/التباطؤ، فحص الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Mitsubishi","model":"D700","eCode":"E.OV1/E.OV2/E.OV3","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ، إضافة مقاومة فرملة","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Mitsubishi","model":"D700","eCode":"E.THM/E.THT","eName":"حمل زائد","eSolve":"فحص قدرة المحرك، تقليل الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Schneider","model":"ATV12","eCode":"OCF/OCB","eName":"تيار زائد","eSolve":"زيادة زمن التسارع، فحص المحرك","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Schneider","model":"ATV12","eCode":"OBF","eName":"جهد زائد","eSolve":"فحص جهد الدخل، زيادة زمن التباطؤ","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Siemens","model":"V20","eCode":"F0001/F0002","eName":"تيار زائد","eSolve":"زيادة زمن التسارع P1120، فحص الحمل","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Siemens","model":"V20","eCode":"F0003","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ P1121، إضافة مقاومة فرملة","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Siemens","model":"V20","eCode":"F0004","eName":"حرارة زائدة","eSolve":"تنظيف المراوح، تحسين التهوية","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"ABB","model":"ACS150/ACS350","eCode":"OVERLOAD","eName":"حمل زائد","eSolve":"فحص الحمل، تعديل البارامترات 2202 و 2203","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"ABB","model":"ACS150/ACS350","eCode":"OVER VOLTAGE","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ 2203","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Danfoss","model":"FC51/FC101","eCode":"ALARM 7","eName":"جهد زائد","eSolve":"زيادة زمن التباطؤ 3-42","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Danfoss","model":"FC51/FC101","eCode":"ALARM 8","eName":"تيار زائد","eSolve":"زيادة زمن التسارع 3-41","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Delta","model":"VFD-E","eCode":"OCC/Ocd","eName":"تيار زائد","eSolve":"زيادة زمن التسارع P01.12","date":"2026-01-01T00:00:00.000Z"},{"type":"error","brand":"Delta","model":"VFD-E","eCode":"OL","eName":"حمل زائد","eSolve":"فحص قدرة المحرك والإنفرتر","date":"2026-01-01T00:00:00.000Z"}]
+                    };
+                    
+                    const brands = [...new Set([...data.params.map(p=>p.brand), ...data.errors.map(e=>e.brand)])];
+                    
+                    function escapeHtml(text) {
+                        if(!text) return '';
+                        return text.replace(/[&<>]/g, function(m) {
+                            if(m === '&') return '&amp;';
+                            if(m === '<') return '&lt;';
+                            if(m === '>') return '&gt;';
+                            return m;
+                        });
+                    }
+                    
+                    function populateFilters(){
+                        let brandSelect = document.getElementById('brandFilter');
+                        brandSelect.innerHTML = '<option value="all">🏷️ كل الماركات</option>' + brands.map(b=>'<option value="'+b+'">'+b+'</option>').join('');
+                        filterData();
+                    }
+                    
+                    function filterData(){
+                        let brand = document.getElementById('brandFilter').value;
+                        let model = document.getElementById('modelFilter').value;
+                        let search = document.getElementById('search').value.toLowerCase();
+                        let items = [...data.params, ...data.errors];
+                        
+                        if(brand !== 'all') items = items.filter(i=>i.brand === brand);
+                        if(model !== 'all') items = items.filter(i=>i.model === model);
+                        if(search) items = items.filter(i=>JSON.stringify(i).toLowerCase().includes(search));
+                        
+                        let models = [...new Set(items.map(i=>i.model))];
+                        let modelSelect = document.getElementById('modelFilter');
+                        modelSelect.innerHTML = '<option value="all">📟 كل الموديلات</option>' + models.map(m=>'<option value="'+m+'">'+m+'</option>').join('');
+                        
+                        let container = document.getElementById('results');
+                        if(items.length===0){ 
+                            container.innerHTML='<div class="no-results">❌ لا توجد نتائج تطابق بحثك</div>'; 
+                            return; 
+                        }
+                        container.innerHTML = items.map(item=>{
+                            if(item.type==='param'){
+                                return '<div class="card param">' +
+                                    '<div><strong>📟 ' + escapeHtml(item.req) + '</strong> (' + escapeHtml(item.code) + ' = ' + escapeHtml(item.val) + ')</div>' +
+                                    '<div class="badge badge-param">⚙️ بارامتر برمجة</div>' +
+                                    '<div class="brand-model">🏭 ' + escapeHtml(item.brand) + ' | 🔧 ' + escapeHtml(item.model) + '</div>' +
+                                    '</div>';
+                            } else {
+                                return '<div class="card error">' +
+                                    '<div><strong>⚠️ ' + escapeHtml(item.eCode) + ' - ' + escapeHtml(item.eName) + '</strong></div>' +
+                                    '<div style="margin-top:8px">🔧 ' + escapeHtml(item.eSolve) + '</div>' +
+                                    '<div class="badge badge-error">⚠️ عطل فني</div>' +
+                                    '<div class="brand-model">🏭 ' + escapeHtml(item.brand) + ' | 🔧 ' + escapeHtml(item.model) + '</div>' +
+                                    '</div>';
+                            }
+                        }).join('');
+                    }
+                    
+                    populateFilters();
+                </script>
+            </body>
+            </html>
