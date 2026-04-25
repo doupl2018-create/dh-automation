@@ -9,19 +9,21 @@
                 :root { --p: #004a99; --wa: #25D366; --d: #d63031; }
                 * { margin: 0; padding: 0; box-sizing: border-box; }
                 body { font-family: 'Tajawal', sans-serif; background: #f4f7f6; padding-bottom: 120px; }
-                .hero { position: relative; text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #003366, #001a33); color: #fff; overflow: hidden; }
+                .hero { position: relative; text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #003366, #001a33); color: #fff; overflow: hidden; }
                 .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; }
                 .hero-content { position: relative; z-index: 2; }
                 .hero h1 { font-size: 2rem; margin-bottom: 10px; }
                 header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
                 .search-section { background: white; padding: 15px 5%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-                .search-box { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; position: relative; }
-                .search-box input { flex: 1; padding: 12px 20px; border: 2px solid #ddd; border-radius: 50px; font-size: 1rem; font-family: 'Tajawal'; transition: 0.3s; }
+                .search-box { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
+                .search-box input { flex: 1; padding: 12px 20px; border: 2px solid #ddd; border-radius: 50px; font-size: 1rem; font-family: 'Tajawal'; }
                 .search-box input:focus { border-color: var(--p); outline: none; }
                 .search-result { text-align: center; margin-top: 10px; color: #666; font-size: 0.9rem; }
+                .categories-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 5% 0; }
+                .cat-tab { background: #eee; border: none; padding: 8px 20px; border-radius: 50px; font-family: 'Tajawal'; font-size: 0.9rem; cursor: pointer; transition: 0.3s; }
+                .cat-tab.active, .cat-tab:hover { background: var(--p); color: white; }
                 mark { background: #ffeb3b; padding: 0 3px; border-radius: 3px; color: #333; }
-                .category-section { margin-bottom: 40px; }
-                .cat-title { font-size: 1.6rem; padding: 0 5%; margin-bottom: 20px; color: var(--p); border-right: 5px solid var(--p); padding-right: 15px; }
+                .category-section { margin-bottom: 30px; }
                 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; padding: 0 5%; max-width: 1400px; margin: 0 auto; }
                 .card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: transform 0.2s; border-top: 5px solid var(--p); }
                 .card:hover { transform: translateY(-5px); }
@@ -37,7 +39,7 @@
                 .cart-btn { flex: 1; background: var(--p); color: #fff; padding: 15px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.15); border: none; font-family: 'Tajawal'; }
                 .clear-btn { background: var(--d); color: #fff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.4rem; }
                 #zM { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; cursor: pointer; }
-                @media (max-width: 768px) { .grid { padding: 20px; } .hero h1 { font-size: 1.4rem; } }
+                @media (max-width: 768px) { .grid { padding: 20px; } .hero h1 { font-size: 1.4rem; } .categories-tabs { gap: 5px; } .cat-tab { padding: 6px 12px; font-size: 0.8rem; } }
             </style>
         </head>
         <body>
@@ -50,25 +52,63 @@
                 <img src="03.jpg" class="hero-bg" onerror="this.style.display='none'">
                 <div class="hero-content">
                     <h1>أعمالنا</h1>
-                    <p>استعرض سجل انجازتنا والمشاريع التي قمنا بتنفيذها</p>
+                    <p>مشاريعنا التي نفذناها </p>
                 </div>
             </section>
             <div class="search-section">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج... (مثل: كهرباء, سباكة, دهانات)">
+                    <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج... (مثل: كارتـ, مكنة, حلول)">
                 </div>
                 <div id="searchResult" class="search-result"></div>
             </div>
+            
             <main>
-                <div class="grid"><div class="card product-item" data-title="أعمالنا التي نفذناها" data-desc="">
-                <div class="gallery"><div class="no-img">🚫 لا توجد صور</div></div>
-                <div class="info">
-                    <h3 class="product-title">أعمالنا التي نفذناها</h3>
-                    
-                    <p class="desc-text"></p>
-                    <a href="https://wa.me/201114394767?text=استفسار عن: %D8%A3%D8%B9%D9%85%D8%A7%D9%84%D9%86%D8%A7%20%D8%A7%D9%84%D8%AA%D9%8A%20%D9%86%D9%81%D8%B0%D9%86%D8%A7%D9%87%D8%A7" style="background:var(--wa);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:auto;">اطلب الآن 💬</a>
-                </div>
-            </div></div>
+                <div class="grid"><div class="card product-item" data-title="تعديل كنترول ماكينة انجل EC88" data-desc="تم تركيب كنترول ماشين لماكينة انجل 80 طن EC88 في وقت قياسي " data-cat="all">
+                        <div class="gallery"><img src="projects_images/IMG20220317153540.jpg" alt="تعديل كنترول ماكينة انجل EC88" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="projects_images/IMG20220317153630.jpg" alt="تعديل كنترول ماكينة انجل EC88" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                        <div class="info">
+                            <h3 class="product-title">تعديل كنترول ماكينة انجل EC88</h3>
+                            
+                            <p class="desc-text">تم تركيب كنترول ماشين لماكينة انجل 80 طن EC88 في وقت قياسي </p>
+                            <a href="https://wa.me/201114394767?text=استفسار عن: %D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D9%83%D9%86%D8%AA%D8%B1%D9%88%D9%84%20%D9%85%D8%A7%D9%83%D9%8A%D9%86%D8%A9%20%D8%A7%D9%86%D8%AC%D9%84%20EC88" style="background:var(--wa);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:auto;">اطلب الآن 💬</a>
+                        </div>
+                    </div><div class="card product-item" data-title="تركيب لوحة تحكم لماكينة ادرا" data-desc="تم تركيب لوحة تحكم كاملة لماكينة حقن ادرا كامات وتحويلها لكنترول ماشين ومساطر وانفرتر " data-cat="all">
+                        <div class="gallery"><img src="projects_images/IMG20220310195922.jpg" alt="تركيب لوحة تحكم لماكينة ادرا" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="projects_images/IMG20220310200004.jpg" alt="تركيب لوحة تحكم لماكينة ادرا" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                        <div class="info">
+                            <h3 class="product-title">تركيب لوحة تحكم لماكينة ادرا</h3>
+                            
+                            <p class="desc-text">تم تركيب لوحة تحكم كاملة لماكينة حقن ادرا كامات وتحويلها لكنترول ماشين ومساطر وانفرتر </p>
+                            <a href="https://wa.me/201114394767?text=استفسار عن: %D8%AA%D8%B1%D9%83%D9%8A%D8%A8%20%D9%84%D9%88%D8%AD%D8%A9%20%D8%AA%D8%AD%D9%83%D9%85%20%D9%84%D9%85%D8%A7%D9%83%D9%8A%D9%86%D8%A9%20%D8%A7%D8%AF%D8%B1%D8%A7" style="background:var(--wa);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:auto;">اطلب الآن 💬</a>
+                        </div>
+                    </div><div class="card product-item" data-title="تعديل ماكينة انجل طيارة " data-desc="تم بحمد الله تعديل ماكينة انجل طيارة كنترول ماشين مع تشغيل كارت البروبوشنال الاصلي بالفيد باك لدقة الحقن وتركيب انفرتر لزيادة التحكم وتوفير الكهرباء" data-cat="all">
+                        <div class="gallery"><img src="projects_images/IMG20220112162845.jpg" alt="تعديل ماكينة انجل طيارة " onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="projects_images/IMG20220112162914_01.jpg" alt="تعديل ماكينة انجل طيارة " onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="projects_images/IMG20220112162955_01.jpg" alt="تعديل ماكينة انجل طيارة " onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                        <div class="info">
+                            <h3 class="product-title">تعديل ماكينة انجل طيارة </h3>
+                            
+                            <p class="desc-text short" id="txt-2" data-full="تم بحمد الله تعديل ماكينة انجل طيارة كنترول ماشين مع تشغيل كارت البروبوشنال الاصلي بالفيد باك لدقة الحقن وتركيب انفرتر لزيادة التحكم وتوفير الكهرباء" data-short="تم بحمد الله تعديل ماكينة انجل طيارة كنترول ماشين مع تشغيل كارت البروبوشنال الاصلي بالفيد باك لدقة ا...">تم بحمد الله تعديل ماكينة انجل طيارة كنترول ماشين مع تشغيل كارت البروبوشنال الاصلي بالفيد باك لدقة ا...</p>
+                 <span class="more" onclick="toggleTxt(2)">المزيد...</span>
+                            <a href="https://wa.me/201114394767?text=استفسار عن: %D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D9%85%D8%A7%D9%83%D9%8A%D9%86%D8%A9%20%D8%A7%D9%86%D8%AC%D9%84%20%D8%B7%D9%8A%D8%A7%D8%B1%D8%A9%20" style="background:var(--wa);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:auto;">اطلب الآن 💬</a>
+                        </div>
+                    </div><div class="card product-item" data-title="حتى المكن الصغير مش ناسيينه 😃" data-desc="تم تعديل كنترول ماكينة نجريبوسي قديمة 220 فولت كونتاكتور الى كنترول ميني كمبيوتر وتم التسليم في يومان .
+الكنترول سعره على قد الايد ." data-cat="all">
+                        <div class="gallery"><img src="projects_images/IMG_٢٠٢٢٠٣٢٢_١٣٤٣٤١٤٣.jpg" alt="حتى المكن الصغير مش ناسيينه 😃" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="projects_images/IMG_٢٠٢٢٠٣٢٢_١٣٤٣٤٩٧٧.jpg" alt="حتى المكن الصغير مش ناسيينه 😃" onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                        <div class="info">
+                            <h3 class="product-title">حتى المكن الصغير مش ناسيينه 😃</h3>
+                            
+                            <p class="desc-text short" id="txt-3" data-full="تم تعديل كنترول ماكينة نجريبوسي قديمة 220 فولت كونتاكتور الى كنترول ميني كمبيوتر وتم التسليم في يومان .
+الكنترول سعره على قد الايد ." data-short="تم تعديل كنترول ماكينة نجريبوسي قديمة 220 فولت كونتاكتور الى كنترول ميني كمبيوتر وتم التسليم في يوما...">تم تعديل كنترول ماكينة نجريبوسي قديمة 220 فولت كونتاكتور الى كنترول ميني كمبيوتر وتم التسليم في يوما...</p>
+                 <span class="more" onclick="toggleTxt(3)">المزيد...</span>
+                            <a href="https://wa.me/201114394767?text=استفسار عن: %D8%AD%D8%AA%D9%89%20%D8%A7%D9%84%D9%85%D9%83%D9%86%20%D8%A7%D9%84%D8%B5%D8%BA%D9%8A%D8%B1%20%D9%85%D8%B4%20%D9%86%D8%A7%D8%B3%D9%8A%D9%8A%D9%86%D9%87%20%F0%9F%98%83" style="background:var(--wa);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:auto;">اطلب الآن 💬</a>
+                        </div>
+                    </div><div class="card product-item" data-title="تعديل ماكينة حقن صيني 280 طن." data-desc="تم تجديد وتعديل كنترول ماكينة حقن صيني 280 طن (تعديل شامل ) كنترول ماشين 500 وتم التسليم في وقت قياسي. " data-cat="all">
+                        <div class="gallery"><img src="projects_images/IMG20211208161427.jpg" alt="تعديل ماكينة حقن صيني 280 طن." onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="projects_images/IMG20211208161446.jpg" alt="تعديل ماكينة حقن صيني 280 طن." onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"><img src="projects_images/IMG20211208161452.jpg" alt="تعديل ماكينة حقن صيني 280 طن." onclick="openZoom(this.src)" onerror="this.src='https://placehold.co/600x400?text=Missing'"></div>
+                        <div class="info">
+                            <h3 class="product-title">تعديل ماكينة حقن صيني 280 طن.</h3>
+                            
+                            <p class="desc-text short" id="txt-4" data-full="تم تجديد وتعديل كنترول ماكينة حقن صيني 280 طن (تعديل شامل ) كنترول ماشين 500 وتم التسليم في وقت قياسي. " data-short="تم تجديد وتعديل كنترول ماكينة حقن صيني 280 طن (تعديل شامل ) كنترول ماشين 500 وتم التسليم في وقت قياس...">تم تجديد وتعديل كنترول ماكينة حقن صيني 280 طن (تعديل شامل ) كنترول ماشين 500 وتم التسليم في وقت قياس...</p>
+                 <span class="more" onclick="toggleTxt(4)">المزيد...</span>
+                            <a href="https://wa.me/201114394767?text=استفسار عن: %D8%AA%D8%B9%D8%AF%D9%8A%D9%84%20%D9%85%D8%A7%D9%83%D9%8A%D9%86%D8%A9%20%D8%AD%D9%82%D9%86%20%D8%B5%D9%8A%D9%86%D9%8A%20280%20%D8%B7%D9%86." style="background:var(--wa);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:auto;">اطلب الآن 💬</a>
+                        </div>
+                    </div></div>
             </main>
             <div class="floating-bar">
                 <div class="cart-btn" onclick="sendWA()">
@@ -82,6 +122,7 @@
             </div>
             <script>
                 
+            // البحث الذكي
             function normalizeText(str) {
                 return str.toLowerCase().replace(/[اتن]/g, function(m) {
                     const map = { 'ا': 'ا', 'ت': 'ت', 'ن': 'ن', 'ة': 'ه', 'ى': 'ي' };
@@ -101,6 +142,8 @@
                 return (matches / Math.max(str1.length, str2.length)) * 100;
             }
             
+            let currentCategory = 'all';
+            
             function filterItems() {
                 const searchTerm = document.getElementById('searchInput').value.trim();
                 const searchResult = document.getElementById('searchResult');
@@ -111,7 +154,10 @@
                 items.forEach(item => {
                     const title = item.getAttribute('data-title') || '';
                     const desc = item.getAttribute('data-desc') || '';
+                    const itemCat = item.getAttribute('data-cat') || '';
                     let score = 0;
+                    let catMatch = (currentCategory === 'all' || itemCat === currentCategory);
+                    
                     if(searchTerm === '') {
                         score = 100;
                     } else {
@@ -126,7 +172,7 @@
                             }
                         }
                     }
-                    if(score >= minScore || searchTerm === '') {
+                    if((score >= minScore || searchTerm === '') && catMatch) {
                         item.style.display = '';
                         visibleCount++;
                         if(searchTerm !== '' && title.toLowerCase().includes(searchTerm.toLowerCase())) {
@@ -145,6 +191,13 @@
                 }
             }
             
+            function filterByCategory(cat, btn) {
+                currentCategory = cat;
+                document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterItems();
+            }
+            
             function initSearch() {
                 const searchInput = document.getElementById('searchInput');
                 if(searchInput) {
@@ -156,7 +209,7 @@
         
                 
             let cart = {};
-            const CART_STORAGE_KEY = 'cart_mt1prw8b_mnopp8fa';
+            const CART_STORAGE_KEY = 'cart_w8jmtnjn_moezhwkl';
             
             function loadCartFromStorage() {
                 const savedCart = localStorage.getItem(CART_STORAGE_KEY);
@@ -245,24 +298,22 @@
         
                 
                 function toggleTxt(idx) {
-    const p = document.getElementById('txt-'+idx);
-    if(p) {
-        const isShort = p.classList.contains('short');
-        if(isShort) {
-            // التبديل إلى النص الكامل
-            const fullText = p.getAttribute('data-full');
-            if(fullText) p.innerText = fullText;
-            p.classList.remove('short');
-            p.nextElementSibling.innerText = "أقل";
-        } else {
-            // التبديل إلى النص المختصر
-            const shortText = p.getAttribute('data-short');
-            if(shortText) p.innerText = shortText;
-            p.classList.add('short');
-            p.nextElementSibling.innerText = "المزيد...";
-        }
-    }
-}
+                    const p = document.getElementById('txt-'+idx);
+                    if(p) {
+                        const isShort = p.classList.contains('short');
+                        if(isShort) {
+                            const fullText = p.getAttribute('data-full');
+                            if(fullText) p.innerText = fullText;
+                            p.classList.remove('short');
+                            p.nextElementSibling.innerText = "أقل";
+                        } else {
+                            const shortText = p.getAttribute('data-short');
+                            if(shortText) p.innerText = shortText;
+                            p.classList.add('short');
+                            p.nextElementSibling.innerText = "المزيد...";
+                        }
+                    }
+                }
                 function openZoom(src) { document.getElementById('zi').src = src; document.getElementById('zM').style.display = 'flex'; }
             </script>
         </body>
