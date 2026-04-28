@@ -12,38 +12,47 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// معالجة الإشعارات في الخلفية - هنا بنبني الإشعار الوحيد الشغال
 messaging.onBackgroundMessage((payload) => {
-    console.log('إشعار وصل:', payload);
+    console.log('إشعار وصل في الخلفية:', payload);
     
-    // استخراج البيانات اللي بعتناهم من الـ Custom Data
-    const title = payload.data.title || 'تنبيه من DH Automation';
-    const body = payload.data.body || 'لديك إشعار جديد';
-    const url = payload.data.url || 'https://doupl2018-create.github.io/dh-automation/';
+    // سحب البيانات مع وضع قيم افتراضية عشان نضمن عدم حدوث خطأ
+    const title = payload.data?.title || payload.notification?.title || 'تنبيه من DH Automation';
+    const body = payload.data?.body || payload.notification?.body || 'لديك تحديث جديد';
+    
+    // تأمين الرابط: بنجيبه من الـ data ولو مش موجود بنحط رابط المشروع مباشرة
+    const targetUrl = payload.data?.url || 'https://doupl2018-create.github.io/dh-automation/';
 
     const options = {
         body: body,
         icon: '01.jpg',
-        data: { url: url } // بنربط الرابط بالإشعار هنا
+        badge: '01.jpg',
+        data: {
+            url: targetUrl // بنخزن الرابط هنا عشان الـ click listener يشوفه
+        }
     };
 
-    // ده الإشعار الوحيد اللي هيظهر، ومن غير 404
+    // عرض الإشعار والتحكم الكامل فيه لمنع الـ 404
     return self.registration.showNotification(title, options);
 });
 
+// التعامل مع الضغطة على الإشعار وتوجيه المستخدم للرابط المظبوط
 self.addEventListener('notificationclick', function(event) {
-    event.notification.close();
+    event.notification.close(); // قفل الإشعار فوراً
     
-    // الرابط اللي جاي من البيانات
+    // سحب الرابط اللي خزناه في الـ data فوق
     const urlToOpen = event.notification.data.url;
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+            // لو الموقع مفتوح في أي تبويب، نركز عليه بدل ما نفتح واحد جديد
             for (let i = 0; i < clientList.length; i++) {
                 let client = clientList[i];
                 if (client.url === urlToOpen && 'focus' in client) {
                     return client.focus();
                 }
             }
+            // لو مش مفتوح، افتح تبويب جديد بالرابط الصح لمشروعك
             if (clients.openWindow) {
                 return clients.openWindow(urlToOpen);
             }
