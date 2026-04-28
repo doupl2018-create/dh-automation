@@ -12,41 +12,38 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// ده الكود اللي بيعرض الإشعار بنفسه وبيتحكم في محتواه
+// معالجة الإشعارات في الخلفية
 messaging.onBackgroundMessage((payload) => {
   console.log('إشعار في الخلفية:', payload);
-  
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '01.jpg', // تأكد إن الصورة موجودة في الـ root
-    data: {
-      url: 'https://doupl2018-create.github.io/dh-automation/' // ده الرابط اللي إنت عايزه يفتح
-    }
+    icon: '01.jpg' // استخدم صورة موجودة فعلاً في مشروعك زي اللي في الصورة
   };
 
-  return self.registration.showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// ده الجزء اللي بيسمع للضغطة وبيوجهك للرابط الصح
+// الجزء الجديد عشان لما تدوس على الإشعار يفتح الموقع مش الـ 404
 self.addEventListener('notificationclick', function(event) {
-  event.notification.close(); // اقفل الإشعار
-  
-  // استخدم الرابط اللي إحنا حاطينه في الـ data، ولو مش موجود استخدم الرابط الافتراضي
-  const urlToOpen = event.notification.data.url || 'https://doupl2018-create.github.io/dh-automation/';
+  event.notification.close(); // يقفل الإشعار بعد الضغط عليه
+
+  // المسار الكامل لمشروعك على GitHub Pages
+  const urlToOpen = 'https://doupl2018-create.github.io/dh-automation/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      // لو الموقع مفتوح أصلاً في تبويب، يروح عليه
       for (let i = 0; i < clientList.length; i++) {
         let client = clientList[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
+      // لو مش مفتوح، يفتح تبويب جديد بالموقع
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }
     })
   );
 });
-
