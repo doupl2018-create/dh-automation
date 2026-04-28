@@ -12,18 +12,28 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// معالجة الإشعارات في الخلفية
+// ده الكود اللي بيعرض الإشعار بنفسه وبيتحكم في محتواه
 messaging.onBackgroundMessage((payload) => {
   console.log('إشعار في الخلفية:', payload);
-  // مفيش داعي تعمل self.registration.showNotification هنا لو بتبعت من الـ Console
-  // لأن الـ Console بيبعت payload بيخلي المتصفح يعرض الإشعار لوحده
+  
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: '01.jpg', // تأكد إن الصورة موجودة في الـ root
+    data: {
+      url: 'https://doupl2018-create.github.io/dh-automation/' // ده الرابط اللي إنت عايزه يفتح
+    }
+  };
+
+  return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// ده الجزء اللي هيصلح الـ 404 في الإشعار اللي بيتبعت من الكونسول
+// ده الجزء اللي بيسمع للضغطة وبيوجهك للرابط الصح
 self.addEventListener('notificationclick', function(event) {
-  event.notification.close();
+  event.notification.close(); // اقفل الإشعار
   
-  const urlToOpen = 'https://doupl2018-create.github.io/dh-automation/';
+  // استخدم الرابط اللي إحنا حاطينه في الـ data، ولو مش موجود استخدم الرابط الافتراضي
+  const urlToOpen = event.notification.data.url || 'https://doupl2018-create.github.io/dh-automation/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
