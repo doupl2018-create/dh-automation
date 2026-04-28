@@ -12,39 +12,11 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
-    // هنا بنسحب البيانات من الـ Custom Data فقط
-    const title = payload.data?.title || 'تنبيه من DH Automation';
-    const body = payload.data?.body || 'لديك إشعار جديد';
-    const targetUrl = payload.data?.url || 'https://doupl2018-create.github.io/dh-automation/';
-
-    const options = {
-        body: body,
-        icon: '01.jpg',
-        data: { url: targetUrl }
-    };
-
-    return self.registration.showNotification(title, options);
-});
-
+// التعديل الجوهري هنا في الـ notificationclick
 self.addEventListener('notificationclick', function(event) {
+    // 1. قفل الإشعار فوراً عند الضغط عليه
     event.notification.close();
-    const urlToOpen = event.notification.data.url;
-
-    event.waitUntil(
-        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-            // بنشوف لو الموقع مفتوح في أي تبويب
-            for (let i = 0; i < clientList.length; i++) {
-                let client = clientList[i];
-                // بنستخدم includes عشان نضمن المطابقة حتى لو الرابط فيه زيادات
-                if (client.url.includes('dh-automation') && 'focus' in client) {
-                    return client.focus();
-                }
-            }
-            // لو مش مفتوح، بنفتح الرابط المظبوط
-            if (clients.openWindow) {
-                return clients.openWindow(urlToOpen);
-            }
-        })
-    );
+    
+    // 2. لن نقوم بفتح أي نوافذ أو روابط (تجنباً للـ 404)
+    console.log('تم إغلاق الإشعار. لا يوجد إجراء لفتح صفحات.');
 });
