@@ -12,59 +12,49 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// منع الإشعارات التلقائية من الظهور عندما يكون التطبيق في الخلفية
+// أهم شيء: منع الإشعار التلقائي تماماً
 messaging.onBackgroundMessage((payload) => {
   console.log('إشعار في الخلفية:', payload);
-
-  // التحقق من وجود بيانات الإشعار
+  
+  // تجاهل أي notification قادم من السيرفر
+  // واستخدم data فقط إن وجد
   let notificationTitle = 'تنبيه جديد';
-  let notificationOptions = {
-    body: 'لديك إشعار جديد',
+  let notificationBody = 'لديك إشعار جديد';
+  let notificationUrl = 'https://doupl2018-create.github.io/dh-automation/';
+  
+  // جلب البيانات من payload.data (وليس payload.notification)
+  if (payload.data) {
+    notificationTitle = payload.data.title || notificationTitle;
+    notificationBody = payload.data.body || notificationBody;
+    notificationUrl = payload.data.url || notificationUrl;
+  }
+  
+  // إظهار إشعار واحد فقط يدوياً
+  const notificationOptions = {
+    body: notificationBody,
     icon: '01.jpg',
     data: {
-      url: 'https://doupl2018-create.github.io/dh-automation/'
+      url: notificationUrl
     }
   };
 
-  // استخدام البيانات المرسلة من السيرفر إذا كانت موجودة
-  if (payload.notification) {
-    notificationTitle = payload.notification.title || notificationTitle;
-    notificationOptions.body = payload.notification.body || notificationOptions.body;
-  }
-
-  // إضافة أي بيانات إضافية من الـ payload
-  if (payload.data) {
-    notificationOptions.data = {
-      ...notificationOptions.data,
-      ...payload.data
-    };
-  }
-
-  // إظهار الإشعار يدوياً (واحد فقط)
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// معالجة الضغطة على الإشعار وفتح الرابط الصحيح
+// معالجة الضغطة
 self.addEventListener('notificationclick', function(event) {
-  // إغلاق الإشعار فوراً
   event.notification.close();
-
-  // الحصول على الرابط من البيانات
+  
   const urlToOpen = event.notification.data?.url || 'https://doupl2018-create.github.io/dh-automation/';
 
   event.waitUntil(
-    clients.matchAll({ 
-      type: 'window', 
-      includeUncontrolled: true 
-    }).then(function(clientList) {
-      // محاولة إيجاد نافذة مفتوحة بنفس الرابط
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
       for (let i = 0; i < clientList.length; i++) {
         let client = clientList[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
-      // إذا لم توجد نافذة مفتوحة، افتح واحدة جديدة
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }
