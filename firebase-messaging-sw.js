@@ -12,16 +12,11 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// معالجة الإشعارات في الخلفية
 messaging.onBackgroundMessage((payload) => {
-    console.log('إشعار وصل:', payload);
-
-    // سحب البيانات
-    const title = payload.notification?.title || payload.data?.title || 'تنبيه جديد';
-    const body = payload.notification?.body || payload.data?.body || '';
-    
-    // الرابط اللي بيمنع الـ 404
-    const targetUrl = 'https://doupl2018-create.github.io/dh-automation/';
+    // هنا بنسحب البيانات من الـ Custom Data فقط
+    const title = payload.data?.title || 'تنبيه من DH Automation';
+    const body = payload.data?.body || 'لديك إشعار جديد';
+    const targetUrl = payload.data?.url || 'https://doupl2018-create.github.io/dh-automation/';
 
     const options = {
         body: body,
@@ -29,14 +24,7 @@ messaging.onBackgroundMessage((payload) => {
         data: { url: targetUrl }
     };
 
-    // الحركة دي "بتحجز" الإشعار لنفسك وبتعرض النسخة الشغالة بس
     return self.registration.showNotification(title, options);
-});
-
-// منع الإشعار الافتراضي البايظ (التريك دي بتمسح الإشعارات اللي مش تبعنا)
-self.addEventListener('push', (event) => {
-    // لو الإشعار فيه notification payload المتصفح هيعرضه تلقائياً
-    // إحنا بنسيب الـ onBackgroundMessage هي اللي تتصرف
 });
 
 self.addEventListener('notificationclick', function(event) {
@@ -45,12 +33,15 @@ self.addEventListener('notificationclick', function(event) {
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+            // بنشوف لو الموقع مفتوح في أي تبويب
             for (let i = 0; i < clientList.length; i++) {
                 let client = clientList[i];
-                if (client.url === urlToOpen && 'focus' in client) {
+                // بنستخدم includes عشان نضمن المطابقة حتى لو الرابط فيه زيادات
+                if (client.url.includes('dh-automation') && 'focus' in client) {
                     return client.focus();
                 }
             }
+            // لو مش مفتوح، بنفتح الرابط المظبوط
             if (clients.openWindow) {
                 return clients.openWindow(urlToOpen);
             }
