@@ -11,32 +11,18 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
-
-// منع Firebase من عرض أي إشعار تلقائي
+// معالجة الإشعارات في الخلفية
 messaging.onBackgroundMessage((payload) => {
-  console.log('الإشعار الواصل:', payload);
-  
-  // هنا انت اللي تتحكم في الإشعار - إشعار واحد بس
-  const notificationTitle = payload.data?.title || payload.notification?.title || 'تنبيه جديد';
-  const notificationBody = payload.data?.body || payload.notification?.body || 'لديك إشعار';
-  
-  const notificationOptions = {
-    body: notificationBody,
-    icon: '01.jpg',
-    data: {
-      url: payload.data?.url || 'https://doupl2018-create.github.io/dh-automation/'
-    }
-  };
-
-  // إشعار واحد فقط - اللي انت بتعرضه
-  return self.registration.showNotification(notificationTitle, notificationOptions);
+  console.log('إشعار في الخلفية:', payload);
+  // مفيش داعي تعمل self.registration.showNotification هنا لو بتبعت من الـ Console
+  // لأن الـ Console بيبعت payload بيخلي المتصفح يعرض الإشعار لوحده
 });
 
-// معالجة الضغطة على الإشعار
+// ده الجزء اللي هيصلح الـ 404 في الإشعار اللي بيتبعت من الكونسول
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   
-  const urlToOpen = event.notification.data?.url || 'https://doupl2018-create.github.io/dh-automation/';
+  const urlToOpen = 'https://doupl2018-create.github.io/dh-automation/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
