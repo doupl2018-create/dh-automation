@@ -11,6 +11,7 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
 // معالجة الإشعارات في الخلفية
 messaging.onBackgroundMessage((payload) => {
   console.log('إشعار في الخلفية:', payload);
@@ -22,7 +23,11 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   
-  const urlToOpen = 'https://doupl2018-create.github.io/dh-automation/';
+  // بلاش الرابط الثابت، خليك ذكي وخد الرابط من الإشعار نفسه
+  const urlToOpen = event.notification.data?.FCM_MSG?.notification?.click_action 
+                     || event.notification.data?.click_action
+                     || event.notification.data?.url
+                     || 'https://doupl2018-create.github.io/dh-automation/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
