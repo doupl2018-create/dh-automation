@@ -12,39 +12,59 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// معالجة الإشعارات في الخلفية
+// منع الإشعارات التلقائية من الظهور عندما يكون التطبيق في الخلفية
 messaging.onBackgroundMessage((payload) => {
   console.log('إشعار في الخلفية:', payload);
-  
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: '01.jpg', // صورتك اللي إنت مختارها
+
+  // التحقق من وجود بيانات الإشعار
+  let notificationTitle = 'تنبيه جديد';
+  let notificationOptions = {
+    body: 'لديك إشعار جديد',
+    icon: '01.jpg',
     data: {
-      // الرابط ده هو اللي هيتفتح لما تدوس على الإشعار
       url: 'https://doupl2018-create.github.io/dh-automation/'
     }
   };
 
-  // دي الخطوة اللي كانت ناقصة عشان الإشعار يظهر فعلاً
+  // استخدام البيانات المرسلة من السيرفر إذا كانت موجودة
+  if (payload.notification) {
+    notificationTitle = payload.notification.title || notificationTitle;
+    notificationOptions.body = payload.notification.body || notificationOptions.body;
+  }
+
+  // إضافة أي بيانات إضافية من الـ payload
+  if (payload.data) {
+    notificationOptions.data = {
+      ...notificationOptions.data,
+      ...payload.data
+    };
+  }
+
+  // إظهار الإشعار يدوياً (واحد فقط)
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// ده الجزء اللي بيمنع الـ 404 وبيربط الضغطة بالرابط الصح
+// معالجة الضغطة على الإشعار وفتح الرابط الصحيح
 self.addEventListener('notificationclick', function(event) {
+  // إغلاق الإشعار فوراً
   event.notification.close();
-  
-  // بنسحب الرابط اللي حطيناه في الـ data فوق
-  const urlToOpen = event.notification.data.url;
+
+  // الحصول على الرابط من البيانات
+  const urlToOpen = event.notification.data?.url || 'https://doupl2018-create.github.io/dh-automation/';
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+    clients.matchAll({ 
+      type: 'window', 
+      includeUncontrolled: true 
+    }).then(function(clientList) {
+      // محاولة إيجاد نافذة مفتوحة بنفس الرابط
       for (let i = 0; i < clientList.length; i++) {
         let client = clientList[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
+      // إذا لم توجد نافذة مفتوحة، افتح واحدة جديدة
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }
