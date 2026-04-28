@@ -12,30 +12,41 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// معالجة الإشعارات في الخلفية
 messaging.onBackgroundMessage((payload) => {
-  console.log('إشعار في الخلفية:', payload);
-  // مفيش داعي تعمل self.registration.showNotification هنا لو بتبعت من الـ Console
-  // لأن الـ Console بيبعت payload بيخلي المتصفح يعرض الإشعار لوحده
+    console.log('إشعار وصل:', payload);
+    
+    // استخراج البيانات اللي بعتناهم من الـ Custom Data
+    const title = payload.data.title || 'تنبيه من DH Automation';
+    const body = payload.data.body || 'لديك إشعار جديد';
+    const url = payload.data.url || 'https://doupl2018-create.github.io/dh-automation/';
+
+    const options = {
+        body: body,
+        icon: '01.jpg',
+        data: { url: url } // بنربط الرابط بالإشعار هنا
+    };
+
+    // ده الإشعار الوحيد اللي هيظهر، ومن غير 404
+    return self.registration.showNotification(title, options);
 });
 
-// ده الجزء اللي هيصلح الـ 404 في الإشعار اللي بيتبعت من الكونسول
 self.addEventListener('notificationclick', function(event) {
-  event.notification.close();
-  
-  const urlToOpen = 'https://doupl2018-create.github.io/dh-automation/';
+    event.notification.close();
+    
+    // الرابط اللي جاي من البيانات
+    const urlToOpen = event.notification.data.url;
 
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-      for (let i = 0; i < clientList.length; i++) {
-        let client = clientList[i];
-        if (client.url === urlToOpen && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
-    })
-  );
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+            for (let i = 0; i < clientList.length; i++) {
+                let client = clientList[i];
+                if (client.url === urlToOpen && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            if (clients.openWindow) {
+                return clients.openWindow(urlToOpen);
+            }
+        })
+    );
 });
