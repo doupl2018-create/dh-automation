@@ -12,47 +12,45 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// معالجة الإشعارات في الخلفية - هنا بنبني الإشعار الوحيد الشغال
+// معالجة الإشعارات في الخلفية
 messaging.onBackgroundMessage((payload) => {
-    console.log('إشعار وصل في الخلفية:', payload);
+    console.log('إشعار وصل:', payload);
+
+    // سحب البيانات
+    const title = payload.notification?.title || payload.data?.title || 'تنبيه جديد';
+    const body = payload.notification?.body || payload.data?.body || '';
     
-    // سحب البيانات مع وضع قيم افتراضية عشان نضمن عدم حدوث خطأ
-    const title = payload.data?.title || payload.notification?.title || 'تنبيه من DH Automation';
-    const body = payload.data?.body || payload.notification?.body || 'لديك تحديث جديد';
-    
-    // تأمين الرابط: بنجيبه من الـ data ولو مش موجود بنحط رابط المشروع مباشرة
-    const targetUrl = payload.data?.url || 'https://doupl2018-create.github.io/dh-automation/';
+    // الرابط اللي بيمنع الـ 404
+    const targetUrl = 'https://doupl2018-create.github.io/dh-automation/';
 
     const options = {
         body: body,
         icon: '01.jpg',
-        badge: '01.jpg',
-        data: {
-            url: targetUrl // بنخزن الرابط هنا عشان الـ click listener يشوفه
-        }
+        data: { url: targetUrl }
     };
 
-    // عرض الإشعار والتحكم الكامل فيه لمنع الـ 404
+    // الحركة دي "بتحجز" الإشعار لنفسك وبتعرض النسخة الشغالة بس
     return self.registration.showNotification(title, options);
 });
 
-// التعامل مع الضغطة على الإشعار وتوجيه المستخدم للرابط المظبوط
+// منع الإشعار الافتراضي البايظ (التريك دي بتمسح الإشعارات اللي مش تبعنا)
+self.addEventListener('push', (event) => {
+    // لو الإشعار فيه notification payload المتصفح هيعرضه تلقائياً
+    // إحنا بنسيب الـ onBackgroundMessage هي اللي تتصرف
+});
+
 self.addEventListener('notificationclick', function(event) {
-    event.notification.close(); // قفل الإشعار فوراً
-    
-    // سحب الرابط اللي خزناه في الـ data فوق
+    event.notification.close();
     const urlToOpen = event.notification.data.url;
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-            // لو الموقع مفتوح في أي تبويب، نركز عليه بدل ما نفتح واحد جديد
             for (let i = 0; i < clientList.length; i++) {
                 let client = clientList[i];
                 if (client.url === urlToOpen && 'focus' in client) {
                     return client.focus();
                 }
             }
-            // لو مش مفتوح، افتح تبويب جديد بالرابط الصح لمشروعك
             if (clients.openWindow) {
                 return clients.openWindow(urlToOpen);
             }
