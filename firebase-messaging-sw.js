@@ -12,36 +12,27 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// أهم شيء: منع الإشعار التلقائي تماماً
+// منع Firebase من عرض أي إشعار تلقائي
 messaging.onBackgroundMessage((payload) => {
-  console.log('إشعار في الخلفية:', payload);
+  console.log('الإشعار الواصل:', payload);
   
-  // تجاهل أي notification قادم من السيرفر
-  // واستخدم data فقط إن وجد
-  let notificationTitle = 'تنبيه جديد';
-  let notificationBody = 'لديك إشعار جديد';
-  let notificationUrl = 'https://doupl2018-create.github.io/dh-automation/';
+  // هنا انت اللي تتحكم في الإشعار - إشعار واحد بس
+  const notificationTitle = payload.data?.title || payload.notification?.title || 'تنبيه جديد';
+  const notificationBody = payload.data?.body || payload.notification?.body || 'لديك إشعار';
   
-  // جلب البيانات من payload.data (وليس payload.notification)
-  if (payload.data) {
-    notificationTitle = payload.data.title || notificationTitle;
-    notificationBody = payload.data.body || notificationBody;
-    notificationUrl = payload.data.url || notificationUrl;
-  }
-  
-  // إظهار إشعار واحد فقط يدوياً
   const notificationOptions = {
     body: notificationBody,
     icon: '01.jpg',
     data: {
-      url: notificationUrl
+      url: payload.data?.url || 'https://doupl2018-create.github.io/dh-automation/'
     }
   };
 
+  // إشعار واحد فقط - اللي انت بتعرضه
   return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
-// معالجة الضغطة
+// معالجة الضغطة على الإشعار
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   
