@@ -281,69 +281,108 @@
         جميع الحقوق محفوظة لدى <b>دي اتش اوتوميشن</b> &copy; 2026
     </footer>
 
-    <script>
-        function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('active'); 
-        }
-        
-        // إغلاق القائمة الجانبية عند النقر خارجها
-        document.addEventListener('click', function(e) {
-            const sidebar = document.getElementById('sidebar');
-            const hamburger = document.querySelector('.hamburger-btn');
-            if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-                sidebar.classList.remove('active');
-            }
-        });
-        
-        // البحث السريع
-        document.getElementById('quickSearch')?.addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.card-link');
-            cards.forEach(card => {
-                const text = card.innerText.toLowerCase();
-                if(text.includes(term) || term === '') card.style.display = '';
-                else card.style.display = 'none';
-            });
-        });
+   <script type="module">
+    // 1. استيراد دوال Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging.js";
 
-        // عرض آخر المنتجات
-        function loadLatestProducts() {
-            const container = document.getElementById('latestProducts');
-            if(!container) return;
-            let allProducts = [];
-            for(let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if(key && key.startsWith('ENG_MARKET_')) {
-                    try {
-                        const data = JSON.parse(localStorage.getItem(key));
-                        if(data && data.items) {
-                            data.items.forEach(item => {
-                                allProducts.push({
-                                    title: item.title,
-                                    price: item.price,
-                                    imgs: item.imgs,
-                                    pageFile: data.fileName
-                                });
-                            });
-                        }
-                    } catch(e) {}
-                }
+    // 2. إعدادات Firebase (ضع بياناتك هنا)
+    const firebaseConfig = {
+    apiKey: "AIzaSyCckZ1f4-qPI2E4-KG8RrhftDZsfrfUwXs",
+    authDomain: "dh-automation-47096.firebaseapp.com",
+    projectId: "dh-automation-47096",
+    storageBucket: "dh-automation-47096.firebasestorage.app",
+    messagingSenderId: "260170011433",
+    appId: "1:260170011433:web:cf427a2c03d55953d4dd38"
+    };
+
+    // 3. تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    // --- كود الإشعارات ---
+    async function requestNotificationPermission() {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const token = await getToken(messaging, { 
+                    vapidKey: 'BCmP4ggQEOBiyFJ8a0vB57r7dazdPGgwGrPC7_DifmoPg0XnzwnPCeyXWP1csZtsMx75Xvl9dHhqO7ehnwwWP8A' // مفتاح الـ VAPID من صفحة Cloud Messaging
+                });
+                console.log('Token:', token);
             }
-            allProducts = allProducts.slice(-4).reverse();
-            if(allProducts.length === 0) {
-                container.innerHTML = '<p style="text-align:center">✨ قم بإضافة منتجات من المدير لتظهر هنا</p>';
-                return;
-            }
-            container.innerHTML = allProducts.map(p => `
-                <div class="product-mini">
-                    <img src="${p.pageFile || 'product'}_images/${p.imgs?.split(',')[0]?.trim() || 'main'}.jpg" 
-                         onerror="this.src='https://placehold.co/200x120?text=No+Image'">
-                    <h4>${p.title}</h4>
-                    ${p.price ? `<span style="color:var(--primary);font-weight:bold">${Number(p.price).toLocaleString()} ج.م</span>` : ''}
-                </div>
-            `).join('');
+        } catch (err) {
+            console.error('فشل الإذن:', err);
         }
-        loadLatestProducts();
-    </script>
+    }
+    
+    // استقبال الرسائل في الفورجراوند
+    onMessage(messaging, (payload) => {
+        console.log('رسالة جديدة:', payload);
+        alert(payload.notification.title + "\n" + payload.notification.body);
+    });
+
+    requestNotificationPermission();
+
+    // --- وظائف الموقع الأصلية ---
+    window.toggleSidebar = function() { 
+        document.getElementById('sidebar').classList.toggle('active'); 
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const hamburger = document.querySelector('.hamburger-btn');
+        if (sidebar && sidebar.classList.contains('active') && !sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+            sidebar.classList.remove('active');
+        }
+    });
+
+    document.getElementById('quickSearch')?.addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.card-link');
+        cards.forEach(card => {
+            const text = card.innerText.toLowerCase();
+            if(text.includes(term) || term === '') card.style.display = '';
+            else card.style.display = 'none';
+        });
+    });
+
+    function loadLatestProducts() {
+        const container = document.getElementById('latestProducts');
+        if(!container) return;
+        let allProducts = [];
+        for(let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if(key && key.startsWith('ENG_MARKET_')) {
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if(data && data.items) {
+                        data.items.forEach(item => {
+                            allProducts.push({
+                                title: item.title,
+                                price: item.price,
+                                imgs: item.imgs,
+                                pageFile: data.fileName
+                            });
+                        });
+                    }
+                } catch(e) {}
+            }
+        }
+        allProducts = allProducts.slice(-4).reverse();
+        if(allProducts.length === 0) {
+            container.innerHTML = '<p style="text-align:center">✨ قم بإضافة منتجات من المدير لتظهر هنا</p>';
+            return;
+        }
+        container.innerHTML = allProducts.map(p => `
+            <div class="product-mini">
+                <img src="${p.pageFile || 'product'}_images/${p.imgs?.split(',')[0]?.trim() || 'main'}.jpg" 
+                     onerror="this.src='https://placehold.co/200x120?text=No+Image'">
+                <h4>${p.title}</h4>
+                ${p.price ? `<span style="color:var(--primary);font-weight:bold">${Number(p.price).toLocaleString()} ج.م</span>` : ''}
+            </div>
+        `).join('');
+    }
+    loadLatestProducts();
+</script>
 </body>
 </html>
